@@ -111,7 +111,7 @@
   <header class="game-header">
     <div>
       <div class="round-badge" id="hdr-round">ROUND 1</div>
-      <div class="czar-badge" id="hdr-czar"></div>
+      <div class="round-badge" id="hdr-phase" style="color:var(--muted)"></div>
     </div>
     <div class="score-pills" id="hdr-scores"></div>
   </header>
@@ -135,23 +135,18 @@
       <button class="btn btn-primary" id="btn-submit-cards" style="max-width:300px" disabled>SUBMIT</button>
     </div>
 
-    <!-- Phase: playing (czar) -->
-    <div id="phase-czar-wait" class="hidden czar-waiting">
-      <div class="waiting-label">YOU ARE THE CARD CZAR</div>
-      <div class="big-count" id="czar-sub-count">0/0</div>
-      <div class="waiting-label">players submitted</div>
-    </div>
-
-    <!-- Phase: judging -->
-    <div id="phase-judging" class="hidden" style="width:100%">
-      <div class="judge-label" id="judge-label"></div>
+    <!-- Phase: voting -->
+    <div id="phase-voting" class="hidden" style="width:100%">
+      <div class="vote-label">VOTE FOR THE BEST ANSWER</div>
+      <div class="vote-status" id="vote-status"></div>
       <div class="submissions-grid" id="submissions-grid"></div>
     </div>
 
-    <!-- Phase: awaiting czar judgment -->
-    <div id="phase-awaiting-czar" class="hidden awaiting-czar">
+    <!-- Phase: waiting for others to vote -->
+    <div id="phase-vote-wait" class="hidden vote-waiting">
+      <div>You voted! Waiting for others...</div>
       <div class="spinner"></div>
-      <div>Waiting for the Card Czar to pick a winner...</div>
+      <div class="vote-status" id="vote-wait-status"></div>
     </div>
 
     <!-- Phase: round result -->

@@ -8,13 +8,12 @@ let myId = null;
 let myName = '';
 let roomCode = '';
 let isHost = false;
-let currentCzarId = null;
 let currentBlackCard = null;
-let selectedCards = [];   // indices into hand array
-let handCards = [];        // full hand from server
+let selectedCards = [];
+let handCards = [];
 let timerInterval = null;
-let timerTotal = 0;
 let nextRoundTimer = null;
+let pendingImageCards = [];
 
 // ── Utilities ──────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -27,44 +26,24 @@ function showScreen(id) {
 function setError(id, msg) { $(id).textContent = msg; }
 function clearError(id) { $(id).textContent = ''; }
 
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
 function renderCardText(text) {
   return (text || '').replace(/___/g, '<span class="blank"></span>');
 }
 
-function renderCard(card, opts = {}) {
-  const { selectable, order, winner, clickable, imageAbove } = opts;
-  const isWild = card.type === 'wild';
-  const hasImage = card.image;
-
-  let inner = '';
-  if (hasImage) {
-    inner += `<img src="${card.image}" style="width:100%;max-height:80px;object-fit:cover;margin-bottom:.4rem;display:block" alt="">`;
-  }
-  if (isWild) {
-    inner += '<span style="color:var(--cyan);font-style:italic">WILD — type anything</span>';
-  } else {
-    inner += renderCardText(card.text);
-  }
-
-  const classes = ['white-card'];
-  if (selectable) classes.push('selectable-card');
-  if (winner) classes.push('winner-highlight');
-
-  const orderBadge = order != null ? `<span class="card-order">${order}</span>` : '';
-  return `<div class="${classes.join(' ')}" data-wild="${isWild}" style="cursor:${clickable||selectable?'pointer':'default'}">${inner}${orderBadge}</div>`;
-}
-
-// ── Screens ────────────────────────────────────────────────────────────────
 function goToMenu() {
   showScreen('s-menu');
   stopTimer();
-  if (nextRoundTimer) clearTimeout(nextRoundTimer);
+  if (nextRoundTimer) clearInterval(nextRoundTimer);
   roomCode = '';
   myId = null;
   isHost = false;
 }
 
-// Menu
+// ── Menu ───────────────────────────────────────────────────────────────────
 $('btn-create').addEventListener('click', () => {
   const name = $('menu-name').value.trim();
   if (!name) return setError('menu-error', 'Enter your name');
@@ -78,7 +57,7 @@ $('btn-goto-join').addEventListener('click', () => {
   showScreen('s-join');
 });
 
-// Join
+// ── Join ───────────────────────────────────────────────────────────────────
 $('btn-back-menu').addEventListener('click', () => showScreen('s-menu'));
 
 $('join-code').addEventListener('input', e => {
@@ -111,13 +90,10 @@ function getSelectedPacks() {
   return packs.length ? packs : ['all'];
 }
 
-// Sync options to server on change
 ['opt-score', 'opt-timer', 'opt-rando'].forEach(id => {
   const el = $(id);
   if (!el) return;
-  el.addEventListener('change', () => {
-    if (isHost) socket.emit('update-options', gatherOptions());
-  });
+  el.addEventListener('change', () => { if (isHost) socket.emit('update-options', gatherOptions()); });
 });
 
 function initPackGrid(packs) {
@@ -127,46 +103,33 @@ function initPackGrid(packs) {
   allItem.className = 'pack-item';
   allItem.innerHTML = `<input type="checkbox" value="all"> ALL PACKS`;
   grid.appendChild(allItem);
-
   packs.forEach(pack => {
     const item = document.createElement('label');
     item.className = 'pack-item';
-    item.innerHTML = `<input type="checkbox" value="${pack.id}" checked> ${pack.name.toUpperCase()}`;
+    item.innerHTML = `<input type="checkbox" value="${pack.id}" checked> ${escHtml(pack.name).toUpperCase()}`;
     grid.appendChild(item);
   });
-
   grid.querySelectorAll('input').forEach(el => {
     el.addEventListener('change', () => {
       if (el.value === 'all') {
         grid.querySelectorAll('input[value!="all"]').forEach(x => { x.checked = false; x.closest('.pack-item').classList.remove('selected'); });
-        el.closest('.pack-item').classList.toggle('selected', el.checked);
       } else {
-        $('pack-grid').querySelector('input[value="all"]').checked = false;
-        $('pack-grid').querySelector('input[value="all"]').closest('.pack-item').classList.remove('selected');
-        el.closest('.pack-item').classList.toggle('selected', el.checked);
+        const allEl = grid.querySelector('input[value="all"]');
+        allEl.checked = false;
+        allEl.closest('.pack-item').classList.remove('selected');
       }
+      el.closest('.pack-item').classList.toggle('selected', el.checked);
       if (isHost) socket.emit('update-options', gatherOptions());
     });
   });
 }
 
-$('btn-start').addEventListener('click', () => {
-  clearError('lobby-error');
-  socket.emit('start-game');
-});
+$('btn-start').addEventListener('click', () => { clearError('lobby-error'); socket.emit('start-game'); });
 
-$('btn-leave-lobby').addEventListener('click', () => {
-  socket.disconnect();
-  socket.connect();
-  goToMenu();
-});
+$('btn-leave-lobby').addEventListener('click', () => { socket.disconnect(); socket.connect(); goToMenu(); });
 
 // ── Custom cards modal ────────────────────────────────────────────────────
-let pendingImageCards = []; // { url, caption } objects awaiting add
-
-$('btn-custom-cards').addEventListener('click', () => {
-  $('modal-custom').classList.add('open');
-});
+$('btn-custom-cards').addEventListener('click', () => $('modal-custom').classList.add('open'));
 $('btn-close-modal').addEventListener('click', () => {
   $('modal-custom').classList.remove('open');
   pendingImageCards = [];
@@ -174,14 +137,9 @@ $('btn-close-modal').addEventListener('click', () => {
   clearError('upload-error');
 });
 $('modal-custom').addEventListener('click', e => {
-  if (e.target === $('modal-custom')) {
-    $('modal-custom').classList.remove('open');
-    pendingImageCards = [];
-    $('img-preview-wrap').classList.add('hidden');
-  }
+  if (e.target === $('modal-custom')) { $('modal-custom').classList.remove('open'); pendingImageCards = []; $('img-preview-wrap').classList.add('hidden'); }
 });
 
-// Image upload
 $('btn-upload-img').addEventListener('click', async () => {
   clearError('upload-error');
   const file = $('img-upload').files[0];
@@ -190,7 +148,7 @@ $('btn-upload-img').addEventListener('click', async () => {
   form.append('image', file);
   try {
     const res = await fetch('/upload/image', { method: 'POST', body: form });
-    if (!res.ok) throw new Error('Upload failed');
+    if (!res.ok) throw new Error();
     const { url } = await res.json();
     const caption = $('img-caption').value.trim();
     pendingImageCards.push({ image: url, text: caption || '' });
@@ -216,23 +174,18 @@ $('btn-add-custom').addEventListener('click', () => {
   $('modal-custom').classList.remove('open');
 });
 
-// Community packs browser
+// Community packs
 $('btn-browse-community').addEventListener('click', async () => {
   $('modal-community').classList.add('open');
   $('community-pack-list').innerHTML = '<div class="spinner"></div>';
   try {
     const res = await fetch('/api/community-packs');
-    const packs = await res.json();
-    renderCommunityPacks(packs);
+    renderCommunityPacks(await res.json());
   } catch { $('community-pack-list').innerHTML = '<div class="text-muted">Failed to load packs.</div>'; }
 });
 
-$('btn-close-community').addEventListener('click', () => {
-  $('modal-community').classList.remove('open');
-});
-$('modal-community').addEventListener('click', e => {
-  if (e.target === $('modal-community')) $('modal-community').classList.remove('open');
-});
+$('btn-close-community').addEventListener('click', () => $('modal-community').classList.remove('open'));
+$('modal-community').addEventListener('click', e => { if (e.target === $('modal-community')) $('modal-community').classList.remove('open'); });
 
 function renderCommunityPacks(packs) {
   const list = $('community-pack-list');
@@ -241,16 +194,11 @@ function renderCommunityPacks(packs) {
     <div class="pack-item" style="flex-direction:column;align-items:flex-start;width:100%;cursor:default;margin-bottom:.4rem">
       <div style="display:flex;justify-content:space-between;width:100%;align-items:center">
         <span style="color:var(--text)">${escHtml(p.name)}</span>
-        <button class="btn btn-secondary" style="width:auto;padding:.3rem .7rem;font-size:.75rem"
-          onclick="addCommunityPack(${p.id})">ADD</button>
+        <button class="btn btn-secondary" style="width:auto;padding:.3rem .7rem;font-size:.75rem" onclick="addCommunityPack(${p.id})">ADD</button>
       </div>
       <div class="text-muted">${p.black_count} black · ${p.white_count} white · by ${escHtml(p.author)}</div>
     </div>
   `).join('');
-}
-
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 window.addCommunityPack = async (packId) => {
@@ -262,20 +210,17 @@ window.addCommunityPack = async (packId) => {
   } catch { alert('Failed to load pack'); }
 };
 
-// Save pack to community DB
 $('btn-save-community').addEventListener('click', async () => {
   const packName = $('community-pack-name').value.trim();
-  const authorName = myName || 'Anonymous';
   if (!packName) return setError('save-pack-error', 'Enter a pack name');
   const blackLines = $('custom-black').value.split('\n').map(l => l.trim()).filter(Boolean);
-  const whiteText = $('custom-white').value.split('\n').map(l => l.trim()).filter(Boolean);
-  const white = [...whiteText, ...pendingImageCards];
+  const white = [...$('custom-white').value.split('\n').map(l => l.trim()).filter(Boolean), ...pendingImageCards];
   if (!blackLines.length && !white.length) return setError('save-pack-error', 'Add some cards first');
   try {
     const res = await fetch('/api/community-packs', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: packName, author: authorName, black: blackLines, white }),
+      body: JSON.stringify({ name: packName, author: myName || 'Anonymous', black: blackLines, white }),
     });
     if (!res.ok) throw new Error();
     setError('save-pack-error', '');
@@ -289,39 +234,33 @@ $('btn-save-community').addEventListener('click', async () => {
 function startTimer(seconds) {
   stopTimer();
   if (!seconds) { $('timer-wrap').style.display = 'none'; return; }
-  timerTotal = seconds;
   $('timer-wrap').style.display = '';
   $('timer-bar').style.transition = 'none';
   $('timer-bar').style.width = '100%';
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      $('timer-bar').style.transition = `width ${seconds}s linear`;
-      $('timer-bar').style.width = '0%';
-    });
-  });
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    $('timer-bar').style.transition = `width ${seconds}s linear`;
+    $('timer-bar').style.width = '0%';
+  }));
 }
 
 function stopTimer() {
-  clearInterval(timerInterval);
   $('timer-bar').style.transition = 'none';
   $('timer-bar').style.width = '100%';
 }
 
 // ── Header ────────────────────────────────────────────────────────────────
-function updateHeader(round, czarName, czarId, scores, players) {
+function updateHeader(round, phaseLabel, scores, players) {
   $('hdr-round').textContent = `ROUND ${round}`;
-  $('hdr-czar').textContent = `CZAR: ${czarName}`;
-  currentCzarId = czarId;
+  $('hdr-phase').textContent = phaseLabel || '';
 
   const pills = $('hdr-scores');
   pills.innerHTML = '';
-  const maxScore = Math.max(...players.map(p => p.score), 0);
+  const maxScore = Math.max(...players.map(p => scores[p.id] ?? 0), 0);
   players.forEach(p => {
     const sc = scores[p.id] ?? 0;
     const pill = document.createElement('div');
     pill.className = 'score-pill' +
       (p.id === myId ? ' is-me' : '') +
-      (p.id === czarId ? ' is-czar' : '') +
       (sc > 0 && sc === maxScore ? ' is-winning' : '');
     pill.textContent = `${p.name}: ${sc}`;
     pills.appendChild(pill);
@@ -337,10 +276,8 @@ function renderHand() {
 
   handCards.forEach((card, i) => {
     const el = document.createElement('div');
-    const isWild = card.type === 'wild';
     el.className = 'white-card';
     el.dataset.index = i;
-    el.dataset.wild = isWild;
 
     if (card.image) {
       const img = document.createElement('img');
@@ -349,6 +286,7 @@ function renderHand() {
       el.appendChild(img);
     }
 
+    const isWild = card.type === 'wild';
     if (isWild) {
       el.innerHTML += '<span style="color:var(--cyan);font-style:italic;font-size:.78rem">✎ WILD</span>';
     } else {
@@ -363,10 +301,9 @@ function renderHand() {
 }
 
 function onCardClick(idx, el, isWild) {
-  if (myId === currentCzarId) return;
   const pick = currentBlackCard?.pick || 1;
-
   const already = selectedCards.indexOf(idx);
+
   if (already !== -1) {
     selectedCards.splice(already, 1);
     el.classList.remove('selected');
@@ -386,7 +323,6 @@ function onCardClick(idx, el, isWild) {
     const span = document.createElement('span');
     span.innerHTML = escHtml(typed.trim());
     el.appendChild(span);
-    el.dataset.wild = 'false';
   }
 
   selectedCards.push(idx);
@@ -399,11 +335,10 @@ function onCardClick(idx, el, isWild) {
 }
 
 function reindexOrders() {
-  const container = $('hand-container');
-  let orderNum = 1;
-  [...container.children].forEach(el => {
-    const orderEl = el.querySelector('.card-order');
-    if (orderEl) orderEl.textContent = orderNum++;
+  let n = 1;
+  [...$('hand-container').children].forEach(el => {
+    const o = el.querySelector('.card-order');
+    if (o) o.textContent = n++;
   });
 }
 
@@ -416,24 +351,57 @@ function updateSubmitBtn() {
 
 $('btn-submit-cards').addEventListener('click', () => {
   if (selectedCards.length !== (currentBlackCard?.pick || 1)) return;
-  socket.emit('play-cards', { indices: selectedCards, typedCards: getTypedCards() });
-  $('phase-playing').classList.add('hidden');
-  $('hand-container').innerHTML = '';
-  const status = document.createElement('div');
-  status.className = 'status-text';
-  status.textContent = 'Cards submitted! Waiting for others...';
+  const typedCards = {};
+  selectedCards.forEach(idx => { if (handCards[idx].originalWild) typedCards[idx] = handCards[idx].text; });
+  socket.emit('play-cards', { indices: selectedCards, typedCards });
+  hideAllPhases();
   $('phase-playing').classList.remove('hidden');
-  $('hand-container').appendChild(status);
+  $('hand-container').innerHTML = '<div class="status-text">Cards submitted! Waiting for others...</div>';
   $('btn-submit-cards').style.display = 'none';
+  $('hand-label') && ($('hand-label').style.display = 'none');
 });
 
-function getTypedCards() {
-  const typed = {};
-  selectedCards.forEach(idx => {
-    const card = handCards[idx];
-    if (card.originalWild) typed[idx] = card.text;
+// ── Submission card builder ────────────────────────────────────────────────
+function buildSubmissionCard(sub, { voteable, isMine, tally } = {}) {
+  const card = document.createElement('div');
+  card.className = 'submission-card' +
+    (voteable ? ' voteable' : '') +
+    (isMine ? ' is-mine' : '');
+
+  sub.cards.forEach((c, ci) => {
+    const p = document.createElement('div');
+    if (c.image) {
+      const img = document.createElement('img');
+      img.src = c.image;
+      img.style.cssText = 'width:100%;max-height:70px;object-fit:cover;display:block;margin-bottom:.3rem';
+      p.appendChild(img);
+    }
+    const t = document.createElement('span');
+    t.innerHTML = escHtml(c.text || '');
+    p.appendChild(t);
+    if (ci < sub.cards.length - 1) {
+      const sep = document.createElement('div');
+      sep.className = 'sub-sep';
+      p.appendChild(sep);
+    }
+    card.appendChild(p);
   });
-  return typed;
+
+  if (isMine) {
+    const badge = document.createElement('span');
+    badge.className = 'mine-badge';
+    badge.textContent = 'YOURS';
+    card.appendChild(badge);
+  }
+
+  if (tally != null) {
+    const tallyEl = document.createElement('span');
+    tallyEl.className = 'vote-tally';
+    tallyEl.textContent = `${tally} vote${tally !== 1 ? 's' : ''}`;
+    card.appendChild(tallyEl);
+  }
+
+  return card;
 }
 
 // ── Socket events ─────────────────────────────────────────────────────────
@@ -463,13 +431,8 @@ socket.on('error-msg', msg => setError('lobby-error', msg));
 
 socket.on('lobby-update', ({ players, hostId, options, customCounts }) => {
   isHost = socket.id === hostId;
-  if (isHost) {
-    $('host-settings').classList.remove('hidden');
-    $('guest-waiting').classList.add('hidden');
-  } else {
-    $('host-settings').classList.add('hidden');
-    $('guest-waiting').classList.remove('hidden');
-  }
+  $('host-settings').classList.toggle('hidden', !isHost);
+  $('guest-waiting').classList.toggle('hidden', isHost);
 
   const list = $('lobby-players');
   list.innerHTML = '';
@@ -483,10 +446,7 @@ socket.on('lobby-update', ({ players, hostId, options, customCounts }) => {
     list.appendChild(item);
   });
 
-  if (customCounts) {
-    const total = customCounts.black + customCounts.white;
-    $('custom-count').textContent = total ? `(${total})` : '';
-  }
+  if (customCounts) $('custom-count').textContent = (customCounts.black + customCounts.white) ? `(${customCounts.black + customCounts.white})` : '';
 
   if (options && isHost) {
     $('opt-score').value = options.scoreGoal;
@@ -499,145 +459,122 @@ socket.on('custom-cards-added', ({ count }) => {
   $('custom-count').textContent = `(${count.black + count.white})`;
 });
 
-socket.on('player-left', () => {});
-
-socket.on('round-start', ({ blackCard, czarId, czarName, round, hand, scores, timerSeconds, players }) => {
+socket.on('round-start', ({ blackCard, round, hand, scores, timerSeconds, players }) => {
   currentBlackCard = blackCard;
   handCards = hand;
   selectedCards = [];
   showScreen('s-game');
+  updateHeader(round, 'SUBMIT PHASE', scores, players);
 
-  // Header
-  const playerList = players || Object.keys(scores).map(id => ({ id, score: scores[id], name: id }));
-  updateHeader(round, czarName, czarId, scores, playerList);
-
-  // Black card
   $('black-card-text').innerHTML = renderCardText(blackCard.text);
   $('pick-badge').textContent = blackCard.pick > 1 ? `PICK ${blackCard.pick}` : '';
 
-  // Timer
   startTimer(timerSeconds);
-
-  // Phase
   hideAllPhases();
-  if (myId === czarId) {
-    $('phase-czar-wait').classList.remove('hidden');
-    $('czar-sub-count').textContent = `0/${playerList.filter(p => p.id !== czarId).length || '?'}`;
-  } else {
-    $('phase-playing').classList.remove('hidden');
-    $('btn-submit-cards').style.display = '';
-    $('pick-label').textContent = blackCard.pick;
-    renderHand();
-  }
+  $('phase-playing').classList.remove('hidden');
+  $('btn-submit-cards').style.display = '';
+  $('pick-label').textContent = blackCard.pick;
+  renderHand();
 });
 
 socket.on('submission-count', ({ submitted, total }) => {
   $('sub-count-display').textContent = `${submitted} / ${total} submitted`;
-  $('czar-sub-count').textContent = `${submitted}/${total}`;
 });
 
-socket.on('cards-played', () => {
-  // Server confirmed our play
-});
-
-socket.on('judging-start', ({ submissions, czarId, blackCard }) => {
+socket.on('voting-start', ({ submissions, mySubmissionIdx, blackCard, players, totalVoters }) => {
+  currentBlackCard = blackCard;
   hideAllPhases();
   stopTimer();
-  currentBlackCard = blackCard;
+  updateHeader(+($('hdr-round').textContent.replace('ROUND ', '') || 1), 'VOTE', {}, players);
 
-  if (myId === czarId) {
-    $('phase-judging').classList.remove('hidden');
-    $('judge-label').textContent = 'PICK THE WINNING ANSWER';
-    renderSubmissions(submissions, true);
-  } else {
-    $('phase-awaiting-czar').classList.remove('hidden');
-    $('phase-judging').classList.remove('hidden');
-    $('judge-label').textContent = 'THE SUBMISSIONS';
-    renderSubmissions(submissions, false);
-  }
-});
+  $('phase-voting').classList.remove('hidden');
+  $('vote-status').textContent = `Pick your favourite answer — you can't vote for your own`;
 
-function renderSubmissions(submissions, clickable) {
   const grid = $('submissions-grid');
   grid.innerHTML = '';
+
   submissions.forEach((sub, idx) => {
-    const card = document.createElement('div');
-    card.className = 'submission-card' + (clickable ? ' clickable' : '');
+    const isMine = idx === mySubmissionIdx;
+    const card = buildSubmissionCard(sub, { voteable: !isMine, isMine });
+    const numBadge = document.createElement('span');
+    numBadge.className = 'card-num';
+    numBadge.textContent = `#${idx + 1}`;
+    card.appendChild(numBadge);
 
-    sub.cards.forEach((c, ci) => {
-      const p = document.createElement('div');
-      if (c.image) {
-        const img = document.createElement('img');
-        img.src = c.image;
-        img.style.cssText = 'width:100%;max-height:70px;object-fit:cover;display:block;margin-bottom:.3rem';
-        p.appendChild(img);
-      }
-      const t = document.createElement('span');
-      t.innerHTML = escHtml(c.text);
-      p.appendChild(t);
-      if (ci < sub.cards.length - 1) {
-        const sep = document.createElement('div');
-        sep.className = 'sub-sep';
-        p.appendChild(sep);
-      }
-      card.appendChild(p);
-    });
-
-    const num = document.createElement('span');
-    num.className = 'card-num';
-    num.textContent = `#${idx + 1}`;
-    card.appendChild(num);
-
-    if (clickable) {
-      card.addEventListener('click', () => socket.emit('judge-pick', idx));
+    if (!isMine) {
+      card.addEventListener('click', () => castVote(idx, card));
     }
     grid.appendChild(card);
   });
+});
+
+let myVoteIdx = null;
+
+function castVote(idx, cardEl) {
+  if (myVoteIdx !== null) {
+    // Deselect previous
+    const prev = $('submissions-grid').children[myVoteIdx];
+    if (prev) prev.classList.remove('voted-for');
+  }
+  myVoteIdx = idx;
+  cardEl.classList.add('voted-for');
+  socket.emit('cast-vote', idx);
 }
 
-socket.on('round-result', ({ winnerId, winnerName, winningCards, blackCard, allSubmissions, scores, players }) => {
+socket.on('vote-accepted', () => {
+  // Move to waiting state but keep cards visible
+  $('phase-voting').classList.add('hidden');
+  $('phase-vote-wait').classList.remove('hidden');
+});
+
+socket.on('vote-count', ({ voted, total }) => {
+  const msg = `${voted} / ${total} voted`;
+  $('vote-status').textContent = msg;
+  $('vote-wait-status').textContent = msg;
+});
+
+socket.on('round-result', ({ winnerId, winnerName, winningCards, winningIdx, tally, tiedCount, allSubmissions, scores, players }) => {
   hideAllPhases();
   stopTimer();
+  myVoteIdx = null;
   $('phase-result').classList.remove('hidden');
 
   const isMe = winnerId === myId;
   $('result-winner-name').textContent = isMe ? '🏆 YOU WIN THIS ROUND!' : `${winnerName} wins!`;
-  $('result-winner-sub').textContent = '';
+  $('result-winner-sub').textContent = tiedCount > 1 ? `(tied — won by random draw)` : '';
 
-  // Show winning cards
+  // Show all submissions with vote tallies
   const rc = $('result-cards');
   rc.innerHTML = '';
-  winningCards.forEach(c => {
-    const el = document.createElement('div');
-    el.className = 'submission-card winner-card';
-    if (c.image) {
-      const img = document.createElement('img');
-      img.src = c.image;
-      img.style.cssText = 'width:100%;max-height:70px;object-fit:cover;display:block;margin-bottom:.3rem';
-      el.appendChild(img);
+  allSubmissions.forEach((sub, idx) => {
+    const isWinner = idx === winningIdx;
+    const card = buildSubmissionCard(sub, { tally: sub.votes });
+    if (isWinner) {
+      card.classList.add('winner-card');
+      const winBadge = document.createElement('div');
+      winBadge.style.cssText = 'position:absolute;top:.4rem;left:.4rem;font-size:.65rem;color:var(--green)';
+      winBadge.textContent = '★ WINNER';
+      card.appendChild(winBadge);
     }
-    const t = document.createElement('div');
-    t.innerHTML = escHtml(c.text);
-    el.appendChild(t);
-    rc.appendChild(el);
+    rc.appendChild(card);
   });
 
   // Scoreboard
   const sb = $('result-scoreboard');
   sb.innerHTML = '';
-  const playerList = players || [];
-  const sortedScores = Object.entries(scores).sort(([,a],[,b]) => b - a);
-  sortedScores.forEach(([id, sc], rank) => {
-    const p = playerList.find(x => x.id === id);
-    const name = p?.name ?? (id === myId ? myName : id.slice(0, 6));
-    const row = document.createElement('div');
-    row.className = 'score-row' + (rank === 0 ? ' top' : '');
-    row.innerHTML = `<span>${escHtml(name)}</span><span class="score-val">${sc}</span>`;
-    sb.appendChild(row);
-  });
+  [...players]
+    .sort((a, b) => (scores[b.id] ?? 0) - (scores[a.id] ?? 0))
+    .forEach((p, rank) => {
+      const sc = scores[p.id] ?? 0;
+      const row = document.createElement('div');
+      row.className = 'score-row' + (rank === 0 ? ' top' : '');
+      row.innerHTML = `<span>${escHtml(p.name)}</span><span class="score-val">${sc}</span>`;
+      sb.appendChild(row);
+    });
 
-  // Countdown
-  let t = 5;
+  updateHeader(+($('hdr-round').textContent.replace('ROUND ', '') || 1), 'RESULTS', scores, players);
+
+  let t = 6;
   $('next-round-countdown').textContent = t;
   if (nextRoundTimer) clearInterval(nextRoundTimer);
   nextRoundTimer = setInterval(() => {
@@ -653,34 +590,23 @@ socket.on('game-over', ({ winnerId, winnerName, scores, players }) => {
   $('go-winner').textContent = isMe ? 'YOU WIN!' : `${winnerName} WINS!`;
   $('go-sub').textContent = isMe ? 'Congratulations, you magnificent bastard.' : 'Better luck next time.';
 
-  const playerList = players || [];
   const sb = $('go-scores');
   sb.innerHTML = '';
-  Object.entries(scores).sort(([,a],[,b]) => b - a).forEach(([id, sc], rank) => {
-    const p = playerList.find(x => x.id === id);
-    const name = p?.name ?? (id === myId ? myName : id.slice(0, 6));
-    const row = document.createElement('div');
-    row.className = 'score-row' + (rank === 0 ? ' top' : '');
-    row.innerHTML = `<span>${escHtml(name)}</span><span class="score-val">${sc}</span>`;
-    sb.appendChild(row);
-  });
+  [...players]
+    .sort((a, b) => (scores[b.id] ?? 0) - (scores[a.id] ?? 0))
+    .forEach((p, rank) => {
+      const row = document.createElement('div');
+      row.className = 'score-row' + (rank === 0 ? ' top' : '');
+      row.innerHTML = `<span>${escHtml(p.name)}</span><span class="score-val">${scores[p.id] ?? 0}</span>`;
+      sb.appendChild(row);
+    });
 });
 
-$('btn-play-again').addEventListener('click', () => {
-  socket.disconnect();
-  socket.connect();
-  goToMenu();
-});
-$('btn-go-home').addEventListener('click', () => {
-  socket.disconnect();
-  socket.connect();
-  goToMenu();
-});
+$('btn-play-again').addEventListener('click', () => { socket.disconnect(); socket.connect(); goToMenu(); });
+$('btn-go-home').addEventListener('click', () => { socket.disconnect(); socket.connect(); goToMenu(); });
 
 function hideAllPhases() {
-  ['phase-playing','phase-czar-wait','phase-judging','phase-awaiting-czar','phase-result'].forEach(id => {
-    $(id).classList.add('hidden');
-  });
+  ['phase-playing','phase-voting','phase-vote-wait','phase-result'].forEach(id => $(id).classList.add('hidden'));
 }
 
 // URL code prefill

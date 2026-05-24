@@ -62,7 +62,7 @@ app.use('/uploads', express.static(path.join(DATA_DIR, 'uploads')));
 app.use(express.json({ limit: '1mb' }));
 app.get('/', (_req, res) => res.sendFile(path.join(__dirname, 'public', 'game.html')));
 
-// ── REST: packs list (for lobby UI) ───────────────────────────────────────
+// ── REST: packs list ───────────────────────────────────────────────────────
 app.get('/api/packs', (_req, res) => {
   res.json(ALL_CARDS.packs.map(p => ({ id: p.id, name: p.name })));
 });
@@ -109,8 +109,7 @@ app.post('/api/community-packs', (req, res) => {
     for (const t of black) {
       if (typeof t !== 'string') continue;
       const text = t.slice(0, 200);
-      const pick = (text.match(/___/g) || []).length || 1;
-      insBlack.run(packId, text, pick);
+      insBlack.run(packId, text, (text.match(/___/g) || []).length || 1);
     }
     for (const w of white) {
       const text = typeof w === 'string' ? w : w?.text;
@@ -121,8 +120,7 @@ app.post('/api/community-packs', (req, res) => {
     return packId;
   });
 
-  const packId = tx();
-  res.json({ id: packId });
+  res.json({ id: tx() });
 });
 
 // ── Game rooms ────────────────────────────────────────────────────────────
@@ -148,13 +146,11 @@ function shuffle(arr) {
   return a;
 }
 
-// Wild card placeholder — drawn into hand, filled when played
 const WILD_CARD = { text: '', type: 'wild', pack: 'wild' };
 const WILDS_PER_HAND = 2;
 
 function buildDeck(packs, customCards) {
-  let black = [];
-  let white = [];
+  let black = [], white = [];
   for (const pack of ALL_CARDS.packs) {
     if (packs.includes('all') || packs.includes(pack.id)) {
       black = black.concat(pack.black.map(c => ({ ...c, pack: pack.id })));
@@ -162,17 +158,14 @@ function buildDeck(packs, customCards) {
     }
   }
   if (customCards.black.length) {
-    black = black.concat(customCards.black.map(c => ({
-      text: typeof c === 'string' ? c : c.text,
-      pick: typeof c === 'string' ? ((c.match(/___/g) || []).length || 1) : (c.pick || 1),
-      pack: 'custom',
-    })));
+    black = black.concat(customCards.black.map(c => {
+      const text = typeof c === 'string' ? c : c.text;
+      return { text, pick: (text.match(/___/g) || []).length || 1, pack: 'custom' };
+    }));
   }
   if (customCards.white.length) {
     white = white.concat(customCards.white.map(c =>
-      typeof c === 'string'
-        ? { text: c, pack: 'custom' }
-        : { text: c.text, image: c.image, pack: 'custom' }
+      typeof c === 'string' ? { text: c, pack: 'custom' } : { text: c.text, image: c.image, pack: 'custom' }
     ));
   }
   return { black: shuffle(black), white: shuffle(white) };
@@ -188,14 +181,8 @@ function replenishWhite(deck) {
 
 function dealHand(deck, count) {
   const cards = [];
-  for (let i = 0; i < count; i++) {
-    replenishWhite(deck);
-    cards.push(deck.white.shift());
-  }
-  // inject wild cards
-  for (let i = 0; i < WILDS_PER_HAND; i++) {
-    cards.push({ ...WILD_CARD, id: uid() });
-  }
+  for (let i = 0; i < count; i++) { replenishWhite(deck); cards.push(deck.white.shift()); }
+  for (let i = 0; i < WILDS_PER_HAND; i++) cards.push({ ...WILD_CARD, id: uid() });
   return shuffle(cards);
 }
 
@@ -226,11 +213,8 @@ function startGame(room) {
     room.players.push({ id: 'rando_' + uid(), name: 'Rando Cardrissian', score: 0, hand: [], isRando: true });
   }
 
-  for (const p of room.players) {
-    p.hand = dealHand(room.deck, 10);
-  }
+  for (const p of room.players) p.hand = dealHand(room.deck, 10);
 
-  room.czarIndex = 0;
   room.round = 0;
   beginRound(room);
 }
@@ -245,10 +229,10 @@ function beginRound(room) {
   room.blackCard = room.deck.black.shift();
   room.submissions = [];
   room.shuffledSubs = null;
+  room.votes = {};       // playerId → shuffledSubs index
   room.phase = 'playing';
   room.round++;
 
-  const czar = room.players[room.czarIndex];
   const players = publicPlayers(room);
 
   for (const p of room.players) {
@@ -257,8 +241,6 @@ function beginRound(room) {
     if (!sock) continue;
     sock.emit('round-start', {
       blackCard: room.blackCard,
-      czarId: czar.id,
-      czarName: czar.name,
       round: room.round,
       hand: p.hand,
       scores: Object.fromEntries(room.players.map(x => [x.id, x.score])),
@@ -278,27 +260,18 @@ function beginRound(room) {
 
 function submitRando(room, rando) {
   const pick = room.blackCard.pick;
-  while (rando.hand.filter(c => c.type !== 'wild').length < pick) {
-    replenishWhite(room.deck);
-    rando.hand.push(room.deck.white.shift());
-  }
   const playable = rando.hand.filter(c => c.type !== 'wild');
+  while (playable.length < pick) { replenishWhite(room.deck); const c = room.deck.white.shift(); playable.push(c); rando.hand.push(c); }
   room.submissions.push({ playerId: rando.id, cards: playable.splice(0, pick) });
-  rando.hand = rando.hand.filter(c => c.type !== 'wild').slice(pick);
+  rando.hand = rando.hand.filter(c => !room.submissions.find(s => s.playerId === rando.id)?.cards.includes(c));
 }
 
 function autoSubmitMissing(room) {
-  const czar = room.players[room.czarIndex];
   for (const p of room.players) {
-    if (p.id === czar.id || room.submissions.some(s => s.playerId === p.id)) continue;
+    if (room.submissions.some(s => s.playerId === p.id)) continue;
     const pick = room.blackCard.pick;
     const playable = p.hand.filter(c => c.type !== 'wild');
-    while (playable.length < pick) {
-      replenishWhite(room.deck);
-      const c = room.deck.white.shift();
-      playable.push(c);
-      p.hand.push(c);
-    }
+    while (playable.length < pick) { replenishWhite(room.deck); const c = room.deck.white.shift(); playable.push(c); p.hand.push(c); }
     room.submissions.push({ playerId: p.id, cards: playable.slice(0, pick) });
     p.hand = p.hand.filter(c => !playable.slice(0, pick).includes(c));
   }
@@ -306,51 +279,107 @@ function autoSubmitMissing(room) {
 }
 
 function checkAllIn(room) {
-  const czar = room.players[room.czarIndex];
-  const nonCzar = room.players.filter(p => p.id !== czar.id);
-  if (nonCzar.every(p => room.submissions.some(s => s.playerId === p.id))) {
+  if (room.players.every(p => room.submissions.some(s => s.playerId === p.id))) {
     clearTimeout(room.timer);
-    beginJudging(room);
+    beginVoting(room);
   }
 }
 
-function beginJudging(room) {
-  room.phase = 'judging';
+function beginVoting(room) {
+  room.phase = 'voting';
   room.shuffledSubs = shuffle(room.submissions);
-  const czar = room.players[room.czarIndex];
-  io.to(room.code).emit('judging-start', {
-    submissions: room.shuffledSubs.map(s => ({ cards: s.cards })),
-    czarId: czar.id,
-    blackCard: room.blackCard,
-  });
+  room.votes = {};
+
+  const players = publicPlayers(room);
+
+  for (const p of room.players) {
+    if (p.isRando) {
+      // Rando votes randomly for someone else
+      const others = room.shuffledSubs
+        .map((s, i) => ({ s, i }))
+        .filter(({ s }) => s.playerId !== p.id);
+      if (others.length) {
+        const pick = others[Math.floor(Math.random() * others.length)];
+        room.votes[p.id] = pick.i;
+      }
+      continue;
+    }
+    const sock = io.sockets.sockets.get(p.id);
+    if (!sock) continue;
+    const mySubIdx = room.shuffledSubs.findIndex(s => s.playerId === p.id);
+    sock.emit('voting-start', {
+      submissions: room.shuffledSubs.map(s => ({ cards: s.cards })),
+      mySubmissionIdx: mySubIdx,
+      blackCard: room.blackCard,
+      players,
+      totalVoters: room.players.filter(pl => !pl.isRando).length,
+    });
+  }
+
+  if (room.options.timerSeconds > 0) {
+    room.timer = setTimeout(() => autoVoteMissing(room), room.options.timerSeconds * 1000);
+  }
 }
 
-function resolveJudge(room, idx) {
-  const sub = room.shuffledSubs[idx];
-  if (!sub) return;
-  const winner = room.players.find(p => p.id === sub.playerId);
-  if (!winner) return;
-  winner.score++;
+function autoVoteMissing(room) {
+  for (const p of room.players) {
+    if (room.votes[p.id] !== undefined) continue;
+    const others = room.shuffledSubs
+      .map((s, i) => ({ s, i }))
+      .filter(({ s }) => s.playerId !== p.id);
+    if (others.length) {
+      room.votes[p.id] = others[Math.floor(Math.random() * others.length)].i;
+    }
+  }
+  checkAllVoted(room);
+}
+
+function checkAllVoted(room) {
+  const voters = room.players; // everyone votes (randos voted in beginVoting)
+  if (voters.every(p => room.votes[p.id] !== undefined)) {
+    clearTimeout(room.timer);
+    resolveVotes(room);
+  }
+}
+
+function resolveVotes(room) {
+  // Tally votes per shuffledSubs index
+  const tally = new Array(room.shuffledSubs.length).fill(0);
+  for (const idx of Object.values(room.votes)) tally[idx]++;
+
+  const maxVotes = Math.max(...tally);
+  const tied = tally.map((v, i) => ({ v, i })).filter(x => x.v === maxVotes);
+  // Random tiebreak
+  const winner = tied[Math.floor(Math.random() * tied.length)];
+  const winningSub = room.shuffledSubs[winner.i];
+  const winnerPlayer = room.players.find(p => p.id === winningSub.playerId);
+  if (!winnerPlayer) return;
+
+  winnerPlayer.score++;
   room.phase = 'round_result';
 
   const players = publicPlayers(room);
   io.to(room.code).emit('round-result', {
-    winnerId: winner.id,
-    winnerName: winner.name,
-    winningCards: sub.cards,
+    winnerId: winnerPlayer.id,
+    winnerName: winnerPlayer.name,
+    winningCards: winningSub.cards,
+    winningIdx: winner.i,
     blackCard: room.blackCard,
-    allSubmissions: room.shuffledSubs.map(s => ({
+    tally,
+    tiedCount: tied.length,
+    allSubmissions: room.shuffledSubs.map((s, i) => ({
       playerId: s.playerId,
       playerName: room.players.find(p => p.id === s.playerId)?.name ?? '?',
       cards: s.cards,
+      votes: tally[i],
     })),
     scores: Object.fromEntries(room.players.map(p => [p.id, p.score])),
     players,
   });
 
-  const delay = 5000;
-  if (winner.score >= room.options.scoreGoal) {
-    setTimeout(() => endGame(room, winner), delay);
+  const delay = 6000;
+  if (winnerPlayer.score >= room.options.scoreGoal) {
+    setTimeout(() => endGame(room, winnerPlayer), delay);
   } else {
     setTimeout(() => nextRound(room), delay);
   }
@@ -359,32 +388,21 @@ function resolveJudge(room, idx) {
 function nextRound(room) {
   for (const p of room.players) {
     const nonWilds = p.hand.filter(c => c.type !== 'wild').length;
-    const needed = 10 - nonWilds;
-    for (let i = 0; i < needed; i++) {
-      replenishWhite(room.deck);
-      p.hand.push(room.deck.white.shift());
-    }
-    // ensure wild count is maintained
+    for (let i = nonWilds; i < 10; i++) { replenishWhite(room.deck); p.hand.push(room.deck.white.shift()); }
     const currentWilds = p.hand.filter(c => c.type === 'wild').length;
-    for (let i = currentWilds; i < WILDS_PER_HAND; i++) {
-      p.hand.push({ ...WILD_CARD, id: uid() });
-    }
+    for (let i = currentWilds; i < WILDS_PER_HAND; i++) p.hand.push({ ...WILD_CARD, id: uid() });
     p.hand = shuffle(p.hand);
   }
-  let next = (room.czarIndex + 1) % room.players.length;
-  while (room.players[next]?.isRando) next = (next + 1) % room.players.length;
-  room.czarIndex = next;
   beginRound(room);
 }
 
 function endGame(room, winner) {
   room.phase = 'game_over';
-  const players = publicPlayers(room);
   io.to(room.code).emit('game-over', {
     winnerId: winner.id,
     winnerName: winner.name,
     scores: Object.fromEntries(room.players.map(p => [p.id, p.score])),
-    players,
+    players: publicPlayers(room),
   });
 }
 
@@ -401,7 +419,7 @@ io.on('connection', socket => {
     const room = {
       code, hostId: socket.id, phase: 'lobby', round: 0,
       players: [{ id: socket.id, name: (name || 'Player 1').slice(0, 24), score: 0, hand: [] }],
-      czarIndex: 0, blackCard: null, submissions: [], shuffledSubs: null,
+      blackCard: null, submissions: [], shuffledSubs: null, votes: {},
       deck: null, timer: null, options: opts,
       customCards: { black: [], white: [] },
     };
@@ -432,16 +450,13 @@ io.on('connection', socket => {
   socket.on('play-cards', ({ indices, typedCards = {} }) => {
     const room = getRoomByPlayer(socket.id);
     if (!room || room.phase !== 'playing') return;
-    const czar = room.players[room.czarIndex];
-    if (socket.id === czar.id) return;
     if (room.submissions.some(s => s.playerId === socket.id)) return;
     const player = room.players.find(p => p.id === socket.id);
     if (!player) return;
     const pick = room.blackCard.pick;
     if (!Array.isArray(indices) || indices.length !== pick) return;
     const idxs = indices.map(Number).filter(i => i >= 0 && i < player.hand.length);
-    if (idxs.length !== pick) return;
-    if (new Set(idxs).size !== pick) return;
+    if (idxs.length !== pick || new Set(idxs).size !== pick) return;
 
     const cards = idxs.map(i => {
       const card = player.hand[i];
@@ -451,22 +466,35 @@ io.on('connection', socket => {
       return card;
     });
 
-    // remove played cards from hand (preserve wild structure)
     const sorted = [...idxs].sort((a, b) => b - a);
     for (const i of sorted) player.hand.splice(i, 1);
 
     room.submissions.push({ playerId: socket.id, cards });
     socket.emit('cards-played');
-    const nonCzarCount = room.players.filter(p => p.id !== czar.id).length;
-    io.to(room.code).emit('submission-count', { submitted: room.submissions.length, total: nonCzarCount });
+
+    const subCount = room.submissions.length;
+    const total = room.players.length;
+    io.to(room.code).emit('submission-count', { submitted: subCount, total });
     checkAllIn(room);
   });
 
-  socket.on('judge-pick', (idx) => {
+  socket.on('cast-vote', (idx) => {
     const room = getRoomByPlayer(socket.id);
-    if (!room || room.phase !== 'judging') return;
-    if (room.players[room.czarIndex]?.id !== socket.id) return;
-    resolveJudge(room, Number(idx));
+    if (!room || room.phase !== 'voting') return;
+    if (room.votes[socket.id] !== undefined) return; // already voted
+    const voteIdx = Number(idx);
+    if (!room.shuffledSubs[voteIdx]) return;
+    // Can't vote for own submission
+    if (room.shuffledSubs[voteIdx].playerId === socket.id) return;
+
+    room.votes[socket.id] = voteIdx;
+    socket.emit('vote-accepted');
+
+    const voted = Object.keys(room.votes).length;
+    const total = room.players.length;
+    io.to(room.code).emit('vote-count', { voted, total });
+
+    checkAllVoted(room);
   });
 
   socket.on('add-custom-cards', ({ black, white }) => {
@@ -475,14 +503,10 @@ io.on('connection', socket => {
     if (Array.isArray(black)) room.customCards.black.push(...black.map(t => String(t).slice(0, 200)));
     if (Array.isArray(white)) {
       room.customCards.white.push(...white.map(w =>
-        typeof w === 'string'
-          ? w.slice(0, 100)
-          : { text: String(w.text || '').slice(0, 100), image: String(w.image || '').slice(0, 300) }
+        typeof w === 'string' ? w.slice(0, 100) : { text: String(w.text || '').slice(0, 100), image: String(w.image || '').slice(0, 300) }
       ));
     }
-    socket.emit('custom-cards-added', {
-      count: { black: room.customCards.black.length, white: room.customCards.white.length },
-    });
+    socket.emit('custom-cards-added', { count: { black: room.customCards.black.length, white: room.customCards.white.length } });
     broadcastLobby(room);
   });
 
@@ -510,6 +534,16 @@ io.on('connection', socket => {
     }
     io.to(room.code).emit('player-left', { id: socket.id, name: 'A player' });
     if (room.phase === 'lobby') broadcastLobby(room);
+    // If in voting phase and disconnected player hadn't voted, auto-vote and check
+    if (room.phase === 'voting' && room.votes[socket.id] === undefined) {
+      const others = room.shuffledSubs
+        .map((s, i) => ({ s, i }))
+        .filter(({ s }) => s.playerId !== socket.id);
+      if (others.length) {
+        room.votes[socket.id] = others[Math.floor(Math.random() * others.length)].i;
+        checkAllVoted(room);
+      }
+    }
   });
 });
 
