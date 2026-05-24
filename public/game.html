@@ -5,8 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cards Against Hackatoa</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .games-hub-link {
+      position: fixed;
+      top: .6rem;
+      left: .8rem;
+      z-index: 9998;
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      font-family: var(--font);
+      font-size: .7rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: .08em;
+      transition: color .15s;
+      padding: .3rem .5rem;
+      border: 1px solid transparent;
+    }
+    .games-hub-link:hover { color: var(--green); border-color: var(--border); }
+    .games-hub-link svg { flex-shrink: 0; }
+  </style>
 </head>
 <body>
+
+<a class="games-hub-link" href="https://games.hackatoa.com" target="_blank" rel="noopener">
+  <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3H3v10h10V9"/><path d="M8 8L13 3"/><path d="M10 3h3v3"/></svg>
+  games.hackatoa.com
+</a>
 
 <!-- ── Menu ── -->
 <div id="s-menu" class="screen active">
