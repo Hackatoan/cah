@@ -6,33 +6,48 @@
   <title>Cards Against Hackatoa</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .games-hub-link {
+    .site-footer {
       position: fixed;
-      top: .6rem;
-      left: .8rem;
-      z-index: 9998;
-      display: inline-flex;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: .5rem 1.2rem;
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: .3rem;
+      flex-wrap: wrap;
+      gap: .5rem;
       font-family: var(--font);
-      font-size: .7rem;
+      font-size: .72rem;
       color: var(--muted);
-      text-decoration: none;
-      letter-spacing: .08em;
-      transition: color .15s;
-      padding: .3rem .5rem;
-      border: 1px solid transparent;
+      z-index: 9998;
     }
-    .games-hub-link:hover { color: var(--green); border-color: var(--border); }
-    .games-hub-link svg { flex-shrink: 0; }
+    .site-footer a { color: var(--muted); text-decoration: none; transition: color .15s; }
+    .site-footer a:hover { color: var(--green); }
+    .site-footer .footer-links { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+    .site-footer .footer-coffee {
+      border: 1px solid var(--border);
+      padding: .2rem .7rem;
+      color: var(--text);
+      transition: border-color .15s, color .15s;
+    }
+    .site-footer .footer-coffee:hover { border-color: var(--green); color: var(--green); }
+    /* push game content above footer */
+    #s-game .game-body { padding-bottom: 3.5rem; }
+    .screen { padding-bottom: 3rem; }
   </style>
 </head>
 <body>
 
-<a class="games-hub-link" href="https://games.hackatoa.com" target="_blank" rel="noopener">
-  <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3H3v10h10V9"/><path d="M8 8L13 3"/><path d="M10 3h3v3"/></svg>
-  games.hackatoa.com
-</a>
+<footer class="site-footer">
+  <span>Built by <a href="https://hackatoa.com" target="_blank" rel="noopener">Hackatoa</a></span>
+  <div class="footer-links">
+    <a href="https://games.hackatoa.com" target="_blank" rel="noopener">All Games</a>
+    <a href="https://buymeacoffee.com/hackatoa" target="_blank" rel="noopener" class="footer-coffee">☕ Buy me a coffee</a>
+  </div>
+</footer>
 
 <!-- ── Menu ── -->
 <div id="s-menu" class="screen active">
