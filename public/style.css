@@ -1,0 +1,407 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+:root {
+  --bg: #0d0d0d;
+  --bg2: #161616;
+  --bg3: #1e1e1e;
+  --border: #2a2a2a;
+  --text: #e8e8e8;
+  --muted: #666;
+  --green: #39ff14;
+  --red: #ff2442;
+  --cyan: #00e5ff;
+  --yellow: #ffd600;
+  --black-card: #111;
+  --white-card: #f5f0e8;
+  --font: 'Share Tech Mono', 'Courier New', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* ── Scanlines overlay ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.06) 2px, rgba(0,0,0,.06) 4px);
+  z-index: 9999;
+}
+
+/* ── Screens ── */
+.screen { display: none; }
+.screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem 1rem; }
+
+/* ── Panel (lobby/menu) ── */
+.panel {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 2.5rem 2rem;
+  max-width: 480px;
+  width: 100%;
+}
+.panel-title {
+  color: var(--green);
+  font-size: 1.1rem;
+  letter-spacing: .2em;
+  margin-bottom: 1.8rem;
+  text-align: center;
+}
+
+/* ── Buttons ── */
+.btn {
+  display: block;
+  width: 100%;
+  padding: .75rem 1.2rem;
+  font-family: var(--font);
+  font-size: .9rem;
+  cursor: pointer;
+  border: 1px solid;
+  letter-spacing: .1em;
+  transition: all .15s;
+  text-align: center;
+  background: transparent;
+  margin-bottom: .6rem;
+}
+.btn:last-child { margin-bottom: 0; }
+.btn-primary { border-color: var(--green); color: var(--green); }
+.btn-primary:hover { background: var(--green); color: #000; }
+.btn-secondary { border-color: var(--border); color: var(--text); }
+.btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
+.btn-ghost { border-color: transparent; color: var(--muted); }
+.btn-ghost:hover { color: var(--text); border-color: var(--border); }
+.btn-danger { border-color: var(--red); color: var(--red); }
+.btn-danger:hover { background: var(--red); color: #fff; }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn-row { display: flex; gap: .6rem; }
+.btn-row .btn { margin-bottom: 0; }
+
+/* ── Inputs ── */
+input[type=text], input[type=number], textarea, select {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: .9rem;
+  padding: .6rem .8rem;
+  width: 100%;
+  margin-bottom: .8rem;
+  outline: none;
+  transition: border-color .15s;
+}
+input[type=text]:focus, input[type=number]:focus, textarea:focus, select:focus { border-color: var(--green); }
+textarea { resize: vertical; min-height: 80px; }
+select option { background: var(--bg3); }
+label { display: block; font-size: .78rem; color: var(--muted); margin-bottom: .3rem; letter-spacing: .1em; }
+.field { margin-bottom: 1rem; }
+.field:last-child { margin-bottom: 0; }
+
+/* ── Error ── */
+.error-msg { color: var(--red); font-size: .8rem; margin-bottom: .8rem; min-height: 1.2em; }
+
+/* ── Room code display ── */
+.code-display {
+  text-align: center;
+  font-size: 2.8rem;
+  letter-spacing: .35em;
+  color: var(--green);
+  margin: 1rem 0 .5rem;
+}
+.code-hint { text-align: center; color: var(--muted); font-size: .78rem; margin-bottom: 1.5rem; }
+
+/* ── Player list ── */
+.player-list { margin: 1rem 0; }
+.player-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .5rem .8rem;
+  border: 1px solid var(--border);
+  margin-bottom: .4rem;
+  font-size: .85rem;
+}
+.player-item.is-host { border-color: var(--green); }
+.player-item .player-name { color: var(--text); }
+.player-item .player-badge { color: var(--muted); font-size: .72rem; letter-spacing: .1em; }
+.player-item.is-host .player-badge { color: var(--green); }
+
+/* ── Pack checkboxes ── */
+.pack-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-bottom: .8rem; }
+.pack-item {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .7rem;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-size: .8rem;
+  transition: border-color .15s;
+}
+.pack-item input { accent-color: var(--green); width: 14px; height: 14px; }
+.pack-item:hover { border-color: var(--green); }
+.pack-item.selected { border-color: var(--green); color: var(--green); }
+
+/* ── Settings grid ── */
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-bottom: 1rem; }
+.toggle-row { display: flex; justify-content: space-between; align-items: center; padding: .5rem 0; border-bottom: 1px solid var(--border); font-size: .85rem; }
+.toggle-row:last-child { border-bottom: none; }
+
+/* ── Game layout ── */
+#s-game { display: none; flex-direction: column; min-height: 100vh; padding: 0; justify-content: flex-start; }
+#s-game.active { display: flex; }
+
+.game-header {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: .7rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .5rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.round-badge { font-size: .75rem; color: var(--muted); letter-spacing: .15em; }
+.czar-badge { font-size: .8rem; color: var(--yellow); letter-spacing: .05em; }
+.score-pills { display: flex; gap: .6rem; flex-wrap: wrap; }
+.score-pill {
+  font-size: .75rem;
+  padding: .25rem .6rem;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.score-pill.is-me { border-color: var(--cyan); color: var(--cyan); }
+.score-pill.is-czar { border-color: var(--yellow); color: var(--yellow); }
+.score-pill.is-winning { border-color: var(--green); color: var(--green); }
+
+.game-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem 1rem;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ── Timer bar ── */
+.timer-bar-wrap { width: 100%; margin-bottom: 1rem; height: 3px; background: var(--bg3); }
+.timer-bar { height: 100%; background: var(--green); transition: width 1s linear; }
+
+/* ── Black card ── */
+.black-card {
+  background: var(--black-card);
+  border: 2px solid #333;
+  padding: 1.5rem 1.8rem;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #fff;
+  width: 100%;
+  max-width: 560px;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+.black-card .pick-badge {
+  position: absolute;
+  bottom: .8rem;
+  right: .8rem;
+  font-size: .7rem;
+  color: #888;
+  letter-spacing: .1em;
+}
+.blank { display: inline-block; border-bottom: 2px solid #fff; min-width: 80px; }
+
+/* ── Status ── */
+.status-text { color: var(--muted); font-size: .85rem; margin-bottom: 1rem; text-align: center; }
+.sub-count { color: var(--cyan); font-size: .9rem; text-align: center; margin-bottom: 1rem; letter-spacing: .05em; }
+
+/* ── White card hand ── */
+.hand-label { color: var(--muted); font-size: .72rem; letter-spacing: .2em; margin-bottom: .8rem; align-self: flex-start; }
+.hand {
+  display: flex;
+  gap: .8rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+.white-card {
+  background: var(--white-card);
+  color: #111;
+  border: 2px solid transparent;
+  padding: 1rem 1rem 2rem;
+  font-size: .82rem;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: transform .1s, border-color .1s, box-shadow .1s;
+  width: 140px;
+  min-height: 110px;
+  position: relative;
+  user-select: none;
+}
+.white-card:hover { transform: translateY(-4px); box-shadow: 0 6px 20px rgba(0,0,0,.5); }
+.white-card.selected {
+  border-color: var(--green);
+  transform: translateY(-8px);
+  box-shadow: 0 8px 24px rgba(57,255,20,.3);
+}
+.white-card.selected::after {
+  content: '✓';
+  position: absolute;
+  bottom: .5rem;
+  right: .6rem;
+  color: var(--green);
+  font-size: .9rem;
+}
+.white-card.dimmed { opacity: .4; pointer-events: none; }
+.white-card .card-order {
+  position: absolute;
+  bottom: .5rem;
+  left: .6rem;
+  width: 18px;
+  height: 18px;
+  background: var(--green);
+  color: #000;
+  font-size: .7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Judging ── */
+.judge-label { color: var(--yellow); font-size: .8rem; letter-spacing: .15em; margin-bottom: 1rem; text-align: center; }
+.submissions-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+.submission-card {
+  background: var(--white-card);
+  color: #111;
+  padding: 1rem 1rem 2.5rem;
+  width: 150px;
+  min-height: 120px;
+  font-size: .82rem;
+  line-height: 1.5;
+  position: relative;
+  cursor: default;
+  border: 2px solid transparent;
+  transition: transform .1s, border-color .1s, box-shadow .1s;
+}
+.submission-card.clickable { cursor: pointer; }
+.submission-card.clickable:hover {
+  transform: translateY(-6px);
+  border-color: var(--yellow);
+  box-shadow: 0 8px 24px rgba(255,214,0,.25);
+}
+.submission-card.winner-card {
+  border-color: var(--green);
+  box-shadow: 0 0 20px rgba(57,255,20,.4);
+}
+.submission-card .sub-sep { border-top: 1px solid #ccc; margin: .6rem 0; }
+.submission-card .card-num {
+  position: absolute;
+  bottom: .5rem;
+  right: .6rem;
+  font-size: .7rem;
+  color: #999;
+}
+
+/* ── Round result ── */
+.result-header { text-align: center; margin-bottom: 1.5rem; }
+.result-winner { font-size: 1.4rem; color: var(--green); letter-spacing: .1em; margin-bottom: .3rem; }
+.result-sub { color: var(--muted); font-size: .82rem; }
+.result-cards { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-bottom: 1.5rem; }
+.result-scoreboard { width: 100%; max-width: 400px; margin-bottom: 1.5rem; }
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  padding: .4rem .8rem;
+  border: 1px solid var(--border);
+  margin-bottom: .3rem;
+  font-size: .85rem;
+}
+.score-row.top { border-color: var(--green); color: var(--green); }
+.score-row .score-val { color: var(--cyan); }
+.next-round-hint { color: var(--muted); font-size: .75rem; text-align: center; }
+
+/* ── Game over ── */
+.gameover-wrap { text-align: center; }
+.gameover-icon { font-size: 4rem; margin-bottom: .5rem; }
+.gameover-title { font-size: 2rem; color: var(--green); letter-spacing: .15em; margin-bottom: .3rem; }
+.gameover-sub { color: var(--muted); margin-bottom: 2rem; font-size: .88rem; }
+.final-scores { max-width: 340px; margin: 0 auto 2rem; }
+
+/* ── Czar waiting ── */
+.czar-waiting { text-align: center; }
+.czar-waiting .big-count { font-size: 3rem; color: var(--cyan); margin: 1rem 0; }
+.czar-waiting .waiting-label { color: var(--muted); font-size: .85rem; }
+
+/* ── Awaiting czar ── */
+.awaiting-czar { text-align: center; color: var(--muted); font-size: .9rem; margin-top: .5rem; }
+
+/* ── Custom cards modal ── */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.8);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 2rem;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-title { color: var(--green); font-size: 1rem; letter-spacing: .15em; margin-bottom: 1.5rem; }
+.modal-close { float: right; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.1rem; }
+.modal-hint { color: var(--muted); font-size: .78rem; margin-bottom: .5rem; }
+
+/* ── Spinner ── */
+.spinner {
+  width: 32px; height: 32px;
+  border: 2px solid var(--border);
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin: 1rem auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Utility ── */
+.hidden { display: none !important; }
+.text-center { text-align: center; }
+.text-muted { color: var(--muted); font-size: .8rem; }
+.mt { margin-top: 1rem; }
+.divider { border: none; border-top: 1px solid var(--border); margin: 1.2rem 0; }
+
+/* ── Responsive ── */
+@media (max-width: 500px) {
+  .panel { padding: 1.8rem 1.2rem; }
+  .black-card { font-size: .95rem; padding: 1.2rem; }
+  .white-card { width: 120px; font-size: .78rem; }
+  .submission-card { width: 130px; }
+  .code-display { font-size: 2rem; }
+  .settings-grid { grid-template-columns: 1fr; }
+}

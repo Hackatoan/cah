@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cards Against Hackatoa</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ── Menu ── -->
+<div id="s-menu" class="screen active">
+  <div class="panel">
+    <div class="panel-title">CARDS AGAINST HACKATOA</div>
+    <div class="field">
+      <label>YOUR NAME</label>
+      <input type="text" id="menu-name" maxlength="24" placeholder="Enter your name" autocomplete="off">
+    </div>
+    <div class="error-msg" id="menu-error"></div>
+    <button class="btn btn-primary" id="btn-create">CREATE ROOM</button>
+    <button class="btn btn-secondary" id="btn-goto-join">JOIN ROOM</button>
+  </div>
+</div>
+
+<!-- ── Join ── -->
+<div id="s-join" class="screen">
+  <div class="panel">
+    <div class="panel-title">JOIN GAME</div>
+    <div class="field">
+      <label>YOUR NAME</label>
+      <input type="text" id="join-name" maxlength="24" placeholder="Enter your name" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>ROOM CODE</label>
+      <input type="text" id="join-code" maxlength="6" placeholder="6-character code" autocomplete="off" style="text-transform:uppercase;letter-spacing:.2em">
+    </div>
+    <div class="error-msg" id="join-error"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="btn-back-menu">BACK</button>
+      <button class="btn btn-primary" id="btn-join">JOIN</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Lobby ── -->
+<div id="s-lobby" class="screen">
+  <div class="panel" style="max-width:560px">
+    <div class="panel-title">LOBBY</div>
+    <div class="code-display" id="lobby-code"></div>
+    <div class="code-hint">Share this code with friends</div>
+
+    <div class="player-list" id="lobby-players"></div>
+
+    <!-- Host settings -->
+    <div id="host-settings" class="hidden">
+      <hr class="divider">
+      <div class="panel-title" style="font-size:.85rem;margin-bottom:1rem">SETTINGS</div>
+
+      <div class="settings-grid">
+        <div class="field">
+          <label>SCORE GOAL</label>
+          <input type="number" id="opt-score" min="1" max="20" value="7">
+        </div>
+        <div class="field">
+          <label>TIMER (SEC)</label>
+          <select id="opt-timer">
+            <option value="0">Off</option>
+            <option value="30">30s</option>
+            <option value="60" selected>60s</option>
+            <option value="90">90s</option>
+            <option value="120">120s</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="toggle-row">
+        <span>Rando Cardrissian</span>
+        <input type="checkbox" id="opt-rando" checked style="accent-color:var(--green);width:18px;height:18px">
+      </div>
+      <div class="toggle-row">
+        <span>Wild cards in hand <span class="text-muted">(type-your-own)</span></span>
+        <span style="color:var(--cyan);font-size:.75rem">2 per player</span>
+      </div>
+
+      <hr class="divider">
+      <div class="panel-title" style="font-size:.85rem;margin-bottom:.8rem">CARD PACKS</div>
+      <div class="pack-grid" id="pack-grid"></div>
+
+      <hr class="divider">
+      <div class="btn-row">
+        <button class="btn btn-secondary" id="btn-custom-cards">CUSTOM CARDS <span id="custom-count"></span></button>
+        <button class="btn btn-secondary" id="btn-browse-community">COMMUNITY PACKS</button>
+      </div>
+      <hr class="divider">
+      <button class="btn btn-primary" id="btn-start">START GAME</button>
+    </div>
+
+    <!-- Guest view -->
+    <div id="guest-waiting" class="hidden text-center mt">
+      <div class="text-muted">Waiting for host to start the game...</div>
+      <div class="spinner"></div>
+    </div>
+
+    <div class="error-msg mt" id="lobby-error"></div>
+    <button class="btn btn-ghost mt" id="btn-leave-lobby">LEAVE</button>
+  </div>
+</div>
+
+<!-- ── Game ── -->
+<div id="s-game" class="screen">
+  <header class="game-header">
+    <div>
+      <div class="round-badge" id="hdr-round">ROUND 1</div>
+      <div class="czar-badge" id="hdr-czar"></div>
+    </div>
+    <div class="score-pills" id="hdr-scores"></div>
+  </header>
+
+  <div class="game-body">
+    <div class="timer-bar-wrap" id="timer-wrap" style="display:none">
+      <div class="timer-bar" id="timer-bar"></div>
+    </div>
+
+    <!-- Black card -->
+    <div class="black-card" id="black-card-display">
+      <span id="black-card-text"></span>
+      <span class="pick-badge" id="pick-badge"></span>
+    </div>
+
+    <!-- Phase: playing (player) -->
+    <div id="phase-playing" class="hidden" style="width:100%">
+      <div class="sub-count" id="sub-count-display"></div>
+      <div class="hand-label">YOUR HAND — SELECT <span id="pick-label">1</span> CARD(S)</div>
+      <div class="hand" id="hand-container"></div>
+      <button class="btn btn-primary" id="btn-submit-cards" style="max-width:300px" disabled>SUBMIT</button>
+    </div>
+
+    <!-- Phase: playing (czar) -->
+    <div id="phase-czar-wait" class="hidden czar-waiting">
+      <div class="waiting-label">YOU ARE THE CARD CZAR</div>
+      <div class="big-count" id="czar-sub-count">0/0</div>
+      <div class="waiting-label">players submitted</div>
+    </div>
+
+    <!-- Phase: judging -->
+    <div id="phase-judging" class="hidden" style="width:100%">
+      <div class="judge-label" id="judge-label"></div>
+      <div class="submissions-grid" id="submissions-grid"></div>
+    </div>
+
+    <!-- Phase: awaiting czar judgment -->
+    <div id="phase-awaiting-czar" class="hidden awaiting-czar">
+      <div class="spinner"></div>
+      <div>Waiting for the Card Czar to pick a winner...</div>
+    </div>
+
+    <!-- Phase: round result -->
+    <div id="phase-result" class="hidden" style="width:100%">
+      <div class="result-header">
+        <div class="result-winner" id="result-winner-name"></div>
+        <div class="result-sub" id="result-winner-sub"></div>
+      </div>
+      <div class="result-cards" id="result-cards"></div>
+      <div class="result-scoreboard" id="result-scoreboard"></div>
+      <div class="next-round-hint">Next round starting in <span id="next-round-countdown">5</span>s...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Game Over ── -->
+<div id="s-gameover" class="screen">
+  <div class="panel" style="max-width:420px">
+    <div class="gameover-wrap">
+      <div class="gameover-icon">🏆</div>
+      <div class="gameover-title" id="go-winner"></div>
+      <div class="gameover-sub" id="go-sub"></div>
+      <div class="final-scores" id="go-scores"></div>
+      <button class="btn btn-primary" id="btn-play-again">PLAY AGAIN</button>
+      <button class="btn btn-ghost" id="btn-go-home">MAIN MENU</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Custom Cards Modal ── -->
+<div class="modal-backdrop" id="modal-custom">
+  <div class="modal">
+    <div class="modal-title">
+      CUSTOM CARDS
+      <button class="modal-close" id="btn-close-modal">✕</button>
+    </div>
+
+    <div class="field">
+      <label>BLACK CARDS (one per line, use ___ for blanks)</label>
+      <div class="modal-hint">Example: The reason I'm late is ___.</div>
+      <textarea id="custom-black" rows="5" placeholder="The secret ingredient is ___.&#10;___ + ___ = disaster."></textarea>
+    </div>
+
+    <div class="field">
+      <label>WHITE CARDS (one per line)</label>
+      <textarea id="custom-white" rows="5" placeholder="A total systems failure.&#10;My entire personality."></textarea>
+    </div>
+
+    <div class="field">
+      <label>WHITE CARD WITH IMAGE</label>
+      <div class="modal-hint">Upload an image — it will become a white card (optional caption below)</div>
+      <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.4rem">
+        <input type="file" id="img-upload" accept="image/*" style="flex:1;margin-bottom:0">
+        <button class="btn btn-secondary" id="btn-upload-img" style="width:auto;white-space:nowrap;padding:.5rem .8rem">UPLOAD</button>
+      </div>
+      <input type="text" id="img-caption" placeholder="Optional caption for image card" style="margin-bottom:0">
+      <div class="error-msg" id="upload-error" style="margin-top:.3rem"></div>
+      <div id="img-preview-wrap" class="hidden" style="margin-top:.5rem">
+        <img id="img-preview" style="max-width:160px;max-height:100px;object-fit:cover;border:1px solid var(--border)" alt="">
+        <div style="font-size:.75rem;color:var(--green);margin-top:.3rem" id="img-preview-label"></div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="field">
+      <label>SAVE THIS PACK TO COMMUNITY LIBRARY (optional)</label>
+      <input type="text" id="community-pack-name" placeholder="Pack name (e.g. 'Office Humor')" maxlength="80">
+      <div class="error-msg" id="save-pack-error"></div>
+      <button class="btn btn-secondary" id="btn-save-community">SAVE TO COMMUNITY</button>
+    </div>
+
+    <div class="error-msg" id="modal-error"></div>
+    <button class="btn btn-primary" id="btn-add-custom">ADD CARDS TO GAME</button>
+  </div>
+</div>
+
+<!-- ── Community Packs Modal ── -->
+<div class="modal-backdrop" id="modal-community">
+  <div class="modal">
+    <div class="modal-title">
+      COMMUNITY PACKS
+      <button class="modal-close" id="btn-close-community">✕</button>
+    </div>
+    <div class="modal-hint" style="margin-bottom:1rem">Packs submitted by other players. Click ADD to load them as custom cards.</div>
+    <div id="community-pack-list">
+      <div class="spinner"></div>
+    </div>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
