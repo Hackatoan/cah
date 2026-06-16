@@ -66,3 +66,7 @@ npm install
 node server.js
 # open http://localhost:3029
 ```
+
+---
+
+[hackatoa.com](https://hackatoa.com) · [GitHub](https://github.com/Hackatoan) · [![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/hackatoa)
