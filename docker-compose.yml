@@ -1,0 +1,14 @@
+services:
+  cah:
+    image: ghcr.io/hackatoan/cah:latest
+    container_name: cah
+    restart: unless-stopped
+    ports:
+      - "3029:3029"
+    volumes:
+      - cah-data:/data
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+volumes:
+  cah-data:
