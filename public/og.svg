@@ -27,8 +27,8 @@
   <text x="480" y="300" font-family="Georgia,serif" font-size="24" fill="#222">votes.</text>
 
   <!-- Right side text -->
-  <text x="820" y="220" font-family="Georgia,serif" font-size="62" fill="#fff" font-weight="bold">Cards Against</text>
-  <text x="820" y="300" font-family="Georgia,serif" font-size="62" fill="#39ff14" font-weight="bold">Hackatoa</text>
+  <text x="810" y="218" font-family="Georgia,serif" font-size="52" fill="#fff" font-weight="bold">Cards Against</text>
+  <text x="810" y="288" font-family="Georgia,serif" font-size="52" fill="#39ff14" font-weight="bold">Hackatoa</text>
   <text x="820" y="380" font-family="Georgia,serif" font-size="28" fill="#888">No czar. Everyone votes.</text>
   <text x="820" y="430" font-family="Georgia,serif" font-size="28" fill="#888">Custom cards. Free.</text>
   <text x="820" y="520" font-family="Georgia,serif" font-size="22" fill="#555">cah.hackatoa.com</text>
