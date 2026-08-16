@@ -6,6 +6,7 @@ const path = require('path');
 const { readFileSync, mkdirSync } = require('fs');
 const multer = require('multer');
 const Database = require('better-sqlite3');
+const leaderboard = require('./db');
 
 const app = express();
 const server = http.createServer(app);
@@ -65,6 +66,12 @@ app.get('/', (_req, res) => res.sendFile(path.join(__dirname, 'public', 'game.ht
 // ── REST: packs list ───────────────────────────────────────────────────────
 app.get('/api/packs', (_req, res) => {
   res.json(ALL_CARDS.packs.map(p => ({ id: p.id, name: p.name })));
+});
+
+// ── REST: leaderboard (nickname-based) ──────────────────────────────────────
+app.get('/api/leaderboard', async (_req, res) => {
+  const players = await leaderboard.getLeaderboard(20);
+  res.json({ game: leaderboard.GAME, players });
 });
 
 // ── REST: image upload ─────────────────────────────────────────────────────
@@ -404,6 +411,15 @@ function endGame(room, winner) {
     scores: Object.fromEntries(room.players.map(p => [p.id, p.score])),
     players: publicPlayers(room),
   });
+
+  // Record to the shared leaderboard: winner +win, every other human +loss.
+  // Only counts when 2+ real (non-rando) players finished a game.
+  const humans = room.players.filter(p => !p.isRando);
+  if (humans.length >= 2) {
+    for (const p of humans) {
+      leaderboard.recordResult(p.name, p.id === winner.id ? 'win' : 'loss');
+    }
+  }
 }
 
 // ── Socket handlers ───────────────────────────────────────────────────────

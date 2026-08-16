@@ -44,12 +44,16 @@ function goToMenu() {
 }
 
 // ── Menu ───────────────────────────────────────────────────────────────────
+// Prefill the nickname from shared storage, load the leaderboard.
+$('menu-name').value = window.PlayerName.get();
+loadLeaderboard();
+
 $('btn-create').addEventListener('click', () => {
   const name = $('menu-name').value.trim();
   if (!name) return setError('menu-error', 'Enter your name');
   clearError('menu-error');
-  myName = name;
-  socket.emit('create-room', { name, options: gatherOptions() });
+  myName = window.PlayerName.set(name);
+  socket.emit('create-room', { name: myName, options: gatherOptions() });
 });
 
 $('btn-goto-join').addEventListener('click', () => {
@@ -70,9 +74,24 @@ $('btn-join').addEventListener('click', () => {
   if (!name) return setError('join-error', 'Enter your name');
   if (code.length !== 6) return setError('join-error', 'Enter the 6-character room code');
   clearError('join-error');
-  myName = name;
-  socket.emit('join-room', { code, name });
+  myName = window.PlayerName.set(name);
+  socket.emit('join-room', { code, name: myName });
 });
+
+async function loadLeaderboard() {
+  const body = document.getElementById('lb-body');
+  if (!body) return;
+  try {
+    const res = await fetch('/api/leaderboard');
+    const data = await res.json();
+    const players = (data && data.players) || [];
+    if (!players.length) { body.innerHTML = '<tr><td colspan="5">No games played yet — be the first!</td></tr>'; return; }
+    const me = window.PlayerName.get();
+    body.innerHTML = players.map((p, i) =>
+      `<tr class="${me && p.player === me ? 'lb-me' : ''}"><td>${i + 1}</td><td>${escHtml(p.player)}</td><td>${p.wins}</td><td>${p.losses}</td><td>${p.draws}</td></tr>`
+    ).join('');
+  } catch { body.innerHTML = '<tr><td colspan="5">Leaderboard unavailable.</td></tr>'; }
+}
 
 // ── Lobby ─────────────────────────────────────────────────────────────────
 function gatherOptions() {
