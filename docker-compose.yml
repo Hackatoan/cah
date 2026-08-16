@@ -5,10 +5,20 @@ services:
     restart: unless-stopped
     ports:
       - "3029:3029"
+    environment:
+      - GAME_ID=cah
+      - DATABASE_URL=postgresql://games:g4m3sDB_2024xQ!@games-db:5432/games
     volumes:
       - cah-data:/data
+    networks:
+      - default
+      - games-net
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
 
 volumes:
   cah-data:
+
+networks:
+  games-net:
+    external: true

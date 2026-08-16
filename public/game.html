@@ -104,6 +104,13 @@
     <div class="error-msg" id="menu-error"></div>
     <button class="btn btn-primary" id="btn-create">CREATE ROOM</button>
     <button class="btn btn-secondary" id="btn-goto-join">JOIN ROOM</button>
+    <div class="leaderboard-box">
+      <h3 class="lb-title">🏆 LEADERBOARD</h3>
+      <table class="leaderboard">
+        <thead><tr><th>#</th><th>Player</th><th>W</th><th>L</th><th>D</th></tr></thead>
+        <tbody id="lb-body"><tr><td colspan="5">Loading…</td></tr></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -324,6 +331,7 @@
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
+<script src="name.js"></script>
 <script src="game.js"></script>
 <script>
 /* ── THE VOLCANO PROTOCOL — Seal II ── */

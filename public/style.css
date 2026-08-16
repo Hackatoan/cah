@@ -424,3 +424,22 @@ label { display: block; font-size: .78rem; color: var(--muted); margin-bottom: .
   .code-display { font-size: 2rem; }
   .settings-grid { grid-template-columns: 1fr; }
 }
+
+/* ── Leaderboard ─────────────────────────────────────────── */
+.leaderboard-box {
+  margin-top: 1.4rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+.lb-title {
+  color: var(--yellow);
+  font-size: .8rem;
+  letter-spacing: .2em;
+  margin-bottom: .6rem;
+  text-align: center;
+}
+table.leaderboard { width: 100%; border-collapse: collapse; font-size: .8rem; color: var(--text); }
+table.leaderboard th { text-align: left; color: var(--muted); font-weight: normal; padding: 2px 6px; }
+table.leaderboard td { padding: 2px 6px; }
+table.leaderboard th:nth-child(n+3), table.leaderboard td:nth-child(n+3) { text-align: right; }
+table.leaderboard tr.lb-me { color: var(--green); }
