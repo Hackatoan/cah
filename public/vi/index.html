@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cards Against Hackatoa — Free Party Card Game Online</title>
-  <meta name="description" content="Cards Against Hackatoa is a free Cards Against Humanity-style party game. No czar — everyone votes each round. Custom cards, wild cards, image uploads, and a community card library. No sign-up required." />
+  <title>Cards Against Hackatoa — Trò chơi bài tiệc tùng trực tuyến miễn phí</title>
+  <meta name="description" content="Cards Against Hackatoa là một trò chơi bài tiệc tùng kiểu Cards Against Humanity miễn phí. Không có quản trò — mọi người đều bỏ phiếu mỗi vòng. Thẻ bài tùy chỉnh, thẻ bài hoang dã, tải lên hình ảnh và thư viện thẻ bài cộng đồng. Không cần đăng ký." />
   <meta name="keywords" content="cards against humanity online, free party card game, browser card game, cah online, cards against hackatoa, multiplayer party game" />
   <meta name="author" content="Jacob Harris" />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://cah.hackatoa.com/" />
+  <link rel="canonical" href="https://cah.hackatoa.com/vi/" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://cah.hackatoa.com/" />
   <meta property="og:site_name" content="Hackatoa Games" />
-  <meta property="og:title" content="Cards Against Hackatoa — Free Party Card Game" />
+  <meta property="og:title" content="Cards Against Hackatoa — Trò chơi bài tiệc tùng miễn phí" />
   <meta property="og:description" content="A Cards Against Humanity-style party game in your browser. No czar — everyone votes. Custom cards, wild cards, image uploads. Free, no account needed." />
   <meta property="og:image" content="https://cah.hackatoa.com/og.png" />
   <meta property="og:image:width" content="1200" />
@@ -45,7 +45,7 @@
   </script>
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/style.css">
   <style>
     .site-footer {
       position: fixed;
@@ -94,21 +94,21 @@
 <body>
 <!-- i18n:switcher:start -->
 <nav aria-label="Language" style="position:fixed;top:8px;right:10px;z-index:9999;font-size:12px;font-family:system-ui,-apple-system,sans-serif;background:rgba(15,15,18,.92);border:1px solid #333;border-radius:999px;padding:5px 12px;display:flex;gap:9px;box-shadow:0 2px 10px rgba(0,0,0,.5);">
-  <a href="/" hreflang="en" aria-current="true" style="color:#fff;font-weight:700;text-decoration:none;">EN</a>
+  <a href="/" hreflang="en" style="color:#9aa;text-decoration:none;">EN</a>
   <a href="/es/" hreflang="es" style="color:#9aa;text-decoration:none;">ES</a>
   <a href="/pt-br/" hreflang="pt-BR" style="color:#9aa;text-decoration:none;">PT</a>
   <a href="/fr/" hreflang="fr" style="color:#9aa;text-decoration:none;">FR</a>
   <a href="/de/" hreflang="de" style="color:#9aa;text-decoration:none;">DE</a>
-  <a href="/vi/" hreflang="vi" style="color:#9aa;text-decoration:none;">VI</a>
+  <a href="/vi/" hreflang="vi" aria-current="true" style="color:#fff;font-weight:700;text-decoration:none;">VI</a>
   <a href="/th/" hreflang="th" style="color:#9aa;text-decoration:none;">TH</a>
 </nav>
 <!-- i18n:switcher:end -->
 
 <footer class="site-footer">
-  <span>Built by <a href="https://hackatoa.com" target="_blank" rel="noopener">Hackatoa</a></span>
+  <span>Được phát triển bởi <a href="https://hackatoa.com" target="_blank" rel="noopener">Hackatoa</a></span>
   <div class="footer-links">
-    <a href="https://games.hackatoa.com" target="_blank" rel="noopener">All Games</a>
-    <a href="https://buymeacoffee.com/hackatoa" target="_blank" rel="noopener" class="footer-coffee">☕ Buy me a coffee</a>
+    <a href="https://games.hackatoa.com" target="_blank" rel="noopener">Tất cả trò chơi</a>
+    <a href="https://buymeacoffee.com/hackatoa" target="_blank" rel="noopener" class="footer-coffee">☕ Mời tôi ly cà phê</a>
   </div>
 </footer>
 
@@ -117,20 +117,20 @@
   <div class="panel">
     <h1 class="panel-title" style="margin:0">CARDS AGAINST HACKATOA</h1>
     <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:1.2rem;text-align:center;max-width:340px;margin-left:auto;margin-right:auto;">
-      A black card shows a fill-in-the-blank prompt. Everyone picks white card(s) from their hand to complete it. Then everyone votes for the funniest answer — no czar. Most votes wins the round. First to the score goal wins.
+      Một thẻ bài màu đen hiển thị câu hỏi điền vào chỗ trống. Mọi người chọn (các) thẻ bài trắng từ tay mình để hoàn thành. Sau đó, mọi người sẽ bầu chọn câu trả lời vui nhộn nhất — không có quản trò. Nhiều phiếu nhất sẽ thắng vòng đó. Ai đạt điểm mục tiêu trước sẽ thắng.
     </p>
     <div class="field">
-      <label>YOUR NAME</label>
-      <input type="text" id="menu-name" maxlength="24" placeholder="Enter your name" autocomplete="off">
+      <label>TÊN CỦA BẠN</label>
+      <input type="text" id="menu-name" maxlength="24" placeholder="Nhập tên của bạn" autocomplete="off">
     </div>
     <div class="error-msg" id="menu-error"></div>
-    <button class="btn btn-primary" id="btn-create">CREATE ROOM</button>
-    <button class="btn btn-secondary" id="btn-goto-join">JOIN ROOM</button>
+    <button class="btn btn-primary" id="btn-create">TẠO PHÒNG</button>
+    <button class="btn btn-secondary" id="btn-goto-join">THAM GIA PHÒNG</button>
     <div class="leaderboard-box">
-      <h3 class="lb-title">🏆 LEADERBOARD</h3>
+      <h3 class="lb-title">🏆 BẢNG XẾP HẠNG</h3>
       <table class="leaderboard">
-        <thead><tr><th>#</th><th>Player</th><th>W</th><th>L</th><th>D</th></tr></thead>
-        <tbody id="lb-body"><tr><td colspan="5">Loading…</td></tr></tbody>
+        <thead><tr><th>#</th><th>Người chơi</th><th>W</th><th>L</th><th>D</th></tr></thead>
+        <tbody id="lb-body"><tr><td colspan="5">Đang tải…</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -139,19 +139,19 @@
 <!-- ── Join ── -->
 <div id="s-join" class="screen">
   <div class="panel">
-    <h2 class="panel-title">JOIN GAME</h2>
+    <h2 class="panel-title">THAM GIA TRÒ CHƠI</h2>
     <div class="field">
-      <label>YOUR NAME</label>
-      <input type="text" id="join-name" maxlength="24" placeholder="Enter your name" autocomplete="off">
+      <label>TÊN CỦA BẠN</label>
+      <input type="text" id="join-name" maxlength="24" placeholder="Nhập tên của bạn" autocomplete="off">
     </div>
     <div class="field">
-      <label>ROOM CODE</label>
-      <input type="text" id="join-code" maxlength="6" placeholder="6-character code" autocomplete="off" style="text-transform:uppercase;letter-spacing:.2em">
+      <label>MÃ PHÒNG</label>
+      <input type="text" id="join-code" maxlength="6" placeholder="Mã gồm 6 ký tự" autocomplete="off" style="text-transform:uppercase;letter-spacing:.2em">
     </div>
     <div class="error-msg" id="join-error"></div>
     <div class="btn-row">
-      <button class="btn btn-secondary" id="btn-back-menu">BACK</button>
-      <button class="btn btn-primary" id="btn-join">JOIN</button>
+      <button class="btn btn-secondary" id="btn-back-menu">QUAY LẠI</button>
+      <button class="btn btn-primary" id="btn-join">THAM GIA</button>
     </div>
   </div>
 </div>
@@ -159,26 +159,26 @@
 <!-- ── Lobby ── -->
 <div id="s-lobby" class="screen">
   <div class="panel" style="max-width:560px">
-    <h2 class="panel-title">LOBBY</h2>
+    <h2 class="panel-title">PHÒNG CHỜ</h2>
     <div class="code-display" id="lobby-code"></div>
-    <div class="code-hint">Share this code with friends</div>
+    <div class="code-hint">Chia sẻ mã này với bạn bè</div>
 
     <div class="player-list" id="lobby-players"></div>
 
     <!-- Host settings -->
     <div id="host-settings" class="hidden">
       <hr class="divider">
-      <h2 class="panel-title" style="font-size:.85rem;margin-bottom:1rem">SETTINGS</h2>
+      <h2 class="panel-title" style="font-size:.85rem;margin-bottom:1rem">CÀI ĐẶT</h2>
 
       <div class="settings-grid">
         <div class="field">
-          <label>SCORE GOAL</label>
+          <label>ĐIỂM MỤC TIÊU</label>
           <input type="number" id="opt-score" min="1" max="20" value="7">
         </div>
         <div class="field">
-          <label>TIMER (SEC)</label>
+          <label>HẸN GIỜ (GIÂY)</label>
           <select id="opt-timer">
-            <option value="0">Off</option>
+            <option value="0">Tắt</option>
             <option value="30">30s</option>
             <option value="60" selected>60s</option>
             <option value="90">90s</option>
@@ -192,31 +192,31 @@
         <input type="checkbox" id="opt-rando" checked style="accent-color:var(--green);width:18px;height:18px">
       </div>
       <div class="toggle-row">
-        <span>Wild cards in hand <span class="text-muted">(type-your-own)</span></span>
-        <span style="color:var(--cyan);font-size:.75rem">2 per player</span>
+        <span>Thẻ bài hoang dã trên tay <span class="text-muted">(tự nhập câu trả lời)</span></span>
+        <span style="color:var(--cyan);font-size:.75rem">2 thẻ mỗi người chơi</span>
       </div>
 
       <hr class="divider">
-      <h2 class="panel-title" style="font-size:.85rem;margin-bottom:.8rem">CARD PACKS</h2>
+      <h2 class="panel-title" style="font-size:.85rem;margin-bottom:.8rem">GÓI THẺ BÀI</h2>
       <div class="pack-grid" id="pack-grid"></div>
 
       <hr class="divider">
       <div class="btn-row">
-        <button class="btn btn-secondary" id="btn-custom-cards">CUSTOM CARDS <span id="custom-count"></span></button>
-        <button class="btn btn-secondary" id="btn-browse-community">COMMUNITY PACKS</button>
+        <button class="btn btn-secondary" id="btn-custom-cards">THẺ BÀI TÙY CHỈNH <span id="custom-count"></span></button>
+        <button class="btn btn-secondary" id="btn-browse-community">GÓI CỘNG ĐỒNG</button>
       </div>
       <hr class="divider">
-      <button class="btn btn-primary" id="btn-start">START GAME</button>
+      <button class="btn btn-primary" id="btn-start">BẮT ĐẦU TRÒ CHƠI</button>
     </div>
 
     <!-- Guest view -->
     <div id="guest-waiting" class="hidden text-center mt">
-      <div class="text-muted">Waiting for host to start the game...</div>
+      <div class="text-muted">Đang đợi chủ phòng bắt đầu trò chơi...</div>
       <div class="spinner"></div>
     </div>
 
     <div class="error-msg mt" id="lobby-error"></div>
-    <button class="btn btn-ghost mt" id="btn-leave-lobby">LEAVE</button>
+    <button class="btn btn-ghost mt" id="btn-leave-lobby">RỜI KHỎI</button>
   </div>
 </div>
 
@@ -244,21 +244,21 @@
     <!-- Phase: playing (player) -->
     <div id="phase-playing" class="hidden" style="width:100%">
       <div class="sub-count" id="sub-count-display"></div>
-      <div class="hand-label">YOUR HAND — SELECT <span id="pick-label">1</span> CARD(S)</div>
+      <div class="hand-label">BÀI TRÊN TAY — CHỌN <span id="pick-label">1</span> (CÁC) THẺ BÀI</div>
       <div class="hand" id="hand-container"></div>
-      <button class="btn btn-primary" id="btn-submit-cards" style="max-width:300px" disabled>SUBMIT</button>
+      <button class="btn btn-primary" id="btn-submit-cards" style="max-width:300px" disabled>GỬI</button>
     </div>
 
     <!-- Phase: voting -->
     <div id="phase-voting" class="hidden" style="width:100%">
-      <div class="vote-label">VOTE FOR THE BEST ANSWER</div>
+      <div class="vote-label">BẦU CHỌN CÂU TRẢ LỜI HAY NHẤT</div>
       <div class="vote-status" id="vote-status"></div>
       <div class="submissions-grid" id="submissions-grid"></div>
     </div>
 
     <!-- Phase: waiting for others to vote -->
     <div id="phase-vote-wait" class="hidden vote-waiting">
-      <div>You voted! Waiting for others...</div>
+      <div>Bạn đã bỏ phiếu! Đang đợi những người khác...</div>
       <div class="spinner"></div>
       <div class="vote-status" id="vote-wait-status"></div>
     </div>
@@ -271,7 +271,7 @@
       </div>
       <div class="result-cards" id="result-cards"></div>
       <div class="result-scoreboard" id="result-scoreboard"></div>
-      <div class="next-round-hint">Next round starting in <span id="next-round-countdown">5</span>s...</div>
+      <div class="next-round-hint">Vòng tiếp theo bắt đầu sau <span id="next-round-countdown">5</span>s...</div>
     </div>
   </div>
 </div>
@@ -284,8 +284,8 @@
       <div class="gameover-title" id="go-winner"></div>
       <div class="gameover-sub" id="go-sub"></div>
       <div class="final-scores" id="go-scores"></div>
-      <button class="btn btn-primary" id="btn-play-again">PLAY AGAIN</button>
-      <button class="btn btn-ghost" id="btn-go-home">MAIN MENU</button>
+      <button class="btn btn-primary" id="btn-play-again">CHƠI LẠI</button>
+      <button class="btn btn-ghost" id="btn-go-home">MENU CHÍNH</button>
     </div>
   </div>
 </div>
@@ -294,29 +294,29 @@
 <div class="modal-backdrop" id="modal-custom">
   <div class="modal">
     <div class="modal-title">
-      CUSTOM CARDS
+      THẺ BÀI TÙY CHỈNH
       <button class="modal-close" id="btn-close-modal" aria-label="Close">✕</button>
     </div>
 
     <div class="field">
-      <label>BLACK CARDS (one per line, use ___ for blanks)</label>
-      <div class="modal-hint">Example: The reason I'm late is ___.</div>
+      <label>THẺ BÀI ĐEN (mỗi dòng một thẻ, dùng ___ cho chỗ trống)</label>
+      <div class="modal-hint">Ví dụ: Lý do tôi đi muộn là ___.</div>
       <textarea id="custom-black" rows="5" placeholder="The secret ingredient is ___.&#10;___ + ___ = disaster."></textarea>
     </div>
 
     <div class="field">
-      <label>WHITE CARDS (one per line)</label>
+      <label>THẺ BÀI TRẮNG (mỗi dòng một thẻ)</label>
       <textarea id="custom-white" rows="5" placeholder="A total systems failure.&#10;My entire personality."></textarea>
     </div>
 
     <div class="field">
-      <label>WHITE CARD WITH IMAGE</label>
-      <div class="modal-hint">Upload an image — it will become a white card (optional caption below)</div>
+      <label>THẺ BÀI TRẮNG CÓ HÌNH ẢNH</label>
+      <div class="modal-hint">Tải lên một hình ảnh — nó sẽ trở thành thẻ bài trắng (có thể thêm chú thích bên dưới)</div>
       <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.4rem">
         <input type="file" id="img-upload" accept="image/*" style="flex:1;margin-bottom:0">
-        <button class="btn btn-secondary" id="btn-upload-img" style="width:auto;white-space:nowrap;padding:.5rem .8rem">UPLOAD</button>
+        <button class="btn btn-secondary" id="btn-upload-img" style="width:auto;white-space:nowrap;padding:.5rem .8rem">TẢI LÊN</button>
       </div>
-      <input type="text" id="img-caption" placeholder="Optional caption for image card" style="margin-bottom:0">
+      <input type="text" id="img-caption" placeholder="Chú thích tùy chọn cho thẻ hình ảnh" style="margin-bottom:0">
       <div class="error-msg" id="upload-error" style="margin-top:.3rem"></div>
       <div id="img-preview-wrap" class="hidden" style="margin-top:.5rem">
         <img id="img-preview" style="max-width:160px;max-height:100px;object-fit:cover;border:1px solid var(--border)" alt="">
@@ -327,14 +327,14 @@
     <hr class="divider">
 
     <div class="field">
-      <label>SAVE THIS PACK TO COMMUNITY LIBRARY (optional)</label>
-      <input type="text" id="community-pack-name" placeholder="Pack name (e.g. 'Office Humor')" maxlength="80">
+      <label>LƯU GÓI NÀY VÀO THƯ VIỆN CỘNG ĐỒNG (tùy chọn)</label>
+      <input type="text" id="community-pack-name" placeholder="Tên gói (ví dụ: 'Hài hước công sở')" maxlength="80">
       <div class="error-msg" id="save-pack-error"></div>
-      <button class="btn btn-secondary" id="btn-save-community">SAVE TO COMMUNITY</button>
+      <button class="btn btn-secondary" id="btn-save-community">LƯU VÀO CỘNG ĐỒNG</button>
     </div>
 
     <div class="error-msg" id="modal-error"></div>
-    <button class="btn btn-primary" id="btn-add-custom">ADD CARDS TO GAME</button>
+    <button class="btn btn-primary" id="btn-add-custom">THÊM THẺ BÀI VÀO TRÒ CHƠI</button>
   </div>
 </div>
 
@@ -345,7 +345,7 @@
       COMMUNITY PACKS
       <button class="modal-close" id="btn-close-community" aria-label="Close">✕</button>
     </div>
-    <div class="modal-hint" style="margin-bottom:1rem">Packs submitted by other players. Click ADD to load them as custom cards.</div>
+    <div class="modal-hint" style="margin-bottom:1rem">Các gói do người chơi khác gửi. Nhấp vào THÊM để tải chúng dưới dạng thẻ tùy chỉnh.</div>
     <div id="community-pack-list">
       <div class="spinner"></div>
     </div>
@@ -353,14 +353,14 @@
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="name.js"></script>
+<script src="/name.js"></script>
 <!-- i18n:runtime:start -->
 <script>
-window.__I18N__ = {"yourName":"YOUR NAME","enterName":"Enter your name","createRoom":"CREATE ROOM","joinRoom":"JOIN ROOM","leaderboard":"🏆 LEADERBOARD","colPlayer":"Player","loading":"Loading…","joinGame":"JOIN GAME","roomCode":"ROOM CODE","codePlaceholder":"6-character code","back":"BACK","join":"JOIN","lobby":"LOBBY","shareCode":"Share this code with friends","settings":"SETTINGS","scoreGoal":"SCORE GOAL","timerSec":"TIMER (SEC)","timerOff":"Off","wildCards":"Wild cards in hand","typeYourOwn":"(type-your-own)","perPlayer":"2 per player","cardPacks":"CARD PACKS","customCards":"CUSTOM CARDS","communityPacks":"COMMUNITY PACKS","startGame":"START GAME","waitingHost":"Waiting for host to start the game...","leave":"LEAVE","yourHandSelect":"YOUR HAND — SELECT","cards":"CARD(S)","submit":"SUBMIT","voteBest":"VOTE FOR THE BEST ANSWER","youVoted":"You voted! Waiting for others...","nextRoundIn":"Next round starting in","playAgain":"PLAY AGAIN","mainMenu":"MAIN MENU","blackCardsLabel":"BLACK CARDS (one per line, use ___ for blanks)","blackCardsExample":"Example: The reason I'm late is ___.","whiteCardsLabel":"WHITE CARDS (one per line)","whiteImageLabel":"WHITE CARD WITH IMAGE","uploadHint":"Upload an image — it will become a white card (optional caption below)","upload":"UPLOAD","captionPlaceholder":"Optional caption for image card","savePackLabel":"SAVE THIS PACK TO COMMUNITY LIBRARY (optional)","packNamePlaceholder":"Pack name (e.g. 'Office Humor')","saveToCommunity":"SAVE TO COMMUNITY","addCardsToGame":"ADD CARDS TO GAME","communityHint":"Packs submitted by other players. Click ADD to load them as custom cards.","round":"ROUND {n}","pick":"PICK {n}","youWin":"YOU WIN!","winsName":"{name} WINS!","betterLuck":"Better luck next time.","congrats":"Congratulations, you magnificent bastard.","pickFavourite":"Pick your favourite answer — you can't vote for your own","yours":"YOURS","winnerStar":"★ WINNER","saved":"✓ SAVED!","imageQueued":"✓ Image queued ({n} total)","submittedCount":"{done} / {total} submitted","typeAnswer":"Type your answer:","errAddCards":"Add some cards first","errPackName":"Enter a pack name","errAtLeastOne":"Enter at least one card","errRoomCode":"Enter the 6-character room code","errEnterName":"Enter your name","errSavePack":"Failed to save pack","errLoadPack":"Failed to load pack","errLoadPacks":"Failed to load packs.","errSelectImage":"Select an image first","errUpload":"Upload failed — try again"};
+window.__I18N__ = {"yourName":"TÊN CỦA BẠN","enterName":"Nhập tên của bạn","createRoom":"TẠO PHÒNG","joinRoom":"THAM GIA PHÒNG","leaderboard":"🏆 BẢNG XẾP HẠNG","colPlayer":"Người chơi","loading":"Đang tải…","joinGame":"THAM GIA TRÒ CHƠI","roomCode":"MÃ PHÒNG","codePlaceholder":"Mã gồm 6 ký tự","back":"QUAY LẠI","join":"THAM GIA","lobby":"PHÒNG CHỜ","shareCode":"Chia sẻ mã này với bạn bè","settings":"CÀI ĐẶT","scoreGoal":"ĐIỂM MỤC TIÊU","timerSec":"HẸN GIỜ (GIÂY)","timerOff":"Tắt","wildCards":"Thẻ bài hoang dã trên tay","typeYourOwn":"(tự nhập câu trả lời)","perPlayer":"2 thẻ mỗi người chơi","cardPacks":"GÓI THẺ BÀI","customCards":"THẺ BÀI TÙY CHỈNH","communityPacks":"GÓI CỘNG ĐỒNG","startGame":"BẮT ĐẦU TRÒ CHƠI","waitingHost":"Đang đợi chủ phòng bắt đầu trò chơi...","leave":"RỜI KHỎI","yourHandSelect":"BÀI TRÊN TAY — CHỌN","cards":"(CÁC) THẺ BÀI","submit":"GỬI","voteBest":"BẦU CHỌN CÂU TRẢ LỜI HAY NHẤT","youVoted":"Bạn đã bỏ phiếu! Đang đợi những người khác...","nextRoundIn":"Vòng tiếp theo bắt đầu sau","playAgain":"CHƠI LẠI","mainMenu":"MENU CHÍNH","blackCardsLabel":"THẺ BÀI ĐEN (mỗi dòng một thẻ, dùng ___ cho chỗ trống)","blackCardsExample":"Ví dụ: Lý do tôi đi muộn là ___.","whiteCardsLabel":"THẺ BÀI TRẮNG (mỗi dòng một thẻ)","whiteImageLabel":"THẺ BÀI TRẮNG CÓ HÌNH ẢNH","uploadHint":"Tải lên một hình ảnh — nó sẽ trở thành thẻ bài trắng (có thể thêm chú thích bên dưới)","upload":"TẢI LÊN","captionPlaceholder":"Chú thích tùy chọn cho thẻ hình ảnh","savePackLabel":"LƯU GÓI NÀY VÀO THƯ VIỆN CỘNG ĐỒNG (tùy chọn)","packNamePlaceholder":"Tên gói (ví dụ: 'Hài hước công sở')","saveToCommunity":"LƯU VÀO CỘNG ĐỒNG","addCardsToGame":"THÊM THẺ BÀI VÀO TRÒ CHƠI","communityHint":"Các gói do người chơi khác gửi. Nhấp vào THÊM để tải chúng dưới dạng thẻ tùy chỉnh.","round":"VÒNG {n}","pick":"CHỌN {n}","youWin":"BẠN THẮNG!","winsName":"{name} THẮNG!","betterLuck":"Chúc bạn may mắn lần sau.","congrats":"Chúc mừng bạn, kẻ tuyệt vời.","pickFavourite":"Chọn câu trả lời bạn yêu thích nhất — bạn không thể tự bầu cho mình","yours":"CỦA BẠN","winnerStar":"★ NGƯỜI CHIẾN THẮNG","saved":"✓ ĐÃ LƯU!","imageQueued":"✓ Đã xếp hàng hình ảnh (tổng số {n})","submittedCount":"Đã gửi {done} / {total}","typeAnswer":"Nhập câu trả lời của bạn:","errAddCards":"Hãy thêm một số thẻ bài trước","errPackName":"Nhập tên gói bài","errAtLeastOne":"Nhập ít nhất một thẻ bài","errRoomCode":"Nhập mã phòng gồm 6 ký tự","errEnterName":"Nhập tên của bạn","errSavePack":"Không thể lưu gói bài","errLoadPack":"Không thể tải gói bài","errLoadPacks":"Không thể tải các gói bài.","errSelectImage":"Chọn một hình ảnh trước","errUpload":"Tải lên thất bại — hãy thử lại"};
 window.t = function(k, p){ var d = window.__I18N__ || {}; var s = String(k).split('.').reduce(function(o,i){return (o==null)?undefined:o[i];}, d); if (s == null) s = k; if (p) for (var n in p) s = s.split('{'+n+'}').join(p[n]); return s; };
 </script>
 <!-- i18n:runtime:end -->
-<script src="game.js"></script>
+<script src="/game.js"></script>
 <script>
 /* ── THE VOLCANO PROTOCOL — Seal II ── */
 ;(function(){try{

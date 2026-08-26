@@ -2,6 +2,7 @@
 /* global io */
 
 const socket = io();
+const T = (k, p) => (window.t ? t(k, p) : k);
 
 // ── State ──────────────────────────────────────────────────────────────────
 let myId = null;
@@ -50,7 +51,7 @@ loadLeaderboard();
 
 $('btn-create').addEventListener('click', () => {
   const name = $('menu-name').value.trim();
-  if (!name) return setError('menu-error', 'Enter your name');
+  if (!name) return setError('menu-error', T('errEnterName'));
   clearError('menu-error');
   myName = window.PlayerName.set(name);
   socket.emit('create-room', { name: myName, options: gatherOptions() });
@@ -71,8 +72,8 @@ $('join-code').addEventListener('input', e => {
 $('btn-join').addEventListener('click', () => {
   const name = $('join-name').value.trim();
   const code = $('join-code').value.trim().toUpperCase();
-  if (!name) return setError('join-error', 'Enter your name');
-  if (code.length !== 6) return setError('join-error', 'Enter the 6-character room code');
+  if (!name) return setError('join-error', T('errEnterName'));
+  if (code.length !== 6) return setError('join-error', T('errRoomCode'));
   clearError('join-error');
   myName = window.PlayerName.set(name);
   socket.emit('join-room', { code, name: myName });
@@ -162,7 +163,7 @@ $('modal-custom').addEventListener('click', e => {
 $('btn-upload-img').addEventListener('click', async () => {
   clearError('upload-error');
   const file = $('img-upload').files[0];
-  if (!file) return setError('upload-error', 'Select an image first');
+  if (!file) return setError('upload-error', T('errSelectImage'));
   const form = new FormData();
   form.append('image', file);
   try {
@@ -172,11 +173,11 @@ $('btn-upload-img').addEventListener('click', async () => {
     const caption = $('img-caption').value.trim();
     pendingImageCards.push({ image: url, text: caption || '' });
     $('img-preview').src = url;
-    $('img-preview-label').textContent = `✓ Image queued (${pendingImageCards.length} total)`;
+    $('img-preview-label').textContent = T('imageQueued', { n: pendingImageCards.length });
     $('img-preview-wrap').classList.remove('hidden');
     $('img-upload').value = '';
     $('img-caption').value = '';
-  } catch { setError('upload-error', 'Upload failed — try again'); }
+  } catch { setError('upload-error', T('errUpload')); }
 });
 
 $('btn-add-custom').addEventListener('click', () => {
@@ -184,7 +185,7 @@ $('btn-add-custom').addEventListener('click', () => {
   const blackLines = $('custom-black').value.split('\n').map(l => l.trim()).filter(Boolean);
   const whiteText = $('custom-white').value.split('\n').map(l => l.trim()).filter(Boolean);
   const white = [...whiteText, ...pendingImageCards];
-  if (!blackLines.length && !white.length) return setError('modal-error', 'Enter at least one card');
+  if (!blackLines.length && !white.length) return setError('modal-error', T('errAtLeastOne'));
   socket.emit('add-custom-cards', { black: blackLines, white });
   $('custom-black').value = '';
   $('custom-white').value = '';
@@ -200,7 +201,7 @@ $('btn-browse-community').addEventListener('click', async () => {
   try {
     const res = await fetch('/api/community-packs');
     renderCommunityPacks(await res.json());
-  } catch { $('community-pack-list').innerHTML = '<div class="text-muted">Failed to load packs.</div>'; }
+  } catch { $('community-pack-list').innerHTML = '<div class="text-muted">' + T('errLoadPacks') + '</div>'; }
 });
 
 $('btn-close-community').addEventListener('click', () => $('modal-community').classList.remove('open'));
@@ -226,15 +227,15 @@ window.addCommunityPack = async (packId) => {
     const data = await res.json();
     socket.emit('add-custom-cards', { black: data.black, white: data.white });
     $('modal-community').classList.remove('open');
-  } catch { alert('Failed to load pack'); }
+  } catch { alert(T('errLoadPack')); }
 };
 
 $('btn-save-community').addEventListener('click', async () => {
   const packName = $('community-pack-name').value.trim();
-  if (!packName) return setError('save-pack-error', 'Enter a pack name');
+  if (!packName) return setError('save-pack-error', T('errPackName'));
   const blackLines = $('custom-black').value.split('\n').map(l => l.trim()).filter(Boolean);
   const white = [...$('custom-white').value.split('\n').map(l => l.trim()).filter(Boolean), ...pendingImageCards];
-  if (!blackLines.length && !white.length) return setError('save-pack-error', 'Add some cards first');
+  if (!blackLines.length && !white.length) return setError('save-pack-error', T('errAddCards'));
   try {
     const res = await fetch('/api/community-packs', {
       method: 'POST',
@@ -244,9 +245,9 @@ $('btn-save-community').addEventListener('click', async () => {
     if (!res.ok) throw new Error();
     setError('save-pack-error', '');
     $('community-pack-name').value = '';
-    $('btn-save-community').textContent = '✓ SAVED!';
-    setTimeout(() => { $('btn-save-community').textContent = 'SAVE TO COMMUNITY'; }, 2000);
-  } catch { setError('save-pack-error', 'Failed to save pack'); }
+    $('btn-save-community').textContent = T('saved');
+    setTimeout(() => { $('btn-save-community').textContent = T('saveToCommunity'); }, 2000);
+  } catch { setError('save-pack-error', T('errSavePack')); }
 });
 
 // ── Timer ─────────────────────────────────────────────────────────────────
@@ -269,7 +270,7 @@ function stopTimer() {
 
 // ── Header ────────────────────────────────────────────────────────────────
 function updateHeader(round, phaseLabel, scores, players) {
-  $('hdr-round').textContent = `ROUND ${round}`;
+  $('hdr-round').textContent = T('round', { n: round });
   $('hdr-phase').textContent = phaseLabel || '';
 
   const pills = $('hdr-scores');
@@ -335,7 +336,7 @@ function onCardClick(idx, el, isWild) {
   if (selectedCards.length >= pick) return;
 
   if (isWild) {
-    const typed = prompt('Type your answer:');
+    const typed = prompt(T('typeAnswer'));
     if (!typed || !typed.trim()) return;
     handCards[idx] = { ...handCards[idx], text: typed.trim(), type: 'wild-filled', originalWild: true };
     el.innerHTML = '';
@@ -365,7 +366,7 @@ function updateSubmitBtn() {
   const pick = currentBlackCard?.pick || 1;
   $('btn-submit-cards').disabled = selectedCards.length !== pick;
   $('pick-label').textContent = pick;
-  $('pick-badge').textContent = pick > 1 ? `PICK ${pick}` : '';
+  $('pick-badge').textContent = pick > 1 ? T('pick', { n: pick }) : '';
 }
 
 $('btn-submit-cards').addEventListener('click', () => {
@@ -409,7 +410,7 @@ function buildSubmissionCard(sub, { voteable, isMine, tally } = {}) {
   if (isMine) {
     const badge = document.createElement('span');
     badge.className = 'mine-badge';
-    badge.textContent = 'YOURS';
+    badge.textContent = T('yours');
     card.appendChild(badge);
   }
 
@@ -486,7 +487,7 @@ socket.on('round-start', ({ blackCard, round, hand, scores, timerSeconds, player
   updateHeader(round, 'SUBMIT PHASE', scores, players);
 
   $('black-card-text').innerHTML = renderCardText(blackCard.text);
-  $('pick-badge').textContent = blackCard.pick > 1 ? `PICK ${blackCard.pick}` : '';
+  $('pick-badge').textContent = blackCard.pick > 1 ? T('pick', { n: blackCard.pick }) : '';
 
   startTimer(timerSeconds);
   hideAllPhases();
@@ -497,7 +498,7 @@ socket.on('round-start', ({ blackCard, round, hand, scores, timerSeconds, player
 });
 
 socket.on('submission-count', ({ submitted, total }) => {
-  $('sub-count-display').textContent = `${submitted} / ${total} submitted`;
+  $('sub-count-display').textContent = T('submittedCount', { done: submitted, total: total });
 });
 
 socket.on('voting-start', ({ submissions, mySubmissionIdx, blackCard, players, totalVoters }) => {
@@ -507,7 +508,7 @@ socket.on('voting-start', ({ submissions, mySubmissionIdx, blackCard, players, t
   updateHeader(+($('hdr-round').textContent.replace('ROUND ', '') || 1), 'VOTE', {}, players);
 
   $('phase-voting').classList.remove('hidden');
-  $('vote-status').textContent = `Pick your favourite answer — you can't vote for your own`;
+  $('vote-status').textContent = T('pickFavourite');
 
   const grid = $('submissions-grid');
   grid.innerHTML = '';
@@ -572,7 +573,7 @@ socket.on('round-result', ({ winnerId, winnerName, winningCards, winningIdx, tal
       card.classList.add('winner-card');
       const winBadge = document.createElement('div');
       winBadge.style.cssText = 'position:absolute;top:.4rem;left:.4rem;font-size:.65rem;color:var(--green)';
-      winBadge.textContent = '★ WINNER';
+      winBadge.textContent = T('winnerStar');
       card.appendChild(winBadge);
     }
     rc.appendChild(card);
@@ -606,8 +607,8 @@ socket.on('round-result', ({ winnerId, winnerName, winningCards, winningIdx, tal
 socket.on('game-over', ({ winnerId, winnerName, scores, players }) => {
   showScreen('s-gameover');
   const isMe = winnerId === myId;
-  $('go-winner').textContent = isMe ? 'YOU WIN!' : `${winnerName} WINS!`;
-  $('go-sub').textContent = isMe ? 'Congratulations, you magnificent bastard.' : 'Better luck next time.';
+  $('go-winner').textContent = isMe ? T('youWin') : T('winsName', { name: winnerName });
+  $('go-sub').textContent = isMe ? T('congrats') : T('betterLuck');
 
   const sb = $('go-scores');
   sb.innerHTML = '';

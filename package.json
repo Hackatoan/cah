@@ -4,7 +4,9 @@
   "description": "Cards Against Hackatoa",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "i18n:translate": "node scripts/i18n-translate.mjs",
+    "i18n:build": "node scripts/i18n-build.mjs"
   },
   "dependencies": {
     "better-sqlite3": "^9.4.3",

@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cards Against Hackatoa — Free Party Card Game Online</title>
-  <meta name="description" content="Cards Against Hackatoa is a free Cards Against Humanity-style party game. No czar — everyone votes each round. Custom cards, wild cards, image uploads, and a community card library. No sign-up required." />
+  <title>Cards Against Hackatoa — Jogo de Cartas de Festa Grátis Online</title>
+  <meta name="description" content="Cards Against Hackatoa é um jogo de festa gratuito no estilo Cards Against Humanity. Sem juiz — todos votam a cada rodada. Cartas personalizadas, cartas coringa, envio de imagens e uma biblioteca de cartas da comunidade. Não é necessário cadastro." />
   <meta name="keywords" content="cards against humanity online, free party card game, browser card game, cah online, cards against hackatoa, multiplayer party game" />
   <meta name="author" content="Jacob Harris" />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://cah.hackatoa.com/" />
+  <link rel="canonical" href="https://cah.hackatoa.com/pt-br/" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://cah.hackatoa.com/" />
   <meta property="og:site_name" content="Hackatoa Games" />
-  <meta property="og:title" content="Cards Against Hackatoa — Free Party Card Game" />
+  <meta property="og:title" content="Cards Against Hackatoa — Jogo de Cartas de Festa Grátis" />
   <meta property="og:description" content="A Cards Against Humanity-style party game in your browser. No czar — everyone votes. Custom cards, wild cards, image uploads. Free, no account needed." />
   <meta property="og:image" content="https://cah.hackatoa.com/og.png" />
   <meta property="og:image:width" content="1200" />
@@ -45,7 +45,7 @@
   </script>
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/style.css">
   <style>
     .site-footer {
       position: fixed;
@@ -94,9 +94,9 @@
 <body>
 <!-- i18n:switcher:start -->
 <nav aria-label="Language" style="position:fixed;top:8px;right:10px;z-index:9999;font-size:12px;font-family:system-ui,-apple-system,sans-serif;background:rgba(15,15,18,.92);border:1px solid #333;border-radius:999px;padding:5px 12px;display:flex;gap:9px;box-shadow:0 2px 10px rgba(0,0,0,.5);">
-  <a href="/" hreflang="en" aria-current="true" style="color:#fff;font-weight:700;text-decoration:none;">EN</a>
+  <a href="/" hreflang="en" style="color:#9aa;text-decoration:none;">EN</a>
   <a href="/es/" hreflang="es" style="color:#9aa;text-decoration:none;">ES</a>
-  <a href="/pt-br/" hreflang="pt-BR" style="color:#9aa;text-decoration:none;">PT</a>
+  <a href="/pt-br/" hreflang="pt-BR" aria-current="true" style="color:#fff;font-weight:700;text-decoration:none;">PT</a>
   <a href="/fr/" hreflang="fr" style="color:#9aa;text-decoration:none;">FR</a>
   <a href="/de/" hreflang="de" style="color:#9aa;text-decoration:none;">DE</a>
   <a href="/vi/" hreflang="vi" style="color:#9aa;text-decoration:none;">VI</a>
@@ -105,10 +105,10 @@
 <!-- i18n:switcher:end -->
 
 <footer class="site-footer">
-  <span>Built by <a href="https://hackatoa.com" target="_blank" rel="noopener">Hackatoa</a></span>
+  <span>Criado por <a href="https://hackatoa.com" target="_blank" rel="noopener">Hackatoa</a></span>
   <div class="footer-links">
-    <a href="https://games.hackatoa.com" target="_blank" rel="noopener">All Games</a>
-    <a href="https://buymeacoffee.com/hackatoa" target="_blank" rel="noopener" class="footer-coffee">☕ Buy me a coffee</a>
+    <a href="https://games.hackatoa.com" target="_blank" rel="noopener">Todos os Jogos</a>
+    <a href="https://buymeacoffee.com/hackatoa" target="_blank" rel="noopener" class="footer-coffee">☕ Pague-me um café</a>
   </div>
 </footer>
 
@@ -117,20 +117,20 @@
   <div class="panel">
     <h1 class="panel-title" style="margin:0">CARDS AGAINST HACKATOA</h1>
     <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:1.2rem;text-align:center;max-width:340px;margin-left:auto;margin-right:auto;">
-      A black card shows a fill-in-the-blank prompt. Everyone picks white card(s) from their hand to complete it. Then everyone votes for the funniest answer — no czar. Most votes wins the round. First to the score goal wins.
+      Uma carta preta mostra uma frase com lacuna. Todos escolhem carta(s) branca(s) da mão para completá-la. Em seguida, todos votam na resposta mais engraçada — sem juiz. Quem tiver mais votos vence a rodada. O primeiro a atingir a meta de pontuação vence.
     </p>
     <div class="field">
-      <label>YOUR NAME</label>
-      <input type="text" id="menu-name" maxlength="24" placeholder="Enter your name" autocomplete="off">
+      <label>SEU NOME</label>
+      <input type="text" id="menu-name" maxlength="24" placeholder="Digite seu nome" autocomplete="off">
     </div>
     <div class="error-msg" id="menu-error"></div>
-    <button class="btn btn-primary" id="btn-create">CREATE ROOM</button>
-    <button class="btn btn-secondary" id="btn-goto-join">JOIN ROOM</button>
+    <button class="btn btn-primary" id="btn-create">CRIAR SALA</button>
+    <button class="btn btn-secondary" id="btn-goto-join">ENTRAR NA SALA</button>
     <div class="leaderboard-box">
-      <h3 class="lb-title">🏆 LEADERBOARD</h3>
+      <h3 class="lb-title">🏆 PLACAR</h3>
       <table class="leaderboard">
-        <thead><tr><th>#</th><th>Player</th><th>W</th><th>L</th><th>D</th></tr></thead>
-        <tbody id="lb-body"><tr><td colspan="5">Loading…</td></tr></tbody>
+        <thead><tr><th>#</th><th>Jogador</th><th>W</th><th>L</th><th>D</th></tr></thead>
+        <tbody id="lb-body"><tr><td colspan="5">Carregando…</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -139,19 +139,19 @@
 <!-- ── Join ── -->
 <div id="s-join" class="screen">
   <div class="panel">
-    <h2 class="panel-title">JOIN GAME</h2>
+    <h2 class="panel-title">ENTRAR NO JOGO</h2>
     <div class="field">
-      <label>YOUR NAME</label>
-      <input type="text" id="join-name" maxlength="24" placeholder="Enter your name" autocomplete="off">
+      <label>SEU NOME</label>
+      <input type="text" id="join-name" maxlength="24" placeholder="Digite seu nome" autocomplete="off">
     </div>
     <div class="field">
-      <label>ROOM CODE</label>
-      <input type="text" id="join-code" maxlength="6" placeholder="6-character code" autocomplete="off" style="text-transform:uppercase;letter-spacing:.2em">
+      <label>CÓDIGO DA SALA</label>
+      <input type="text" id="join-code" maxlength="6" placeholder="Código de 6 caracteres" autocomplete="off" style="text-transform:uppercase;letter-spacing:.2em">
     </div>
     <div class="error-msg" id="join-error"></div>
     <div class="btn-row">
-      <button class="btn btn-secondary" id="btn-back-menu">BACK</button>
-      <button class="btn btn-primary" id="btn-join">JOIN</button>
+      <button class="btn btn-secondary" id="btn-back-menu">VOLTAR</button>
+      <button class="btn btn-primary" id="btn-join">ENTRAR</button>
     </div>
   </div>
 </div>
@@ -159,26 +159,26 @@
 <!-- ── Lobby ── -->
 <div id="s-lobby" class="screen">
   <div class="panel" style="max-width:560px">
-    <h2 class="panel-title">LOBBY</h2>
+    <h2 class="panel-title">SALA DE ESPERA</h2>
     <div class="code-display" id="lobby-code"></div>
-    <div class="code-hint">Share this code with friends</div>
+    <div class="code-hint">Compartilhe este código com amigos</div>
 
     <div class="player-list" id="lobby-players"></div>
 
     <!-- Host settings -->
     <div id="host-settings" class="hidden">
       <hr class="divider">
-      <h2 class="panel-title" style="font-size:.85rem;margin-bottom:1rem">SETTINGS</h2>
+      <h2 class="panel-title" style="font-size:.85rem;margin-bottom:1rem">CONFIGURAÇÕES</h2>
 
       <div class="settings-grid">
         <div class="field">
-          <label>SCORE GOAL</label>
+          <label>META DE PONTUAÇÃO</label>
           <input type="number" id="opt-score" min="1" max="20" value="7">
         </div>
         <div class="field">
-          <label>TIMER (SEC)</label>
+          <label>TEMPORIZADOR (SEG)</label>
           <select id="opt-timer">
-            <option value="0">Off</option>
+            <option value="0">Desligado</option>
             <option value="30">30s</option>
             <option value="60" selected>60s</option>
             <option value="90">90s</option>
@@ -192,31 +192,31 @@
         <input type="checkbox" id="opt-rando" checked style="accent-color:var(--green);width:18px;height:18px">
       </div>
       <div class="toggle-row">
-        <span>Wild cards in hand <span class="text-muted">(type-your-own)</span></span>
-        <span style="color:var(--cyan);font-size:.75rem">2 per player</span>
+        <span>Cartas coringa na mão <span class="text-muted">(digite a sua)</span></span>
+        <span style="color:var(--cyan);font-size:.75rem">2 por jogador</span>
       </div>
 
       <hr class="divider">
-      <h2 class="panel-title" style="font-size:.85rem;margin-bottom:.8rem">CARD PACKS</h2>
+      <h2 class="panel-title" style="font-size:.85rem;margin-bottom:.8rem">PACOTES DE CARTAS</h2>
       <div class="pack-grid" id="pack-grid"></div>
 
       <hr class="divider">
       <div class="btn-row">
-        <button class="btn btn-secondary" id="btn-custom-cards">CUSTOM CARDS <span id="custom-count"></span></button>
-        <button class="btn btn-secondary" id="btn-browse-community">COMMUNITY PACKS</button>
+        <button class="btn btn-secondary" id="btn-custom-cards">CARTAS PERSONALIZADAS <span id="custom-count"></span></button>
+        <button class="btn btn-secondary" id="btn-browse-community">PACOTES DA COMUNIDADE</button>
       </div>
       <hr class="divider">
-      <button class="btn btn-primary" id="btn-start">START GAME</button>
+      <button class="btn btn-primary" id="btn-start">INICIAR JOGO</button>
     </div>
 
     <!-- Guest view -->
     <div id="guest-waiting" class="hidden text-center mt">
-      <div class="text-muted">Waiting for host to start the game...</div>
+      <div class="text-muted">Aguardando o anfitrião iniciar o jogo...</div>
       <div class="spinner"></div>
     </div>
 
     <div class="error-msg mt" id="lobby-error"></div>
-    <button class="btn btn-ghost mt" id="btn-leave-lobby">LEAVE</button>
+    <button class="btn btn-ghost mt" id="btn-leave-lobby">SAIR</button>
   </div>
 </div>
 
@@ -244,21 +244,21 @@
     <!-- Phase: playing (player) -->
     <div id="phase-playing" class="hidden" style="width:100%">
       <div class="sub-count" id="sub-count-display"></div>
-      <div class="hand-label">YOUR HAND — SELECT <span id="pick-label">1</span> CARD(S)</div>
+      <div class="hand-label">SUA MÃO — SELECIONE <span id="pick-label">1</span> CARTA(S)</div>
       <div class="hand" id="hand-container"></div>
-      <button class="btn btn-primary" id="btn-submit-cards" style="max-width:300px" disabled>SUBMIT</button>
+      <button class="btn btn-primary" id="btn-submit-cards" style="max-width:300px" disabled>ENVIAR</button>
     </div>
 
     <!-- Phase: voting -->
     <div id="phase-voting" class="hidden" style="width:100%">
-      <div class="vote-label">VOTE FOR THE BEST ANSWER</div>
+      <div class="vote-label">VOTE NA MELHOR RESPOSTA</div>
       <div class="vote-status" id="vote-status"></div>
       <div class="submissions-grid" id="submissions-grid"></div>
     </div>
 
     <!-- Phase: waiting for others to vote -->
     <div id="phase-vote-wait" class="hidden vote-waiting">
-      <div>You voted! Waiting for others...</div>
+      <div>Você votou! Aguardando os outros...</div>
       <div class="spinner"></div>
       <div class="vote-status" id="vote-wait-status"></div>
     </div>
@@ -271,7 +271,7 @@
       </div>
       <div class="result-cards" id="result-cards"></div>
       <div class="result-scoreboard" id="result-scoreboard"></div>
-      <div class="next-round-hint">Next round starting in <span id="next-round-countdown">5</span>s...</div>
+      <div class="next-round-hint">Próxima rodada começa em <span id="next-round-countdown">5</span>s...</div>
     </div>
   </div>
 </div>
@@ -284,8 +284,8 @@
       <div class="gameover-title" id="go-winner"></div>
       <div class="gameover-sub" id="go-sub"></div>
       <div class="final-scores" id="go-scores"></div>
-      <button class="btn btn-primary" id="btn-play-again">PLAY AGAIN</button>
-      <button class="btn btn-ghost" id="btn-go-home">MAIN MENU</button>
+      <button class="btn btn-primary" id="btn-play-again">JOGAR NOVAMENTE</button>
+      <button class="btn btn-ghost" id="btn-go-home">MENU PRINCIPAL</button>
     </div>
   </div>
 </div>
@@ -294,29 +294,29 @@
 <div class="modal-backdrop" id="modal-custom">
   <div class="modal">
     <div class="modal-title">
-      CUSTOM CARDS
+      CARTAS PERSONALIZADAS
       <button class="modal-close" id="btn-close-modal" aria-label="Close">✕</button>
     </div>
 
     <div class="field">
-      <label>BLACK CARDS (one per line, use ___ for blanks)</label>
-      <div class="modal-hint">Example: The reason I'm late is ___.</div>
+      <label>CARTAS PRETAS (uma por linha, use ___ para lacunas)</label>
+      <div class="modal-hint">Exemplo: O motivo de eu estar atrasado é ___.</div>
       <textarea id="custom-black" rows="5" placeholder="The secret ingredient is ___.&#10;___ + ___ = disaster."></textarea>
     </div>
 
     <div class="field">
-      <label>WHITE CARDS (one per line)</label>
+      <label>CARTAS BRANCAS (uma por linha)</label>
       <textarea id="custom-white" rows="5" placeholder="A total systems failure.&#10;My entire personality."></textarea>
     </div>
 
     <div class="field">
-      <label>WHITE CARD WITH IMAGE</label>
-      <div class="modal-hint">Upload an image — it will become a white card (optional caption below)</div>
+      <label>CARTA BRANCA COM IMAGEM</label>
+      <div class="modal-hint">Envie uma imagem — ela se tornará uma carta branca (legenda opcional abaixo)</div>
       <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.4rem">
         <input type="file" id="img-upload" accept="image/*" style="flex:1;margin-bottom:0">
-        <button class="btn btn-secondary" id="btn-upload-img" style="width:auto;white-space:nowrap;padding:.5rem .8rem">UPLOAD</button>
+        <button class="btn btn-secondary" id="btn-upload-img" style="width:auto;white-space:nowrap;padding:.5rem .8rem">ENVIAR</button>
       </div>
-      <input type="text" id="img-caption" placeholder="Optional caption for image card" style="margin-bottom:0">
+      <input type="text" id="img-caption" placeholder="Legenda opcional para a carta de imagem" style="margin-bottom:0">
       <div class="error-msg" id="upload-error" style="margin-top:.3rem"></div>
       <div id="img-preview-wrap" class="hidden" style="margin-top:.5rem">
         <img id="img-preview" style="max-width:160px;max-height:100px;object-fit:cover;border:1px solid var(--border)" alt="">
@@ -327,14 +327,14 @@
     <hr class="divider">
 
     <div class="field">
-      <label>SAVE THIS PACK TO COMMUNITY LIBRARY (optional)</label>
-      <input type="text" id="community-pack-name" placeholder="Pack name (e.g. 'Office Humor')" maxlength="80">
+      <label>SALVAR ESTE PACOTE NA BIBLIOTECA DA COMUNIDADE (opcional)</label>
+      <input type="text" id="community-pack-name" placeholder="Nome do pacote (ex: 'Humor de Escritório')" maxlength="80">
       <div class="error-msg" id="save-pack-error"></div>
-      <button class="btn btn-secondary" id="btn-save-community">SAVE TO COMMUNITY</button>
+      <button class="btn btn-secondary" id="btn-save-community">SALVAR NA COMUNIDADE</button>
     </div>
 
     <div class="error-msg" id="modal-error"></div>
-    <button class="btn btn-primary" id="btn-add-custom">ADD CARDS TO GAME</button>
+    <button class="btn btn-primary" id="btn-add-custom">ADICIONAR CARTAS AO JOGO</button>
   </div>
 </div>
 
@@ -345,7 +345,7 @@
       COMMUNITY PACKS
       <button class="modal-close" id="btn-close-community" aria-label="Close">✕</button>
     </div>
-    <div class="modal-hint" style="margin-bottom:1rem">Packs submitted by other players. Click ADD to load them as custom cards.</div>
+    <div class="modal-hint" style="margin-bottom:1rem">Pacotes enviados por outros jogadores. Clique em ADICIONAR para carregá-los como cartas personalizadas.</div>
     <div id="community-pack-list">
       <div class="spinner"></div>
     </div>
@@ -353,14 +353,14 @@
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="name.js"></script>
+<script src="/name.js"></script>
 <!-- i18n:runtime:start -->
 <script>
-window.__I18N__ = {"yourName":"YOUR NAME","enterName":"Enter your name","createRoom":"CREATE ROOM","joinRoom":"JOIN ROOM","leaderboard":"🏆 LEADERBOARD","colPlayer":"Player","loading":"Loading…","joinGame":"JOIN GAME","roomCode":"ROOM CODE","codePlaceholder":"6-character code","back":"BACK","join":"JOIN","lobby":"LOBBY","shareCode":"Share this code with friends","settings":"SETTINGS","scoreGoal":"SCORE GOAL","timerSec":"TIMER (SEC)","timerOff":"Off","wildCards":"Wild cards in hand","typeYourOwn":"(type-your-own)","perPlayer":"2 per player","cardPacks":"CARD PACKS","customCards":"CUSTOM CARDS","communityPacks":"COMMUNITY PACKS","startGame":"START GAME","waitingHost":"Waiting for host to start the game...","leave":"LEAVE","yourHandSelect":"YOUR HAND — SELECT","cards":"CARD(S)","submit":"SUBMIT","voteBest":"VOTE FOR THE BEST ANSWER","youVoted":"You voted! Waiting for others...","nextRoundIn":"Next round starting in","playAgain":"PLAY AGAIN","mainMenu":"MAIN MENU","blackCardsLabel":"BLACK CARDS (one per line, use ___ for blanks)","blackCardsExample":"Example: The reason I'm late is ___.","whiteCardsLabel":"WHITE CARDS (one per line)","whiteImageLabel":"WHITE CARD WITH IMAGE","uploadHint":"Upload an image — it will become a white card (optional caption below)","upload":"UPLOAD","captionPlaceholder":"Optional caption for image card","savePackLabel":"SAVE THIS PACK TO COMMUNITY LIBRARY (optional)","packNamePlaceholder":"Pack name (e.g. 'Office Humor')","saveToCommunity":"SAVE TO COMMUNITY","addCardsToGame":"ADD CARDS TO GAME","communityHint":"Packs submitted by other players. Click ADD to load them as custom cards.","round":"ROUND {n}","pick":"PICK {n}","youWin":"YOU WIN!","winsName":"{name} WINS!","betterLuck":"Better luck next time.","congrats":"Congratulations, you magnificent bastard.","pickFavourite":"Pick your favourite answer — you can't vote for your own","yours":"YOURS","winnerStar":"★ WINNER","saved":"✓ SAVED!","imageQueued":"✓ Image queued ({n} total)","submittedCount":"{done} / {total} submitted","typeAnswer":"Type your answer:","errAddCards":"Add some cards first","errPackName":"Enter a pack name","errAtLeastOne":"Enter at least one card","errRoomCode":"Enter the 6-character room code","errEnterName":"Enter your name","errSavePack":"Failed to save pack","errLoadPack":"Failed to load pack","errLoadPacks":"Failed to load packs.","errSelectImage":"Select an image first","errUpload":"Upload failed — try again"};
+window.__I18N__ = {"yourName":"SEU NOME","enterName":"Digite seu nome","createRoom":"CRIAR SALA","joinRoom":"ENTRAR NA SALA","leaderboard":"🏆 PLACAR","colPlayer":"Jogador","loading":"Carregando…","joinGame":"ENTRAR NO JOGO","roomCode":"CÓDIGO DA SALA","codePlaceholder":"Código de 6 caracteres","back":"VOLTAR","join":"ENTRAR","lobby":"SALA DE ESPERA","shareCode":"Compartilhe este código com amigos","settings":"CONFIGURAÇÕES","scoreGoal":"META DE PONTUAÇÃO","timerSec":"TEMPORIZADOR (SEG)","timerOff":"Desligado","wildCards":"Cartas coringa na mão","typeYourOwn":"(digite a sua)","perPlayer":"2 por jogador","cardPacks":"PACOTES DE CARTAS","customCards":"CARTAS PERSONALIZADAS","communityPacks":"PACOTES DA COMUNIDADE","startGame":"INICIAR JOGO","waitingHost":"Aguardando o anfitrião iniciar o jogo...","leave":"SAIR","yourHandSelect":"SUA MÃO — SELECIONE","cards":"CARTA(S)","submit":"ENVIAR","voteBest":"VOTE NA MELHOR RESPOSTA","youVoted":"Você votou! Aguardando os outros...","nextRoundIn":"Próxima rodada começa em","playAgain":"JOGAR NOVAMENTE","mainMenu":"MENU PRINCIPAL","blackCardsLabel":"CARTAS PRETAS (uma por linha, use ___ para lacunas)","blackCardsExample":"Exemplo: O motivo de eu estar atrasado é ___.","whiteCardsLabel":"CARTAS BRANCAS (uma por linha)","whiteImageLabel":"CARTA BRANCA COM IMAGEM","uploadHint":"Envie uma imagem — ela se tornará uma carta branca (legenda opcional abaixo)","upload":"ENVIAR","captionPlaceholder":"Legenda opcional para a carta de imagem","savePackLabel":"SALVAR ESTE PACOTE NA BIBLIOTECA DA COMUNIDADE (opcional)","packNamePlaceholder":"Nome do pacote (ex: 'Humor de Escritório')","saveToCommunity":"SALVAR NA COMUNIDADE","addCardsToGame":"ADICIONAR CARTAS AO JOGO","communityHint":"Pacotes enviados por outros jogadores. Clique em ADICIONAR para carregá-los como cartas personalizadas.","round":"RODADA {n}","pick":"ESCOLHA {n}","youWin":"VOCÊ VENCEU!","winsName":"{name} VENCEU!","betterLuck":"Mais sorte na próxima.","congrats":"Parabéns, seu lindo.","pickFavourite":"Escolha sua resposta favorita — você não pode votar na sua própria","yours":"SUA","winnerStar":"★ VENCEDOR","saved":"✓ SALVO!","imageQueued":"✓ Imagem na fila ({n} total)","submittedCount":"{done} / {total} enviadas","typeAnswer":"Digite sua resposta:","errAddCards":"Adicione algumas cartas primeiro","errPackName":"Digite o nome de um pacote","errAtLeastOne":"Insira pelo menos uma carta","errRoomCode":"Digite o código da sala de 6 caracteres","errEnterName":"Digite seu nome","errSavePack":"Falha ao salvar o pacote","errLoadPack":"Falha ao carregar o pacote","errLoadPacks":"Falha ao carregar os pacotes.","errSelectImage":"Selecione uma imagem primeiro","errUpload":"Falha no envio — tente novamente"};
 window.t = function(k, p){ var d = window.__I18N__ || {}; var s = String(k).split('.').reduce(function(o,i){return (o==null)?undefined:o[i];}, d); if (s == null) s = k; if (p) for (var n in p) s = s.split('{'+n+'}').join(p[n]); return s; };
 </script>
 <!-- i18n:runtime:end -->
-<script src="game.js"></script>
+<script src="/game.js"></script>
 <script>
 /* ── THE VOLCANO PROTOCOL — Seal II ── */
 ;(function(){try{
