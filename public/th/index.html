@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cards Against Hackatoa — เกมการ์ดปาร์ตี้ออนไลน์ฟรี</title>
+  <meta name="description" content="Cards Against Hackatoa เป็นเกมปาร์ตี้สไตล์ Cards Against Humanity เล่นฟรี ไม่มีหัวหน้าวง — ทุกคนโหวตกันเองในแต่ละรอบ มีการ์ดคัสตอม การ์ดไวล์ด อัปโหลดรูปภาพ และคลังการ์ดจากคอมมูนิตี้ ไม่ต้องลงทะเบียน" />
+  <meta name="keywords" content="cards against humanity online, free party card game, browser card game, cah online, cards against hackatoa, multiplayer party game" />
+  <meta name="author" content="Jacob Harris" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://cah.hackatoa.com/th/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cah.hackatoa.com/" />
+  <meta property="og:site_name" content="Hackatoa Games" />
+  <meta property="og:title" content="Cards Against Hackatoa — เกมการ์ดปาร์ตี้ฟรี" />
+  <meta property="og:description" content="A Cards Against Humanity-style party game in your browser. No czar — everyone votes. Custom cards, wild cards, image uploads. Free, no account needed." />
+  <meta property="og:image" content="https://cah.hackatoa.com/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@jhackatoa" />
+  <meta name="twitter:title" content="Cards Against Hackatoa" />
+  <meta name="twitter:description" content="Free Cards Against Humanity-style party game. Everyone votes, no czar. Custom cards, image uploads. No sign-up needed." />
+  <meta name="twitter:image" content="https://cah.hackatoa.com/og.png" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    "name": "Cards Against Hackatoa",
+    "url": "https://cah.hackatoa.com/",
+    "description": "A Cards Against Humanity-style party game in your browser. No czar — everyone votes anonymously each round. Custom cards, wild typeable cards, image card uploads, and a community pack library.",
+    "genre": ["Party", "Card Game"],
+    "playMode": "MultiPlayer",
+    "applicationCategory": "GameApplication",
+    "operatingSystem": "Web Browser",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": { "@type": "Person", "name": "Jacob P Harris", "alternateName": "Hackatoa", "url": "https://hackatoa.com" },
+    "isPartOf": { "@type": "WebSite", "name": "Hackatoa Games", "url": "https://games.hackatoa.com" }
+  }
+  </script>
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    .site-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: .5rem 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .5rem;
+      font-family: var(--font);
+      font-size: .72rem;
+      color: var(--muted);
+      z-index: 9998;
+    }
+    .site-footer a { color: var(--muted); text-decoration: none; transition: color .15s; }
+    .site-footer a:hover { color: var(--green); }
+    .site-footer .footer-links { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+    .site-footer .footer-coffee {
+      border: 1px solid var(--border);
+      padding: .2rem .7rem;
+      color: var(--text);
+      transition: border-color .15s, color .15s;
+    }
+    .site-footer .footer-coffee:hover { border-color: var(--green); color: var(--green); }
+    /* push game content above footer */
+    #s-game .game-body { padding-bottom: 3.5rem; }
+    .screen { padding-bottom: 3rem; }
+  </style>
+
+  <!-- i18n:hreflang:start -->
+  <link rel="alternate" hreflang="en" href="https://cah.hackatoa.com/" />
+  <link rel="alternate" hreflang="es" href="https://cah.hackatoa.com/es/" />
+  <link rel="alternate" hreflang="pt-BR" href="https://cah.hackatoa.com/pt-br/" />
+  <link rel="alternate" hreflang="fr" href="https://cah.hackatoa.com/fr/" />
+  <link rel="alternate" hreflang="de" href="https://cah.hackatoa.com/de/" />
+  <link rel="alternate" hreflang="vi" href="https://cah.hackatoa.com/vi/" />
+  <link rel="alternate" hreflang="th" href="https://cah.hackatoa.com/th/" />
+  <link rel="alternate" hreflang="x-default" href="https://cah.hackatoa.com/" />
+  <!-- i18n:hreflang:end -->
+</head>
+<body>
+<!-- i18n:switcher:start -->
+<nav aria-label="Language" style="position:fixed;top:8px;right:10px;z-index:9999;font-size:12px;font-family:system-ui,-apple-system,sans-serif;background:rgba(15,15,18,.92);border:1px solid #333;border-radius:999px;padding:5px 12px;display:flex;gap:9px;box-shadow:0 2px 10px rgba(0,0,0,.5);">
+  <a href="/" hreflang="en" style="color:#9aa;text-decoration:none;">EN</a>
+  <a href="/es/" hreflang="es" style="color:#9aa;text-decoration:none;">ES</a>
+  <a href="/pt-br/" hreflang="pt-BR" style="color:#9aa;text-decoration:none;">PT</a>
+  <a href="/fr/" hreflang="fr" style="color:#9aa;text-decoration:none;">FR</a>
+  <a href="/de/" hreflang="de" style="color:#9aa;text-decoration:none;">DE</a>
+  <a href="/vi/" hreflang="vi" style="color:#9aa;text-decoration:none;">VI</a>
+  <a href="/th/" hreflang="th" aria-current="true" style="color:#fff;font-weight:700;text-decoration:none;">TH</a>
+</nav>
+<!-- i18n:switcher:end -->
+
+<footer class="site-footer">
+  <span>พัฒนาโดย <a href="https://hackatoa.com" target="_blank" rel="noopener">Hackatoa</a></span>
+  <div class="footer-links">
+    <a href="https://games.hackatoa.com" target="_blank" rel="noopener">เกมทั้งหมด</a>
+    <a href="https://buymeacoffee.com/hackatoa" target="_blank" rel="noopener" class="footer-coffee">☕ เลี้ยงกาแฟฉันสักแก้ว</a>
+  </div>
+</footer>
+
+<!-- ── Menu ── -->
+<div id="s-menu" class="screen active">
+  <div class="panel">
+    <h1 class="panel-title" style="margin:0">CARDS AGAINST HACKATOA</h1>
+    <p style="font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:1.2rem;text-align:center;max-width:340px;margin-left:auto;margin-right:auto;">
+      การ์ดดำจะแสดงข้อความเว้นช่องว่างไว้ ทุกคนเลือกการ์ดขาวจากมือของตัวเองเพื่อเติมคำให้สมบูรณ์ จากนั้นทุกคนจะโหวตคำตอบที่ตลกที่สุด — ไม่มีหัวหน้าวง ใครได้คะแนนโหวตมากที่สุดชนะในรอบนั้น ใครถึงเป้าหมายคะแนนก่อนเป็นผู้ชนะ
+    </p>
+    <div class="field">
+      <label>ชื่อของคุณ</label>
+      <input type="text" id="menu-name" maxlength="24" placeholder="ใส่ชื่อของคุณ" autocomplete="off">
+    </div>
+    <div class="error-msg" id="menu-error"></div>
+    <button class="btn btn-primary" id="btn-create">สร้างห้อง</button>
+    <button class="btn btn-secondary" id="btn-goto-join">เข้าร่วมห้อง</button>
+    <div class="leaderboard-box">
+      <h3 class="lb-title">🏆 ตารางคะแนน</h3>
+      <table class="leaderboard">
+        <thead><tr><th>#</th><th>ผู้เล่น</th><th>W</th><th>L</th><th>D</th></tr></thead>
+        <tbody id="lb-body"><tr><td colspan="5">กำลังโหลด…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ── Join ── -->
+<div id="s-join" class="screen">
+  <div class="panel">
+    <h2 class="panel-title">เข้าร่วมเกม</h2>
+    <div class="field">
+      <label>ชื่อของคุณ</label>
+      <input type="text" id="join-name" maxlength="24" placeholder="ใส่ชื่อของคุณ" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>รหัสห้อง</label>
+      <input type="text" id="join-code" maxlength="6" placeholder="รหัส 6 ตัวอักษร" autocomplete="off" style="text-transform:uppercase;letter-spacing:.2em">
+    </div>
+    <div class="error-msg" id="join-error"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="btn-back-menu">กลับ</button>
+      <button class="btn btn-primary" id="btn-join">เข้าร่วม</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Lobby ── -->
+<div id="s-lobby" class="screen">
+  <div class="panel" style="max-width:560px">
+    <h2 class="panel-title">ห้องรอ</h2>
+    <div class="code-display" id="lobby-code"></div>
+    <div class="code-hint">แชร์รหัสนี้ให้เพื่อนๆ</div>
+
+    <div class="player-list" id="lobby-players"></div>
+
+    <!-- Host settings -->
+    <div id="host-settings" class="hidden">
+      <hr class="divider">
+      <h2 class="panel-title" style="font-size:.85rem;margin-bottom:1rem">การตั้งค่า</h2>
+
+      <div class="settings-grid">
+        <div class="field">
+          <label>เป้าหมายคะแนน</label>
+          <input type="number" id="opt-score" min="1" max="20" value="7">
+        </div>
+        <div class="field">
+          <label>จับเวลา (วินาที)</label>
+          <select id="opt-timer">
+            <option value="0">ปิด</option>
+            <option value="30">30s</option>
+            <option value="60" selected>60s</option>
+            <option value="90">90s</option>
+            <option value="120">120s</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="toggle-row">
+        <span>Rando Cardrissian</span>
+        <input type="checkbox" id="opt-rando" checked style="accent-color:var(--green);width:18px;height:18px">
+      </div>
+      <div class="toggle-row">
+        <span>การ์ดไวล์ดในมือ <span class="text-muted">(พิมพ์เอง)</span></span>
+        <span style="color:var(--cyan);font-size:.75rem">2 ใบต่อผู้เล่น</span>
+      </div>
+
+      <hr class="divider">
+      <h2 class="panel-title" style="font-size:.85rem;margin-bottom:.8rem">แพ็กการ์ด</h2>
+      <div class="pack-grid" id="pack-grid"></div>
+
+      <hr class="divider">
+      <div class="btn-row">
+        <button class="btn btn-secondary" id="btn-custom-cards">การ์ดคัสตอม <span id="custom-count"></span></button>
+        <button class="btn btn-secondary" id="btn-browse-community">แพ็กจากคอมมูนิตี้</button>
+      </div>
+      <hr class="divider">
+      <button class="btn btn-primary" id="btn-start">เริ่มเกม</button>
+    </div>
+
+    <!-- Guest view -->
+    <div id="guest-waiting" class="hidden text-center mt">
+      <div class="text-muted">กำลังรอให้โฮสต์เริ่มเกม...</div>
+      <div class="spinner"></div>
+    </div>
+
+    <div class="error-msg mt" id="lobby-error"></div>
+    <button class="btn btn-ghost mt" id="btn-leave-lobby">ออกจากห้อง</button>
+  </div>
+</div>
+
+<!-- ── Game ── -->
+<div id="s-game" class="screen">
+  <header class="game-header">
+    <div>
+      <div class="round-badge" id="hdr-round">ROUND 1</div>
+      <div class="round-badge" id="hdr-phase" style="color:var(--muted)"></div>
+    </div>
+    <div class="score-pills" id="hdr-scores"></div>
+  </header>
+
+  <div class="game-body">
+    <div class="timer-bar-wrap" id="timer-wrap" style="display:none">
+      <div class="timer-bar" id="timer-bar"></div>
+    </div>
+
+    <!-- Black card -->
+    <div class="black-card" id="black-card-display">
+      <span id="black-card-text"></span>
+      <span class="pick-badge" id="pick-badge"></span>
+    </div>
+
+    <!-- Phase: playing (player) -->
+    <div id="phase-playing" class="hidden" style="width:100%">
+      <div class="sub-count" id="sub-count-display"></div>
+      <div class="hand-label">การ์ดในมือ — เลือก <span id="pick-label">1</span> การ์ด</div>
+      <div class="hand" id="hand-container"></div>
+      <button class="btn btn-primary" id="btn-submit-cards" style="max-width:300px" disabled>ส่ง</button>
+    </div>
+
+    <!-- Phase: voting -->
+    <div id="phase-voting" class="hidden" style="width:100%">
+      <div class="vote-label">โหวตคำตอบที่ดีที่สุด</div>
+      <div class="vote-status" id="vote-status"></div>
+      <div class="submissions-grid" id="submissions-grid"></div>
+    </div>
+
+    <!-- Phase: waiting for others to vote -->
+    <div id="phase-vote-wait" class="hidden vote-waiting">
+      <div>คุณโหวตแล้ว! กำลังรอผู้อื่น...</div>
+      <div class="spinner"></div>
+      <div class="vote-status" id="vote-wait-status"></div>
+    </div>
+
+    <!-- Phase: round result -->
+    <div id="phase-result" class="hidden" style="width:100%">
+      <div class="result-header">
+        <div class="result-winner" id="result-winner-name"></div>
+        <div class="result-sub" id="result-winner-sub"></div>
+      </div>
+      <div class="result-cards" id="result-cards"></div>
+      <div class="result-scoreboard" id="result-scoreboard"></div>
+      <div class="next-round-hint">รอบถัดไปเริ่มใน <span id="next-round-countdown">5</span>s...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Game Over ── -->
+<div id="s-gameover" class="screen">
+  <div class="panel" style="max-width:420px">
+    <div class="gameover-wrap">
+      <div class="gameover-icon">🏆</div>
+      <div class="gameover-title" id="go-winner"></div>
+      <div class="gameover-sub" id="go-sub"></div>
+      <div class="final-scores" id="go-scores"></div>
+      <button class="btn btn-primary" id="btn-play-again">เล่นอีกครั้ง</button>
+      <button class="btn btn-ghost" id="btn-go-home">เมนูหลัก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Custom Cards Modal ── -->
+<div class="modal-backdrop" id="modal-custom">
+  <div class="modal">
+    <div class="modal-title">
+      การ์ดคัสตอม
+      <button class="modal-close" id="btn-close-modal" aria-label="Close">✕</button>
+    </div>
+
+    <div class="field">
+      <label>การ์ดดำ (บรรทัดละหนึ่งใบ, ใช้ ___ สำหรับช่องว่าง)</label>
+      <div class="modal-hint">ตัวอย่าง: เหตุผลที่ฉันมาสายคือ ___</div>
+      <textarea id="custom-black" rows="5" placeholder="The secret ingredient is ___.&#10;___ + ___ = disaster."></textarea>
+    </div>
+
+    <div class="field">
+      <label>การ์ดขาว (บรรทัดละหนึ่งใบ)</label>
+      <textarea id="custom-white" rows="5" placeholder="A total systems failure.&#10;My entire personality."></textarea>
+    </div>
+
+    <div class="field">
+      <label>การ์ดขาวพร้อมรูปภาพ</label>
+      <div class="modal-hint">อัปโหลดรูปภาพ — มันจะกลายเป็น 1 การ์ดขาว (ใส่คำอธิบายเพิ่มเติมด้านล่างได้)</div>
+      <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.4rem">
+        <input type="file" id="img-upload" accept="image/*" style="flex:1;margin-bottom:0">
+        <button class="btn btn-secondary" id="btn-upload-img" style="width:auto;white-space:nowrap;padding:.5rem .8rem">อัปโหลด</button>
+      </div>
+      <input type="text" id="img-caption" placeholder="คำอธิบายสำหรับการ์ดรูปภาพ (ไม่บังคับ)" style="margin-bottom:0">
+      <div class="error-msg" id="upload-error" style="margin-top:.3rem"></div>
+      <div id="img-preview-wrap" class="hidden" style="margin-top:.5rem">
+        <img id="img-preview" style="max-width:160px;max-height:100px;object-fit:cover;border:1px solid var(--border)" alt="">
+        <div style="font-size:.75rem;color:var(--green);margin-top:.3rem" id="img-preview-label"></div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="field">
+      <label>บันทึกแพ็กนี้ไปยังคลังคอมมูนิตี้ (ไม่บังคับ)</label>
+      <input type="text" id="community-pack-name" placeholder="ชื่อแพ็ก (เช่น 'มุกตลกออฟฟิศ')" maxlength="80">
+      <div class="error-msg" id="save-pack-error"></div>
+      <button class="btn btn-secondary" id="btn-save-community">บันทึกลงคอมมูนิตี้</button>
+    </div>
+
+    <div class="error-msg" id="modal-error"></div>
+    <button class="btn btn-primary" id="btn-add-custom">เพิ่มการ์ดลงในเกม</button>
+  </div>
+</div>
+
+<!-- ── Community Packs Modal ── -->
+<div class="modal-backdrop" id="modal-community">
+  <div class="modal">
+    <div class="modal-title">
+      COMMUNITY PACKS
+      <button class="modal-close" id="btn-close-community" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-hint" style="margin-bottom:1rem">แพ็กที่ส่งโดยผู้เล่นคนอื่น คลิก เพิ่ม เพื่อโหลดเป็น 1 การ์ดคัสตอม</div>
+    <div id="community-pack-list">
+      <div class="spinner"></div>
+    </div>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/name.js"></script>
+<!-- i18n:runtime:start -->
+<script>
+window.__I18N__ = {"yourName":"ชื่อของคุณ","enterName":"ใส่ชื่อของคุณ","createRoom":"สร้างห้อง","joinRoom":"เข้าร่วมห้อง","leaderboard":"🏆 ตารางคะแนน","colPlayer":"ผู้เล่น","loading":"กำลังโหลด…","joinGame":"เข้าร่วมเกม","roomCode":"รหัสห้อง","codePlaceholder":"รหัส 6 ตัวอักษร","back":"กลับ","join":"เข้าร่วม","lobby":"ห้องรอ","shareCode":"แชร์รหัสนี้ให้เพื่อนๆ","settings":"การตั้งค่า","scoreGoal":"เป้าหมายคะแนน","timerSec":"จับเวลา (วินาที)","timerOff":"ปิด","wildCards":"การ์ดไวล์ดในมือ","typeYourOwn":"(พิมพ์เอง)","perPlayer":"2 ใบต่อผู้เล่น","cardPacks":"แพ็กการ์ด","customCards":"การ์ดคัสตอม","communityPacks":"แพ็กจากคอมมูนิตี้","startGame":"เริ่มเกม","waitingHost":"กำลังรอให้โฮสต์เริ่มเกม...","leave":"ออกจากห้อง","yourHandSelect":"การ์ดในมือ — เลือก","cards":"การ์ด","submit":"ส่ง","voteBest":"โหวตคำตอบที่ดีที่สุด","youVoted":"คุณโหวตแล้ว! กำลังรอผู้อื่น...","nextRoundIn":"รอบถัดไปเริ่มใน","playAgain":"เล่นอีกครั้ง","mainMenu":"เมนูหลัก","blackCardsLabel":"การ์ดดำ (บรรทัดละหนึ่งใบ, ใช้ ___ สำหรับช่องว่าง)","blackCardsExample":"ตัวอย่าง: เหตุผลที่ฉันมาสายคือ ___","whiteCardsLabel":"การ์ดขาว (บรรทัดละหนึ่งใบ)","whiteImageLabel":"การ์ดขาวพร้อมรูปภาพ","uploadHint":"อัปโหลดรูปภาพ — มันจะกลายเป็น 1 การ์ดขาว (ใส่คำอธิบายเพิ่มเติมด้านล่างได้)","upload":"อัปโหลด","captionPlaceholder":"คำอธิบายสำหรับการ์ดรูปภาพ (ไม่บังคับ)","savePackLabel":"บันทึกแพ็กนี้ไปยังคลังคอมมูนิตี้ (ไม่บังคับ)","packNamePlaceholder":"ชื่อแพ็ก (เช่น 'มุกตลกออฟฟิศ')","saveToCommunity":"บันทึกลงคอมมูนิตี้","addCardsToGame":"เพิ่มการ์ดลงในเกม","communityHint":"แพ็กที่ส่งโดยผู้เล่นคนอื่น คลิก เพิ่ม เพื่อโหลดเป็น 1 การ์ดคัสตอม","round":"รอบที่ {n}","pick":"เลือก {n}","youWin":"คุณชนะ!","winsName":"{name} ชนะ!","betterLuck":"ขอให้โชคดีในครั้งหน้า","congrats":"ยินดีด้วย ไอ้หนุ่มสุดหล่อ","pickFavourite":"เลือกคำตอบที่คุณชอบที่สุด — คุณไม่สามารถโหวตคำตอบของตัวเองได้","yours":"ของคุณ","winnerStar":"★ ผู้ชนะ","saved":"✓ บันทึกแล้ว!","imageQueued":"✓ เพิ่มรูปภาพในคิวแล้ว ({n} ทั้งหมด)","submittedCount":"ส่งแล้ว {done} / {total}","typeAnswer":"พิมพ์คำตอบของคุณ:","errAddCards":"กรุณาเพิ่มการ์ดก่อน","errPackName":"กรุณาใส่ชื่อแพ็ก","errAtLeastOne":"กรุณาใส่อย่างน้อย 1 การ์ด","errRoomCode":"กรุณาใส่รหัสห้อง 6 ตัวอักษร","errEnterName":"กรุณาใส่ชื่อของคุณ","errSavePack":"บันทึกแพ็กไม่สำเร็จ","errLoadPack":"โหลดแพ็กไม่สำเร็จ","errLoadPacks":"โหลดแพ็กการ์ดไม่สำเร็จ","errSelectImage":"กรุณาเลือกรูปภาพก่อน","errUpload":"อัปโหลดไม่สำเร็จ — ลองใหม่อีกครั้ง"};
+window.t = function(k, p){ var d = window.__I18N__ || {}; var s = String(k).split('.').reduce(function(o,i){return (o==null)?undefined:o[i];}, d); if (s == null) s = k; if (p) for (var n in p) s = s.split('{'+n+'}').join(p[n]); return s; };
+</script>
+<!-- i18n:runtime:end -->
+<script src="/game.js"></script>
+<script>
+/* ── THE VOLCANO PROTOCOL — Seal II ── */
+;(function(){try{
+  var gold='color:#ffd600;font-family:monospace;font-size:12px;text-shadow:0 0 6px rgba(255,214,0,.55)';
+  var dim='color:#827717;font-family:monospace;font-size:12px';
+  var red='color:#ff4d4d;font-family:monospace;font-size:12px';
+  console.log('%c▲ SEAL  II / V  — VOLCANO PROTOCOL', gold);
+  console.log('%cThe table where the cards are always against you. Sit down.', dim);
+  console.log('%cYour fragment. Decode it (binary → ASCII):', red);
+  console.log('%c    01010100 01001111', gold);
+  console.log('%cAssemble I→V at hackatoa.com/protocol', dim);
+}catch(e){}})();
+</script>
+</body>
+</html>
