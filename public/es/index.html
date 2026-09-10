@@ -93,15 +93,14 @@
 </head>
 <body>
 <!-- i18n:switcher:start -->
-<nav aria-label="Language" style="position:fixed;top:8px;right:10px;z-index:9999;font-size:12px;font-family:system-ui,-apple-system,sans-serif;background:rgba(15,15,18,.92);border:1px solid #333;border-radius:999px;padding:5px 12px;display:flex;gap:9px;box-shadow:0 2px 10px rgba(0,0,0,.5);">
-  <a href="/" hreflang="en" style="color:#9aa;text-decoration:none;">EN</a>
+<div id="lang-switch" style="position:fixed;top:8px;right:10px;z-index:99999;font-family:system-ui,-apple-system,sans-serif"><button id="lang-btn" type="button" aria-label="Language" aria-haspopup="true" style="display:flex;align-items:center;justify-content:center;width:34px;height:34px;padding:0;background:rgba(6,10,6,.92);border:1px solid #1a3d1a;border-radius:999px;color:#8a8;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.5)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><ellipse cx="12" cy="12" rx="4" ry="9"/></svg></button><div id="lang-pop" role="menu" style="display:none;position:absolute;top:calc(100% + 8px);right:0;flex-direction:column;gap:8px;background:rgba(6,10,6,.95);border:1px solid #1a3d1a;border-radius:10px;padding:9px 12px;box-shadow:0 4px 16px rgba(0,0,0,.6);font-size:12px;white-space:nowrap"><a href="/" hreflang="en" style="color:#9aa;text-decoration:none;">EN</a>
   <a href="/es/" hreflang="es" aria-current="true" style="color:#fff;font-weight:700;text-decoration:none;">ES</a>
   <a href="/pt-br/" hreflang="pt-BR" style="color:#9aa;text-decoration:none;">PT</a>
   <a href="/fr/" hreflang="fr" style="color:#9aa;text-decoration:none;">FR</a>
   <a href="/de/" hreflang="de" style="color:#9aa;text-decoration:none;">DE</a>
   <a href="/vi/" hreflang="vi" style="color:#9aa;text-decoration:none;">VI</a>
-  <a href="/th/" hreflang="th" style="color:#9aa;text-decoration:none;">TH</a>
-</nav>
+  <a href="/th/" hreflang="th" style="color:#9aa;text-decoration:none;">TH</a></div></div>
+<script>(function(){var b=document.getElementById('lang-btn'),p=document.getElementById('lang-pop');if(!b||!p)return;var d=p.querySelector('a:not([aria-current])');if(d&&d.style&&d.style.color)b.style.color=d.style.color;b.addEventListener('click',function(e){e.stopPropagation();p.style.display=p.style.display==='flex'?'none':'flex';});p.addEventListener('click',function(e){e.stopPropagation();});document.addEventListener('click',function(){p.style.display='none';});})();</script>
 <!-- i18n:switcher:end -->
 
 <footer class="site-footer">
