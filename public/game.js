@@ -32,7 +32,11 @@ function escHtml(s) {
 }
 
 function renderCardText(text) {
-  return (text || '').replace(/___/g, '<span class="blank"></span>');
+  // Card text can come from player-submitted custom cards / community packs,
+  // so it must be HTML-escaped before going into innerHTML. Escaping first is
+  // safe because the literal "___" placeholder contains none of the escaped
+  // characters (&, <, >).
+  return escHtml(text || '').replace(/___/g, '<span class="blank"></span>');
 }
 
 function goToMenu() {
