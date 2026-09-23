@@ -93,6 +93,7 @@ app.get('/api/community-packs', (_req, res) => {
 
 app.get('/api/community-packs/:id/cards', (req, res) => {
   const id = Number(req.params.id);
+  if (!Number.isInteger(id)) return res.status(400).json({ error: 'Invalid pack id' });
   const black = db.prepare('SELECT text, pick FROM black_cards WHERE pack_id = ?').all(id);
   const white = db.prepare('SELECT text, image_url FROM white_cards WHERE pack_id = ?').all(id);
   res.json({
