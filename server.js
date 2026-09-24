@@ -3,7 +3,7 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
-const { readFileSync, mkdirSync } = require('fs');
+const { readFileSync, writeFileSync, mkdirSync } = require('fs');
 const multer = require('multer');
 const Database = require('better-sqlite3');
 const leaderboard = require('./db');
@@ -43,23 +43,38 @@ db.exec(`
 `);
 
 // ── Image uploads ──────────────────────────────────────────────────────────
-const storage = multer.diskStorage({
-  destination: path.join(DATA_DIR, 'uploads'),
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase().replace(/[^.a-z0-9]/g, '');
-    cb(null, `${Date.now()}-${Math.random().toString(36).slice(2, 7)}${ext}`);
-  },
-});
+// SECURITY: the upload's declared filename extension and mimetype are both
+// fully attacker-controlled (they come straight from the multipart request,
+// not from the file's actual bytes). Trusting either lets an attacker upload
+// e.g. an .html file mislabeled as image/png, which express.static would then
+// serve back same-origin with a text/html content type -> stored XSS. So we
+// buffer the upload in memory, sniff the real file type from its magic bytes,
+// and derive the on-disk extension from THAT — never from client input.
+function detectImageType(buffer) {
+  if (buffer.length >= 3 && buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff) {
+    return '.jpg';
+  }
+  if (buffer.length >= 8 && buffer.slice(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) {
+    return '.png';
+  }
+  if (buffer.length >= 6 && ['GIF87a', 'GIF89a'].includes(buffer.slice(0, 6).toString('ascii'))) {
+    return '.gif';
+  }
+  if (buffer.length >= 12 && buffer.slice(0, 4).toString('ascii') === 'RIFF' && buffer.slice(8, 12).toString('ascii') === 'WEBP') {
+    return '.webp';
+  }
+  return null;
+}
+
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 4 * 1024 * 1024 },
-  fileFilter: (_req, file, cb) => {
-    cb(null, /^image\/(jpeg|png|gif|webp)$/.test(file.mimetype));
-  },
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(path.join(DATA_DIR, 'uploads')));
+app.use('/uploads', express.static(path.join(DATA_DIR, 'uploads'), {
+  setHeaders: res => res.setHeader('X-Content-Type-Options', 'nosniff'),
+}));
 app.use(express.json({ limit: '1mb' }));
 app.get('/', (_req, res) => res.sendFile(path.join(__dirname, 'public', 'game.html')));
 
@@ -77,7 +92,16 @@ app.get('/api/leaderboard', async (_req, res) => {
 // ── REST: image upload ─────────────────────────────────────────────────────
 app.post('/upload/image', upload.single('image'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'Invalid or missing image' });
-  res.json({ url: `/uploads/${req.file.filename}` });
+  const ext = detectImageType(req.file.buffer);
+  if (!ext) return res.status(400).json({ error: 'Invalid or missing image' });
+  const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}${ext}`;
+  try {
+    writeFileSync(path.join(DATA_DIR, 'uploads', filename), req.file.buffer);
+  } catch (err) {
+    console.error('[upload] write failed:', err.message);
+    return res.status(500).json({ error: 'Upload failed' });
+  }
+  res.json({ url: `/uploads/${filename}` });
 });
 
 // ── REST: community packs ──────────────────────────────────────────────────
