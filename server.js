@@ -242,6 +242,8 @@ function beginRound(room) {
   room.round++;
 
   const players = publicPlayers(room);
+  // Same for every recipient — build once instead of once per player.
+  const scores = Object.fromEntries(room.players.map(x => [x.id, x.score]));
 
   for (const p of room.players) {
     if (p.isRando) continue;
@@ -251,7 +253,7 @@ function beginRound(room) {
       blackCard: room.blackCard,
       round: room.round,
       hand: p.hand,
-      scores: Object.fromEntries(room.players.map(x => [x.id, x.score])),
+      scores,
       players,
       timerSeconds: room.options.timerSeconds,
     });
@@ -299,6 +301,11 @@ function beginVoting(room) {
   room.votes = {};
 
   const players = publicPlayers(room);
+  // These are identical for every recipient — compute once instead of
+  // once per player (was O(players × submissions) per round).
+  const submissionsPayload = room.shuffledSubs.map(s => ({ cards: s.cards }));
+  const totalVoters = room.players.filter(pl => !pl.isRando).length;
+  const subIdxByPlayer = new Map(room.shuffledSubs.map((s, i) => [s.playerId, i]));
 
   for (const p of room.players) {
     if (p.isRando) {
@@ -314,13 +321,12 @@ function beginVoting(room) {
     }
     const sock = io.sockets.sockets.get(p.id);
     if (!sock) continue;
-    const mySubIdx = room.shuffledSubs.findIndex(s => s.playerId === p.id);
     sock.emit('voting-start', {
-      submissions: room.shuffledSubs.map(s => ({ cards: s.cards })),
-      mySubmissionIdx: mySubIdx,
+      submissions: submissionsPayload,
+      mySubmissionIdx: subIdxByPlayer.get(p.id) ?? -1,
       blackCard: room.blackCard,
       players,
-      totalVoters: room.players.filter(pl => !pl.isRando).length,
+      totalVoters,
     });
   }
 
