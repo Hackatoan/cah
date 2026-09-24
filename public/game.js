@@ -27,6 +27,16 @@ function showScreen(id) {
 function setError(id, msg) { $(id).textContent = msg; }
 function clearError(id) { $(id).textContent = ''; }
 
+// Announces real-time game state changes (round start, voting, round result,
+// game over) to screen reader users via a visually-hidden aria-live region.
+// Cleared first so repeated identical messages are still announced.
+function announce(msg) {
+  const el = $('sr-announcer');
+  if (!el) return;
+  el.textContent = '';
+  window.setTimeout(() => { el.textContent = msg; }, 50);
+}
+
 function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
@@ -499,6 +509,8 @@ socket.on('round-start', ({ blackCard, round, hand, scores, timerSeconds, player
   $('btn-submit-cards').style.display = '';
   $('pick-label').textContent = blackCard.pick;
   renderHand();
+
+  announce(`Round ${round} started. ${blackCard.text}`);
 });
 
 socket.on('submission-count', ({ submitted, total }) => {
@@ -530,6 +542,8 @@ socket.on('voting-start', ({ submissions, mySubmissionIdx, blackCard, players, t
     }
     grid.appendChild(card);
   });
+
+  announce(`Voting started. ${submissions.length} answers submitted — pick your favourite.`);
 });
 
 let myVoteIdx = null;
@@ -598,6 +612,10 @@ socket.on('round-result', ({ winnerId, winnerName, winningCards, winningIdx, tal
 
   updateHeader(+($('hdr-round').textContent.replace('ROUND ', '') || 1), 'RESULTS', scores, players);
 
+  announce(isMe
+    ? 'You win this round!'
+    : `${winnerName} wins this round${tiedCount > 1 ? ' (tied, won by random draw)' : ''}.`);
+
   let t = 6;
   $('next-round-countdown').textContent = t;
   if (nextRoundTimer) clearInterval(nextRoundTimer);
@@ -624,6 +642,8 @@ socket.on('game-over', ({ winnerId, winnerName, scores, players }) => {
       row.innerHTML = `<span>${escHtml(p.name)}</span><span class="score-val">${scores[p.id] ?? 0}</span>`;
       sb.appendChild(row);
     });
+
+  announce(isMe ? 'Game over. You win!' : `Game over. ${winnerName} wins.`);
 });
 
 $('btn-play-again').addEventListener('click', () => { socket.disconnect(); socket.connect(); goToMenu(); });
