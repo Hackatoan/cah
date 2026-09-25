@@ -40,6 +40,8 @@ db.exec(`
     text TEXT,
     image_url TEXT
   );
+  CREATE INDEX IF NOT EXISTS idx_black_cards_pack_id ON black_cards (pack_id);
+  CREATE INDEX IF NOT EXISTS idx_white_cards_pack_id ON white_cards (pack_id);
 `);
 
 // ── Image uploads ──────────────────────────────────────────────────────────
