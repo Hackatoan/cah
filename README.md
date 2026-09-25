@@ -30,6 +30,9 @@ npm start
 
 Docker on the homelab games host; GHCR + Watchtower auto-deploy.
 
+Copy `.env.example` to `.env` next to `docker-compose.yml` on the host and set
+`DATABASE_URL` before starting — it's no longer hardcoded in the compose file.
+
 ## Support
 
 If this project is useful to you, consider supporting development:
