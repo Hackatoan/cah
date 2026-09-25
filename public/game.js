@@ -162,16 +162,49 @@ $('btn-start').addEventListener('click', () => { clearError('lobby-error'); sock
 
 $('btn-leave-lobby').addEventListener('click', () => { socket.disconnect(); socket.connect(); goToMenu(); });
 
+// ── Modal a11y: Escape-to-close + focus management ──────────────────────────
+// Tracks the element that had focus before a modal opened, so it can be
+// restored on close (keyboard users shouldn't lose their place in the page).
+let lastFocusedBeforeModal = null;
+
+function openModal(modalId) {
+  lastFocusedBeforeModal = document.activeElement;
+  const modal = $(modalId);
+  modal.classList.add('open');
+  const closeBtn = modal.querySelector('.modal-close');
+  if (closeBtn) closeBtn.focus();
+}
+
+function closeModal(modalId) {
+  $(modalId).classList.remove('open');
+  if (lastFocusedBeforeModal && typeof lastFocusedBeforeModal.focus === 'function') {
+    lastFocusedBeforeModal.focus();
+  }
+  lastFocusedBeforeModal = null;
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  const openModalEl = document.querySelector('.modal-backdrop.open');
+  if (!openModalEl) return;
+  if (openModalEl.id === 'modal-custom') {
+    pendingImageCards = [];
+    $('img-preview-wrap').classList.add('hidden');
+    clearError('upload-error');
+  }
+  closeModal(openModalEl.id);
+});
+
 // ── Custom cards modal ────────────────────────────────────────────────────
-$('btn-custom-cards').addEventListener('click', () => $('modal-custom').classList.add('open'));
+$('btn-custom-cards').addEventListener('click', () => openModal('modal-custom'));
 $('btn-close-modal').addEventListener('click', () => {
-  $('modal-custom').classList.remove('open');
   pendingImageCards = [];
   $('img-preview-wrap').classList.add('hidden');
   clearError('upload-error');
+  closeModal('modal-custom');
 });
 $('modal-custom').addEventListener('click', e => {
-  if (e.target === $('modal-custom')) { $('modal-custom').classList.remove('open'); pendingImageCards = []; $('img-preview-wrap').classList.add('hidden'); }
+  if (e.target === $('modal-custom')) { pendingImageCards = []; $('img-preview-wrap').classList.add('hidden'); closeModal('modal-custom'); }
 });
 
 $('btn-upload-img').addEventListener('click', async () => {
@@ -205,12 +238,12 @@ $('btn-add-custom').addEventListener('click', () => {
   $('custom-white').value = '';
   pendingImageCards = [];
   $('img-preview-wrap').classList.add('hidden');
-  $('modal-custom').classList.remove('open');
+  closeModal('modal-custom');
 });
 
 // Community packs
 $('btn-browse-community').addEventListener('click', async () => {
-  $('modal-community').classList.add('open');
+  openModal('modal-community');
   $('community-pack-list').innerHTML = '<div class="spinner"></div>';
   try {
     const res = await fetch('/api/community-packs');
@@ -218,8 +251,8 @@ $('btn-browse-community').addEventListener('click', async () => {
   } catch { $('community-pack-list').innerHTML = '<div class="text-muted">' + T('errLoadPacks') + '</div>'; }
 });
 
-$('btn-close-community').addEventListener('click', () => $('modal-community').classList.remove('open'));
-$('modal-community').addEventListener('click', e => { if (e.target === $('modal-community')) $('modal-community').classList.remove('open'); });
+$('btn-close-community').addEventListener('click', () => closeModal('modal-community'));
+$('modal-community').addEventListener('click', e => { if (e.target === $('modal-community')) closeModal('modal-community'); });
 
 function renderCommunityPacks(packs) {
   const list = $('community-pack-list');
@@ -240,7 +273,7 @@ window.addCommunityPack = async (packId) => {
     const res = await fetch(`/api/community-packs/${packId}/cards`);
     const data = await res.json();
     socket.emit('add-custom-cards', { black: data.black, white: data.white });
-    $('modal-community').classList.remove('open');
+    closeModal('modal-community');
   } catch { alert(T('errLoadPack')); }
 };
 
