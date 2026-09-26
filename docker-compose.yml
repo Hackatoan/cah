@@ -7,7 +7,7 @@ services:
       - "3029:3029"
     environment:
       - GAME_ID=cah
-      - DATABASE_URL=postgresql://games:g4m3sDB_2024xQ!@games-db:5432/games
+      - DATABASE_URL=${DATABASE_URL}
     volumes:
       - cah-data:/data
     networks:
