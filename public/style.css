@@ -249,6 +249,7 @@ label { display: block; font-size: .78rem; color: var(--muted); margin-bottom: .
   user-select: none;
 }
 .white-card:hover { transform: translateY(-4px); box-shadow: 0 6px 20px rgba(0,0,0,.5); }
+.white-card:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 .white-card.selected {
   border-color: var(--green);
   transform: translateY(-8px);
@@ -306,6 +307,10 @@ label { display: block; font-size: .78rem; color: var(--muted); margin-bottom: .
   transform: translateY(-6px);
   border-color: var(--cyan);
   box-shadow: 0 8px 24px rgba(0,229,255,.25);
+}
+.submission-card.voteable:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
 }
 .submission-card.voted-for {
   border-color: var(--cyan);
