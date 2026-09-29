@@ -345,6 +345,12 @@ function renderHand() {
     const el = document.createElement('div');
     el.className = 'white-card';
     el.dataset.index = i;
+    // Keyboard accessibility: these are click-driven <div>s, so give them
+    // button semantics and a key handler (native <button> would break the
+    // card layout/image markup below).
+    el.tabIndex = 0;
+    el.setAttribute('role', 'button');
+    el.setAttribute('aria-pressed', 'false');
 
     if (card.image) {
       const img = document.createElement('img');
@@ -363,6 +369,11 @@ function renderHand() {
     }
 
     el.addEventListener('click', () => onCardClick(i, el, isWild));
+    el.addEventListener('keydown', e => {
+      if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+      e.preventDefault();
+      onCardClick(i, el, isWild);
+    });
     container.appendChild(el);
   });
 }
@@ -374,6 +385,7 @@ function onCardClick(idx, el, isWild) {
   if (already !== -1) {
     selectedCards.splice(already, 1);
     el.classList.remove('selected');
+    el.setAttribute('aria-pressed', 'false');
     el.querySelector('.card-order')?.remove();
     reindexOrders();
     updateSubmitBtn();
@@ -394,6 +406,7 @@ function onCardClick(idx, el, isWild) {
 
   selectedCards.push(idx);
   el.classList.add('selected');
+  el.setAttribute('aria-pressed', 'true');
   const orderEl = document.createElement('span');
   orderEl.className = 'card-order';
   orderEl.textContent = selectedCards.length;
@@ -571,7 +584,16 @@ socket.on('voting-start', ({ submissions, mySubmissionIdx, blackCard, players, t
     card.appendChild(numBadge);
 
     if (!isMine) {
+      card.tabIndex = 0;
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-pressed', 'false');
+      card.setAttribute('aria-label', `Vote for answer ${idx + 1}`);
       card.addEventListener('click', () => castVote(idx, card));
+      card.addEventListener('keydown', e => {
+        if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+        e.preventDefault();
+        castVote(idx, card);
+      });
     }
     grid.appendChild(card);
   });
@@ -585,10 +607,11 @@ function castVote(idx, cardEl) {
   if (myVoteIdx !== null) {
     // Deselect previous
     const prev = $('submissions-grid').children[myVoteIdx];
-    if (prev) prev.classList.remove('voted-for');
+    if (prev) { prev.classList.remove('voted-for'); prev.setAttribute('aria-pressed', 'false'); }
   }
   myVoteIdx = idx;
   cardEl.classList.add('voted-for');
+  cardEl.setAttribute('aria-pressed', 'true');
   socket.emit('cast-vote', idx);
 }
 
