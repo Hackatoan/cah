@@ -159,6 +159,10 @@ app.post('/api/community-packs', (req, res) => {
 
 // ── Game rooms ────────────────────────────────────────────────────────────
 const rooms = new Map();
+// socketId -> room. getRoomByPlayer() is called on nearly every socket event
+// (play-cards, cast-vote, start-game, add-custom-cards, update-options,
+// disconnect), so keep it O(1) instead of scanning every room's player list.
+const playerRoomIndex = new Map();
 
 function uid() { return Math.random().toString(36).slice(2, 9); }
 
@@ -221,10 +225,7 @@ function dealHand(deck, count) {
 }
 
 function getRoomByPlayer(socketId) {
-  for (const room of rooms.values()) {
-    if (room.players.some(p => p.id === socketId)) return room;
-  }
-  return null;
+  return playerRoomIndex.get(socketId) || null;
 }
 
 function publicPlayers(room) {
@@ -244,7 +245,9 @@ function startGame(room) {
   room.deck = buildDeck(room.options.packs, room.customCards);
 
   if (room.options.rando && room.players.filter(p => !p.isRando).length >= 2) {
-    room.players.push({ id: 'rando_' + uid(), name: 'Rando Cardrissian', score: 0, hand: [], isRando: true });
+    const rando = { id: 'rando_' + uid(), name: 'Rando Cardrissian', score: 0, hand: [], isRando: true };
+    room.players.push(rando);
+    playerRoomIndex.set(rando.id, room);
   }
 
   for (const p of room.players) p.hand = dealHand(room.deck, 10);
@@ -473,6 +476,7 @@ io.on('connection', socket => {
       customCards: { black: [], white: [] },
     };
     rooms.set(code, room);
+    playerRoomIndex.set(socket.id, room);
     socket.join(code);
     socket.emit('room-created', { code });
     broadcastLobby(room);
@@ -484,6 +488,7 @@ io.on('connection', socket => {
     if (room.phase !== 'lobby') return socket.emit('join-error', 'Game already in progress');
     if (room.players.length >= 10) return socket.emit('join-error', 'Room is full (10 max)');
     room.players.push({ id: socket.id, name: (name || 'Player').slice(0, 24), score: 0, hand: [] });
+    playerRoomIndex.set(socket.id, room);
     socket.join(room.code);
     socket.emit('room-joined', { code: room.code });
     broadcastLobby(room);
@@ -573,8 +578,12 @@ io.on('connection', socket => {
     const room = getRoomByPlayer(socket.id);
     if (!room) return;
     room.players = room.players.filter(p => p.id !== socket.id);
+    playerRoomIndex.delete(socket.id);
     if (room.players.filter(p => !p.isRando).length === 0) {
       if (room.timer) clearTimeout(room.timer);
+      // Purge any remaining entries (e.g. a rando) so the index never holds
+      // a reference to a deleted room.
+      for (const p of room.players) playerRoomIndex.delete(p.id);
       rooms.delete(room.code);
       return;
     }
