@@ -81,6 +81,14 @@ app.use('/uploads', express.static(path.join(DATA_DIR, 'uploads'), {
 app.use(express.json({ limit: '1mb' }));
 app.get('/', (_req, res) => res.sendFile(path.join(__dirname, 'public', 'game.html')));
 
+app.get('/privacy', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'privacy.html'));
+});
+
+app.get('/terms', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'terms.html'));
+});
+
 // ── REST: packs list ───────────────────────────────────────────────────────
 app.get('/api/packs', (_req, res) => {
   res.json(ALL_CARDS.packs.map(p => ({ id: p.id, name: p.name })));
