@@ -459,3 +459,20 @@ table.leaderboard th { text-align: left; color: var(--muted); font-weight: norma
 table.leaderboard td { padding: 2px 6px; }
 table.leaderboard th:nth-child(n+3), table.leaderboard td:nth-child(n+3) { text-align: right; }
 table.leaderboard tr.lb-me { color: var(--green); }
+
+/* ── Account-linking widget (public/account.js) ─────────────
+   Deliberately no colors here, it inherits the page's own button/link/text
+   styles so it reads as part of the site instead of a floating overlay. */
+.hk-account-row {
+  margin-top: 6px;
+  font-size: .8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.hk-account-row button {
+  padding: 5px 10px;
+  font-size: .8rem;
+}
