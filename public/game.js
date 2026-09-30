@@ -63,12 +63,15 @@ function goToMenu() {
 $('menu-name').value = window.PlayerName.get();
 loadLeaderboard();
 
-$('btn-create').addEventListener('click', () => {
+if (window.PlayerAccount) window.PlayerAccount.mountWidget('#hk-account');
+
+$('btn-create').addEventListener('click', async () => {
   const name = $('menu-name').value.trim();
   if (!name) return setError('menu-error', T('errEnterName'));
   clearError('menu-error');
   myName = window.PlayerName.set(name);
-  socket.emit('create-room', { name: myName, options: gatherOptions() });
+  const idToken = window.PlayerAccount ? await window.PlayerAccount.getIdToken() : null;
+  socket.emit('create-room', { name: myName, options: gatherOptions(), idToken });
 });
 
 $('btn-goto-join').addEventListener('click', () => {
@@ -83,14 +86,15 @@ $('join-code').addEventListener('input', e => {
   e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
 });
 
-$('btn-join').addEventListener('click', () => {
+$('btn-join').addEventListener('click', async () => {
   const name = $('join-name').value.trim();
   const code = $('join-code').value.trim().toUpperCase();
   if (!name) return setError('join-error', T('errEnterName'));
   if (code.length !== 6) return setError('join-error', T('errRoomCode'));
   clearError('join-error');
   myName = window.PlayerName.set(name);
-  socket.emit('join-room', { code, name: myName });
+  const idToken = window.PlayerAccount ? await window.PlayerAccount.getIdToken() : null;
+  socket.emit('join-room', { code, name: myName, idToken });
 });
 
 async function loadLeaderboard() {

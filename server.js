@@ -7,6 +7,7 @@ const { readFileSync, writeFileSync, mkdirSync } = require('fs');
 const multer = require('multer');
 const Database = require('better-sqlite3');
 const leaderboard = require('./db');
+const { verifyFirebaseToken } = require('./verifyFirebaseToken');
 
 const app = express();
 const server = http.createServer(app);
@@ -89,6 +90,18 @@ app.get('/api/packs', (_req, res) => {
 app.get('/api/leaderboard', async (_req, res) => {
   const players = await leaderboard.getLeaderboard(20);
   res.json({ game: leaderboard.GAME, players });
+});
+
+// Merge a previously-played anonymous nickname's stats into the signed-in
+// account making this request. Rate-limited implicitly by requiring a fresh
+// verified ID token per call (an attacker can't cheaply mint those).
+app.post('/api/claim', async (req, res) => {
+  const decoded = await verifyFirebaseToken(req.body && req.body.idToken);
+  if (!decoded) return res.status(401).json({ error: 'sign in required' });
+  const nickname = leaderboard.cleanName(req.body && req.body.nickname);
+  if (!nickname) return res.status(400).json({ error: 'nickname required' });
+  const result = await leaderboard.claimNickname(nickname, decoded.uid, decoded.name);
+  res.status(result.ok ? 200 : 409).json(result);
 });
 
 // ── REST: image upload ─────────────────────────────────────────────────────
@@ -453,14 +466,14 @@ function endGame(room, winner) {
   const humans = room.players.filter(p => !p.isRando);
   if (humans.length >= 2) {
     for (const p of humans) {
-      leaderboard.recordResult(p.name, p.id === winner.id ? 'win' : 'loss');
+      leaderboard.recordResult(p.name, p.id === winner.id ? 'win' : 'loss', p.uid || null);
     }
   }
 }
 
 // ── Socket handlers ───────────────────────────────────────────────────────
 io.on('connection', socket => {
-  socket.on('create-room', ({ name, options }) => {
+  socket.on('create-room', async ({ name, options, idToken }) => {
     const opts = {
       scoreGoal: Math.min(20, Math.max(1, Number(options?.scoreGoal) || 7)),
       timerSeconds: [0, 30, 60, 90, 120].includes(Number(options?.timerSeconds)) ? Number(options.timerSeconds) : 60,
@@ -470,7 +483,7 @@ io.on('connection', socket => {
     const code = generateCode();
     const room = {
       code, hostId: socket.id, phase: 'lobby', round: 0,
-      players: [{ id: socket.id, name: (name || 'Player 1').slice(0, 24), score: 0, hand: [] }],
+      players: [{ id: socket.id, name: (name || 'Player 1').slice(0, 24), score: 0, hand: [], uid: null }],
       blackCard: null, submissions: [], shuffledSubs: null, votes: {},
       deck: null, timer: null, options: opts,
       customCards: { black: [], white: [] },
@@ -480,18 +493,38 @@ io.on('connection', socket => {
     socket.join(code);
     socket.emit('room-created', { code });
     broadcastLobby(room);
+
+    // Verified asynchronously — the room is already created above so a
+    // slow/failed verification never blocks or breaks room creation, it
+    // just means this player's rounds won't be linked to an account.
+    if (idToken) {
+      const decoded = await verifyFirebaseToken(idToken);
+      if (decoded) {
+        const player = room.players.find(p => p.id === socket.id);
+        if (player) player.uid = decoded.uid;
+      }
+    }
   });
 
-  socket.on('join-room', ({ code, name }) => {
+  socket.on('join-room', async ({ code, name, idToken }) => {
     const room = rooms.get((code || '').toUpperCase().trim());
     if (!room) return socket.emit('join-error', 'Room not found');
     if (room.phase !== 'lobby') return socket.emit('join-error', 'Game already in progress');
     if (room.players.length >= 10) return socket.emit('join-error', 'Room is full (10 max)');
-    room.players.push({ id: socket.id, name: (name || 'Player').slice(0, 24), score: 0, hand: [] });
+    room.players.push({ id: socket.id, name: (name || 'Player').slice(0, 24), score: 0, hand: [], uid: null });
     playerRoomIndex.set(socket.id, room);
     socket.join(room.code);
     socket.emit('room-joined', { code: room.code });
     broadcastLobby(room);
+
+    // Verified asynchronously, same reasoning as create-room above.
+    if (idToken) {
+      const decoded = await verifyFirebaseToken(idToken);
+      if (decoded) {
+        const player = room.players.find(p => p.id === socket.id);
+        if (player) player.uid = decoded.uid;
+      }
+    }
   });
 
   socket.on('start-game', () => {
