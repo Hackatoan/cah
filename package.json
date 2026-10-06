@@ -9,6 +9,7 @@
     "i18n:build": "node scripts/i18n-build.mjs"
   },
   "dependencies": {
+    "@hackatoan/leaderboard": "https://github.com/Hackatoan/game-leaderboard/archive/refs/tags/v1.0.0.tar.gz",
     "better-sqlite3": "^9.4.3",
     "express": "^4.18.2",
     "jose": "^6.2.12",
