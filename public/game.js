@@ -408,6 +408,7 @@ function onCardClick(idx, el, isWild) {
     el.appendChild(span);
   }
 
+  if (window.SFX) SFX.play('flip');
   selectedCards.push(idx);
   el.classList.add('selected');
   el.setAttribute('aria-pressed', 'true');
@@ -437,6 +438,7 @@ $('btn-submit-cards').addEventListener('click', () => {
   if (selectedCards.length !== (currentBlackCard?.pick || 1)) return;
   const typedCards = {};
   selectedCards.forEach(idx => { if (handCards[idx].originalWild) typedCards[idx] = handCards[idx].text; });
+  if (window.SFX) SFX.play('pop');
   socket.emit('play-cards', { indices: selectedCards, typedCards });
   hideAllPhases();
   $('phase-playing').classList.remove('hidden');
@@ -502,6 +504,7 @@ socket.on('room-created', ({ code }) => {
 });
 
 socket.on('room-joined', ({ code }) => {
+  if (window.SFX) SFX.play('join');
   roomCode = code;
   isHost = false;
   $('lobby-code').textContent = code;
@@ -510,10 +513,13 @@ socket.on('room-joined', ({ code }) => {
   showScreen('s-lobby');
 });
 
-socket.on('join-error', msg => setError('join-error', msg));
+socket.on('join-error', msg => { if (window.SFX) SFX.play('error'); setError('join-error', msg); });
 socket.on('error-msg', msg => setError('lobby-error', msg));
 
+let lastLobbySize = 0;
 socket.on('lobby-update', ({ players, hostId, options, customCounts }) => {
+  if (lastLobbySize && players.length > lastLobbySize) if (window.SFX) SFX.play('join');
+  lastLobbySize = players.length;
   isHost = socket.id === hostId;
   $('host-settings').classList.toggle('hidden', !isHost);
   $('guest-waiting').classList.toggle('hidden', isHost);
@@ -544,6 +550,7 @@ socket.on('custom-cards-added', ({ count }) => {
 });
 
 socket.on('round-start', ({ blackCard, round, hand, scores, timerSeconds, players }) => {
+  if (window.SFX) SFX.play('turn');
   currentBlackCard = blackCard;
   handCards = hand;
   selectedCards = [];
@@ -568,6 +575,7 @@ socket.on('submission-count', ({ submitted, total }) => {
 });
 
 socket.on('voting-start', ({ submissions, mySubmissionIdx, blackCard, players, totalVoters }) => {
+  if (window.SFX) SFX.play('turn');
   currentBlackCard = blackCard;
   hideAllPhases();
   stopTimer();
@@ -613,6 +621,7 @@ function castVote(idx, cardEl) {
     const prev = $('submissions-grid').children[myVoteIdx];
     if (prev) { prev.classList.remove('voted-for'); prev.setAttribute('aria-pressed', 'false'); }
   }
+  if (window.SFX) SFX.play('pop');
   myVoteIdx = idx;
   cardEl.classList.add('voted-for');
   cardEl.setAttribute('aria-pressed', 'true');
@@ -638,6 +647,7 @@ socket.on('round-result', ({ winnerId, winnerName, winningCards, winningIdx, tal
   $('phase-result').classList.remove('hidden');
 
   const isMe = winnerId === myId;
+  if (window.SFX) SFX.play(isMe ? 'win' : 'click');
   $('result-winner-name').textContent = isMe ? '🏆 YOU WIN THIS ROUND!' : `${winnerName} wins!`;
   $('result-winner-sub').textContent = tiedCount > 1 ? `(tied — won by random draw)` : '';
 
@@ -689,6 +699,7 @@ socket.on('round-result', ({ winnerId, winnerName, winningCards, winningIdx, tal
 socket.on('game-over', ({ winnerId, winnerName, scores, players }) => {
   showScreen('s-gameover');
   const isMe = winnerId === myId;
+  if (window.SFX) setTimeout(() => SFX.play(isMe ? 'win' : 'lose'), 300);
   $('go-winner').textContent = isMe ? T('youWin') : T('winsName', { name: winnerName });
   $('go-sub').textContent = isMe ? T('congrats') : T('betterLuck');
 
