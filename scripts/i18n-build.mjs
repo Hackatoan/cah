@@ -38,7 +38,7 @@ const switcher = (cur) => {
     const a = l === cur;
     return `<a href="${href(l)}" hreflang="${HREFLANG[l]}"${a ? ' aria-current="true"' : ''} style="${a ? 'color:#fff;font-weight:700;' : 'color:#9aa;'}text-decoration:none;">${SWITCH_LABEL[l]}</a>`;
   });
-  return `\n<!-- i18n:switcher:start -->\n<nav aria-label="Language" style="position:fixed;top:8px;right:10px;z-index:9999;font-size:12px;font-family:system-ui,-apple-system,sans-serif;background:rgba(15,15,18,.92);border:1px solid #333;border-radius:999px;padding:5px 12px;display:flex;gap:9px;box-shadow:0 2px 10px rgba(0,0,0,.5);">\n  ${items.join('\n  ')}\n</nav>\n<!-- i18n:switcher:end -->`;
+  return `\n<!-- i18n:switcher:start -->\n<nav aria-label="Language" style="position:relative;width:max-content;margin:8px 10px 0 auto;z-index:9999;font-size:12px;font-family:system-ui,-apple-system,sans-serif;background:rgba(15,15,18,.92);border:1px solid #333;border-radius:999px;padding:5px 12px;display:flex;gap:9px;box-shadow:0 2px 10px rgba(0,0,0,.5);">\n  ${items.join('\n  ')}\n</nav>\n<!-- i18n:switcher:end -->`;
 };
 const runtimeBlock = (t) => {
   const dict = Object.assign({}, t.ui, t.runtime);

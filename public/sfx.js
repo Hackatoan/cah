@@ -122,16 +122,41 @@
     paint();
     if (!muted) play('click');
   }
+  // Controls live in an in-flow utility bar (#site-utils) instead of floating over the page.
+  // A page can provide its own #site-utils to place the bar inside its existing HUD/header.
+  function bar() {
+    var b = document.getElementById('site-utils');
+    if (b) return b;
+    var st = document.createElement('style');
+    st.textContent = '#site-utils.site-utils-default{display:flex;justify-content:flex-end;align-items:center;gap:8px;' +
+      'padding:6px 10px;box-sizing:border-box;position:relative;z-index:9999;font-family:system-ui,-apple-system,sans-serif}';
+    document.head.appendChild(st);
+    b = document.createElement('div');
+    b.id = 'site-utils';
+    b.className = 'site-utils-default';
+    document.body.insertBefore(b, document.body.firstChild);
+    return b;
+  }
   function mount() {
     if (btn || !document.body) return;
+    var host = bar();
     btn = document.createElement('button');
     btn.type = 'button';
     btn.id = 'sfx-toggle';
-    btn.style.cssText = 'position:fixed;left:10px;top:10px;z-index:9999;width:38px;height:38px;border-radius:50%;' +
-      'border:1px solid rgba(255,255,255,.25);background:rgba(20,20,28,.85);color:#fff;font-size:18px;line-height:1;' +
+    btn.style.cssText = 'width:34px;height:34px;border-radius:50%;flex:none;order:1;' +
+      'border:1px solid rgba(255,255,255,.25);background:rgba(20,20,28,.85);color:#fff;font-size:16px;line-height:1;' +
       'cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.4);';
     btn.addEventListener('click', function () { setMuted(!muted); });
-    document.body.appendChild(btn);
+    host.appendChild(btn);
+    var lang = document.getElementById('lang-switch');
+    if (lang) {
+      lang.style.position = 'relative';
+      lang.style.top = lang.style.right = 'auto';
+      lang.style.order = '2';
+      lang.style.padding = '0';
+      lang.style.display = 'block';
+      host.appendChild(lang);
+    }
     paint();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount);
