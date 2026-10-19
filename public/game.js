@@ -359,6 +359,7 @@ function renderHand() {
     if (card.image) {
       const img = document.createElement('img');
       img.src = card.image;
+      img.alt = 'Custom card image';
       img.style.cssText = 'width:100%;max-height:70px;object-fit:cover;display:block;margin-bottom:.4rem';
       el.appendChild(img);
     }
@@ -459,6 +460,7 @@ function buildSubmissionCard(sub, { voteable, isMine, tally } = {}) {
     if (c.image) {
       const img = document.createElement('img');
       img.src = c.image;
+      img.alt = 'Custom card image';
       img.style.cssText = 'width:100%;max-height:70px;object-fit:cover;display:block;margin-bottom:.3rem';
       p.appendChild(img);
     }
