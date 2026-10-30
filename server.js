@@ -20,6 +20,27 @@ mkdirSync(path.join(DATA_DIR, 'uploads'), { recursive: true });
 
 const ALL_CARDS = JSON.parse(readFileSync(path.join(__dirname, 'cards.json'), 'utf8'));
 
+// ── Rate limiting ──────────────────────────────────────────────────────────
+const rateLimitStore = new Map(); // ip -> { requests: [...timestamps], blocked: bool }
+function rateLimit(maxRequests, windowMs) {
+  return (req, res, next) => {
+    const ip = req.ip || req.socket.remoteAddress || 'unknown';
+    const now = Date.now();
+    if (!rateLimitStore.has(ip)) rateLimitStore.set(ip, []);
+    const timestamps = rateLimitStore.get(ip);
+    // Clean old timestamps outside the window
+    const cutoff = now - windowMs;
+    const recentRequests = timestamps.filter(t => t > cutoff);
+    recentRequests.push(now);
+    rateLimitStore.set(ip, recentRequests);
+
+    if (recentRequests.length > maxRequests) {
+      return res.status(429).json({ error: 'Too many requests' });
+    }
+    next();
+  };
+}
+
 // ── DB ─────────────────────────────────────────────────────────────────────
 const db = new Database(path.join(DATA_DIR, 'community.db'));
 db.exec(`
@@ -101,9 +122,8 @@ app.get('/api/leaderboard', async (_req, res) => {
 });
 
 // Merge a previously-played anonymous nickname's stats into the signed-in
-// account making this request. Rate-limited implicitly by requiring a fresh
-// verified ID token per call (an attacker can't cheaply mint those).
-app.post('/api/claim', async (req, res) => {
+// account making this request. Rate-limited to prevent nickname takeover abuse.
+app.post('/api/claim', rateLimit(20, 60 * 60 * 1000), async (req, res) => {
   const decoded = await verifyFirebaseToken(req.body && req.body.idToken);
   if (!decoded) return res.status(401).json({ error: 'sign in required' });
   const nickname = leaderboard.cleanName(req.body && req.body.nickname);
@@ -113,7 +133,7 @@ app.post('/api/claim', async (req, res) => {
 });
 
 // ── REST: image upload ─────────────────────────────────────────────────────
-app.post('/upload/image', upload.single('image'), (req, res) => {
+app.post('/upload/image', rateLimit(10, 15 * 60 * 1000), upload.single('image'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'Invalid or missing image' });
   const ext = detectImageType(req.file.buffer);
   if (!ext) return res.status(400).json({ error: 'Invalid or missing image' });
@@ -149,7 +169,7 @@ app.get('/api/community-packs/:id/cards', (req, res) => {
   });
 });
 
-app.post('/api/community-packs', (req, res) => {
+app.post('/api/community-packs', rateLimit(5, 60 * 60 * 1000), (req, res) => {
   const { name, author, black = [], white = [] } = req.body;
   if (!name?.trim()) return res.status(400).json({ error: 'Pack name required' });
   if (!black.length && !white.length) return res.status(400).json({ error: 'Must have at least one card' });
