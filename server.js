@@ -151,9 +151,14 @@ app.post('/upload/image', rateLimit(10, 15 * 60 * 1000), upload.single('image'),
 app.get('/api/community-packs', (_req, res) => {
   const packs = db.prepare(`
     SELECT p.id, p.name, p.author, p.created_at,
-      (SELECT COUNT(*) FROM black_cards WHERE pack_id = p.id) AS black_count,
-      (SELECT COUNT(*) FROM white_cards WHERE pack_id = p.id) AS white_count
-    FROM packs p ORDER BY p.id DESC LIMIT 50
+      COUNT(DISTINCT bc.id) AS black_count,
+      COUNT(DISTINCT wc.id) AS white_count
+    FROM packs p
+    LEFT JOIN black_cards bc ON bc.pack_id = p.id
+    LEFT JOIN white_cards wc ON wc.pack_id = p.id
+    GROUP BY p.id, p.name, p.author, p.created_at
+    ORDER BY p.id DESC
+    LIMIT 50
   `).all();
   res.json(packs);
 });
