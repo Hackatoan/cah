@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
 
+# Site rules for all crawlers (merged with the Cloudflare-managed `User-agent: *` group).
+# /api/ is JSON (leaderboard etc.), not pages.
+User-agent: *
+Disallow: /api/
+
 Sitemap: https://cah.hackatoa.com/sitemap.xml
