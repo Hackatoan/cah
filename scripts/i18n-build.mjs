@@ -4,7 +4,8 @@
 // locales are written to public/<locale>/index.html (served by express.static).
 // Injects hreflang + switcher + a merged {ui,runtime} dict (window.__I18N__) so
 // game.js localizes runtime strings. Deterministic replacement only.
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -23,10 +24,14 @@ const rep = (s, from, to, ctx) => {
   return s.split(from).join(to);
 };
 
+const SWITCHER_SLOT = '\u0000I18N_SWITCHER\u0000';
 let base = readFileSync(join(ROOT, 'public/game.html'), 'utf8')
   .replace(/\s*<!-- i18n:hreflang:start -->[\s\S]*?<!-- i18n:hreflang:end -->/g, '')
+  // keep the switcher wherever it already sits in game.html (default: right after <body>)
+  .replace(/\s*<!-- i18n:switcher:start -->[\s\S]*?<!-- i18n:switcher:end -->/, SWITCHER_SLOT)
   .replace(/\s*<!-- i18n:switcher:start -->[\s\S]*?<!-- i18n:switcher:end -->/g, '')
   .replace(/\s*<!-- i18n:runtime:start -->[\s\S]*?<!-- i18n:runtime:end -->/g, '');
+if (!base.includes(SWITCHER_SLOT)) base = base.replace(/(<body[^>]*>)/, `$1${SWITCHER_SLOT}`);
 
 const hreflangBlock = () => {
   const links = LOCALES.map((l) => `  <link rel="alternate" hreflang="${HREFLANG[l]}" href="${url(l)}" />`);
@@ -38,7 +43,12 @@ const switcher = (cur) => {
     const a = l === cur;
     return `<a href="${href(l)}" hreflang="${HREFLANG[l]}"${a ? ' aria-current="true"' : ''} style="${a ? 'color:#fff;font-weight:700;' : 'color:#9aa;'}text-decoration:none;">${SWITCH_LABEL[l]}</a>`;
   });
-  return `\n<!-- i18n:switcher:start -->\n<nav aria-label="Language" style="position:relative;width:max-content;margin:8px 10px 0 auto;z-index:9999;font-size:12px;font-family:system-ui,-apple-system,sans-serif;background:rgba(15,15,18,.92);border:1px solid #333;border-radius:999px;padding:5px 12px;display:flex;gap:9px;box-shadow:0 2px 10px rgba(0,0,0,.5);">\n  ${items.join('\n  ')}\n</nav>\n<!-- i18n:switcher:end -->`;
+  // Collapsed globe button + popup (in page flow, not fixed). Matches the hand-tuned
+  // markup shipped in 35a96a6 / 27f0ceb so rebuilding doesn't revert it.
+  const btn = '<button id="lang-btn" type="button" aria-label="Language" aria-haspopup="true" style="display:flex;align-items:center;justify-content:center;width:34px;height:34px;padding:0;background:rgba(6,10,6,.92);border:1px solid #1a3d1a;border-radius:999px;color:#8a8;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.5)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><ellipse cx="12" cy="12" rx="4" ry="9"/></svg></button>';
+  const pop = `<div id="lang-pop" role="menu" style="display:none;position:absolute;top:calc(100% + 8px);right:0;flex-direction:column;gap:8px;background:rgba(6,10,6,.95);border:1px solid #1a3d1a;border-radius:10px;padding:9px 12px;box-shadow:0 4px 16px rgba(0,0,0,.6);font-size:12px;white-space:nowrap">${items.join('\n  ')}</div>`;
+  const js = "<script>(function(){var b=document.getElementById('lang-btn'),p=document.getElementById('lang-pop');if(!b||!p)return;var d=p.querySelector('a:not([aria-current])');if(d&&d.style&&d.style.color)b.style.color=d.style.color;b.addEventListener('click',function(e){e.stopPropagation();p.style.display=p.style.display==='flex'?'none':'flex';});p.addEventListener('click',function(e){e.stopPropagation();});document.addEventListener('click',function(){p.style.display='none';});})();</script>";
+  return `\n<!-- i18n:switcher:start -->\n<div id="lang-switch" style="position:relative;display:flex;justify-content:flex-end;padding:6px 10px;z-index:99999;font-family:system-ui,-apple-system,sans-serif">${btn}${pop}</div>\n${js}\n<!-- i18n:switcher:end -->`;
 };
 const runtimeBlock = (t) => {
   const dict = Object.assign({}, t.ui, t.runtime);
@@ -73,29 +83,45 @@ function build(loc, t) {
     h = rep(h, `>${en.footer.builtBy} <`, `>${t.footer.builtBy} <`, 'footer.builtBy');
     h = rep(h, `>${en.footer.allGames}<`, `>${t.footer.allGames}<`, 'footer.allGames');
     h = rep(h, `>${en.footer.coffee}<`, `>${t.footer.coffee}<`, 'footer.coffee');
-    // absolute assets for subdir
-    h = h.replace(/href="style\.css"/g, 'href="/style.css"')
-         .replace(/src="name\.js"/g, 'src="/name.js"')
-         .replace(/src="game\.js"/g, 'src="/game.js"');
+    // absolute paths for every local asset: locale pages live at /<loc>/, so a
+    // relative "sfx.js" would resolve to /<loc>/sfx.js and 404.
+    h = h.replace(/\b(src|href)="(?![a-z][a-z0-9+.-]*:|\/|#)([^"]+\.(?:js|css|svg|png|ico|json|webmanifest))"/gi, '$1="/$2"');
   }
   // inject hreflang + switcher + runtime
   h = h.replace('</head>', `${hreflangBlock()}\n</head>`)
-       .replace(/(<body[^>]*>)/, `$1${switcher(loc)}`)
+       .replace(SWITCHER_SLOT, () => switcher(loc))
        .replace(/<script src="\/?game\.js"><\/script>/, (m) => `${runtimeBlock(t)}${m}`);
   return h;
 }
 
+const outPath = (loc) => (loc === 'en' ? 'public/game.html' : `public/${loc}/index.html`);
+// Previous committed version of a file (git HEAD), falling back to what's on disk.
+const previous = (rel) => {
+  try { return execFileSync('git', ['show', `HEAD:${rel}`], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }); }
+  catch { return existsSync(join(ROOT, rel)) ? readFileSync(join(ROOT, rel), 'utf8') : null; }
+};
+// Existing <lastmod> per URL, so unchanged pages keep their date (no churn on rebuild).
+const oldLastmod = {};
+{
+  const prev = previous('public/sitemap.xml') || '';
+  for (const m of prev.matchAll(/<loc>([^<]+)<\/loc>\s*<lastmod>([^<]+)<\/lastmod>/g)) oldLastmod[m[1]] = m[2];
+}
+const today = new Date().toLocaleDateString('en-CA'); // local YYYY-MM-DD
+const lastmod = {};
+
 for (const loc of LOCALES) {
   const t = loc === 'en' ? en : JSON.parse(readFileSync(join(ROOT, `i18n/${loc}.json`), 'utf8'));
   const out = build(loc, t);
-  if (loc === 'en') writeFileSync(join(ROOT, 'public/game.html'), out);
-  else { mkdirSync(join(ROOT, `public/${loc}`), { recursive: true }); writeFileSync(join(ROOT, `public/${loc}/index.html`), out); }
-  console.log(`${loc.padEnd(5)} -> ${loc === 'en' ? 'public/game.html' : `public/${loc}/index.html`}`);
+  const rel = outPath(loc);
+  // Bump lastmod only when the generated page differs from the committed one.
+  lastmod[loc] = (out === previous(rel) && oldLastmod[url(loc)]) || today;
+  if (loc !== 'en') mkdirSync(join(ROOT, `public/${loc}`), { recursive: true });
+  writeFileSync(join(ROOT, rel), out);
+  console.log(`${loc.padEnd(5)} -> ${rel}`);
 }
 
-const today = new Date().toISOString().slice(0, 10);
 const alts = LOCALES.map((l) => `    <xhtml:link rel="alternate" hreflang="${HREFLANG[l]}" href="${url(l)}"/>`).join('\n') + `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${ORIGIN}/"/>`;
-const urls = LOCALES.map((l) => `  <url>\n    <loc>${url(l)}</loc>\n    <lastmod>${today}</lastmod>\n${alts}\n  </url>`).join('\n');
+const urls = LOCALES.map((l) => `  <url>\n    <loc>${url(l)}</loc>\n    <lastmod>${lastmod[l]}</lastmod>\n${alts}\n  </url>`).join('\n');
 writeFileSync(join(ROOT, 'public/sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls}\n</urlset>\n`);
 console.log('sitemap -> public/sitemap.xml');
 console.log(warnings ? `\nDone with ${warnings} anchor warning(s).` : '\nDone. All anchors matched.');

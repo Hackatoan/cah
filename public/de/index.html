@@ -44,6 +44,25 @@
   }
   </script>
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Is Cards Against Hackatoa free to play?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. It's a free online party card game — no download, install, or account required." } },
+      { "@type": "Question", "name": "How do you play Cards Against Hackatoa?",
+        "acceptedAnswer": { "@type": "Answer", "text": "A black card shows a fill-in-the-blank prompt. Everyone plays white card(s) from their hand to complete it, then everyone votes anonymously for the funniest answer — there's no card czar. The most votes wins the round, and the first player to the score goal wins the game." } },
+      { "@type": "Question", "name": "How many players do you need?",
+        "acceptedAnswer": { "@type": "Answer", "text": "It's a multiplayer game — play online with friends in a shared room, each on their own device." } },
+      { "@type": "Question", "name": "Can I use custom or my own cards?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. You can add custom cards, type wild cards on the fly, upload image cards, and pull from a community pack library." } },
+      { "@type": "Question", "name": "Do I need the physical Cards Against Humanity game?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. Cards Against Hackatoa is a free, browser-based party game inspired by that style of game — everything runs online, nothing to buy." } }
+    ]
+  }
+  </script>
+
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/style.css">
   <style>
@@ -92,6 +111,27 @@
   <!-- i18n:hreflang:end -->
 </head>
 <body>
+<div id="sr-announcer" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+<section style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">
+  <h1>Cards Against Hackatoa — free online party card game</h1>
+  <p>Cards Against Hackatoa is a free, browser-based party card game inspired by Cards Against Humanity. A black card shows a fill-in-the-blank prompt and everyone plays white cards to complete it — then, instead of a single card czar, everyone votes anonymously for the funniest answer. The most votes wins the round, and the first player to reach the score goal wins the game.</p>
+  <h2>How to play</h2>
+  <p>Create or join a room and share the code with friends. Each round, read the black card, pick the white card(s) from your hand that make the best answer, and lock them in. Once everyone has played, vote for your favourite answer (you can't vote for your own). Points are tallied automatically and a new round begins.</p>
+  <h2>Features</h2>
+  <p>No card czar — anonymous voting every round, custom and typeable wild cards, image-card uploads, a community pack library, and adjustable score goals and card packs. It's multiplayer and runs entirely in your browser with no download or account.</p>
+  <h2>Frequently asked questions</h2>
+  <dl>
+    <dt>Is Cards Against Hackatoa free?</dt>
+    <dd>Yes — it's free to play in your browser with no download or account.</dd>
+    <dt>How many players do you need?</dt>
+    <dd>It's multiplayer; play online with friends in a shared room, each on their own device.</dd>
+    <dt>Can I use my own cards?</dt>
+    <dd>Yes — add custom cards, type wild cards on the fly, upload image cards, and use community packs.</dd>
+    <dt>Do I need the physical game?</dt>
+    <dd>No. Everything runs online — nothing to buy.</dd>
+  </dl>
+  <p>Explore more free browser games at <a href="https://games.hackatoa.com">Hackatoa Games</a>.</p>
+</section>
 <!-- i18n:switcher:start -->
 <div id="lang-switch" style="position:relative;display:flex;justify-content:flex-end;padding:6px 10px;z-index:99999;font-family:system-ui,-apple-system,sans-serif"><button id="lang-btn" type="button" aria-label="Language" aria-haspopup="true" style="display:flex;align-items:center;justify-content:center;width:34px;height:34px;padding:0;background:rgba(6,10,6,.92);border:1px solid #1a3d1a;border-radius:999px;color:#8a8;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.5)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><ellipse cx="12" cy="12" rx="4" ry="9"/></svg></button><div id="lang-pop" role="menu" style="display:none;position:absolute;top:calc(100% + 8px);right:0;flex-direction:column;gap:8px;background:rgba(6,10,6,.95);border:1px solid #1a3d1a;border-radius:10px;padding:9px 12px;box-shadow:0 4px 16px rgba(0,0,0,.6);font-size:12px;white-space:nowrap"><a href="/" hreflang="en" style="color:#9aa;text-decoration:none;">EN</a>
   <a href="/es/" hreflang="es" style="color:#9aa;text-decoration:none;">ES</a>
@@ -111,6 +151,7 @@
     <a href="/terms">Terms</a>
     <a href="https://buymeacoffee.com/hackatoa" target="_blank" rel="noopener" class="footer-coffee">☕ Gib mir einen Kaffee aus</a>
   </div>
+  <div id="hk-account" class="hk-account-row"></div>
 </footer>
 
 <!-- ── Menu ── -->
@@ -294,8 +335,8 @@
 
 <!-- ── Custom Cards Modal ── -->
 <div class="modal-backdrop" id="modal-custom">
-  <div class="modal">
-    <div class="modal-title">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-custom-title">
+    <div class="modal-title" id="modal-custom-title">
       EIGENE KARTEN
       <button class="modal-close" id="btn-close-modal" aria-label="Close">✕</button>
     </div>
@@ -342,8 +383,8 @@
 
 <!-- ── Community Packs Modal ── -->
 <div class="modal-backdrop" id="modal-community">
-  <div class="modal">
-    <div class="modal-title">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-community-title">
+    <div class="modal-title" id="modal-community-title">
       COMMUNITY PACKS
       <button class="modal-close" id="btn-close-community" aria-label="Close">✕</button>
     </div>
@@ -357,6 +398,9 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="/sfx.js"></script>
 <script src="/name.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+<script src="/account.js"></script>
 <!-- i18n:runtime:start -->
 <script>
 window.__I18N__ = {"yourName":"DEIN NAME","enterName":"Gib deinen Namen ein","createRoom":"RAUM ERSTELLEN","joinRoom":"RAUM BETRETEN","leaderboard":"🏆 BESTENLISTE","colPlayer":"Spieler","loading":"Lädt…","joinGame":"SPIEL BETRETEN","roomCode":"RAUMCODE","codePlaceholder":"6-stelliger Code","back":"ZURÜCK","join":"BETRETEN","lobby":"LOBBY","shareCode":"Teile diesen Code mit Freunden","copyInvite":"EINLADUNGSLINK KOPIEREN","settings":"EINSTELLUNGEN","scoreGoal":"PUNKTZIEL","timerSec":"TIMER (SEK)","timerOff":"Aus","wildCards":"Joker auf der Hand","typeYourOwn":"(selbst eingeben)","perPlayer":"2 pro Spieler","cardPacks":"KARTENPACKS","customCards":"EIGENE KARTEN","communityPacks":"COMMUNITY-PACKS","startGame":"SPIEL STARTEN","waitingHost":"Warten darauf, dass der Gastgeber das Spiel startet...","leave":"VERLASSEN","yourHandSelect":"DEINE HAND — AUSWÄHLEN","cards":"KARTE(N)","submit":"ABSENDEN","voteBest":"FÜR DIE BESTE ANTWORT STIMMEN","youVoted":"Du hast abgestimmt! Warten auf andere...","nextRoundIn":"Nächste Runde beginnt in","playAgain":"NOCHMALS SPIELEN","mainMenu":"HAUPTMENÜ","blackCardsLabel":"SCHWARZE KARTEN (eine pro Zeile, verwende ___ für Lücken)","blackCardsExample":"Beispiel: Der Grund, warum ich zu spät bin, ist ___.","whiteCardsLabel":"WEISSE KARTEN (eine pro Zeile)","whiteImageLabel":"WEISSE KARTE MIT BILD","uploadHint":"Lade ein Bild hoch — es wird zu einer weißen Karte (optionaler Text unten)","upload":"HOCHLADEN","captionPlaceholder":"Optionaler Text für Bildkarte","savePackLabel":"DIESES PACK IN DER COMMUNITY-BIBLIOTHEK SPEICHERN (optional)","packNamePlaceholder":"Pack-Name (z. B. 'Büroklamotten')","saveToCommunity":"IN COMMUNITY SPEICHERN","addCardsToGame":"KARTEN ZUM SPIEL HINZUFÜGEN","communityHint":"Von anderen Spielern eingereichte Packs. Klicke auf HINZUFÜGEN, um sie als eigene Karten zu laden.","round":"RUNDE {n}","pick":"WÄHLE {n}","youWin":"DU GEWINNST!","winsName":"{name} GEWINNT!","betterLuck":"Beim nächsten Mal klappt's.","congrats":"Glückwunsch, du glorreicher Bastard.","pickFavourite":"Wähle deine Lieblingsantwort — du kannst nicht für deine eigene stimmen","yours":"DEINE","winnerStar":"★ GEWINNER","saved":"✓ GESPEICHERT!","inviteCopied":"✓ LINK KOPIERT!","imageQueued":"✓ Bild eingereiht ({n} gesamt)","submittedCount":"{done} / {total} eingereicht","typeAnswer":"Gib deine Antwort ein:","errAddCards":"Füge zuerst einige Karten hinzu","errPackName":"Gib einen Pack-Namen ein","errAtLeastOne":"Gib mindestens eine Karte ein","errRoomCode":"Gib den 6-stelligen Raumcode ein","errEnterName":"Gib deinen Namen ein","errSavePack":"Pack konnte nicht gespeichert werden","errLoadPack":"Pack konnte nicht geladen werden","errLoadPacks":"Packs konnten nicht geladen werden.","errSelectImage":"Wähle zuerst ein Bild aus","errUpload":"Upload fehlgeschlagen — versuche es erneut"};
@@ -377,7 +421,7 @@ window.t = function(k, p){ var d = window.__I18N__ || {}; var s = String(k).spli
   console.log('%cAssemble I→V at hackatoa.com/protocol', dim);
 }catch(e){}})();
 </script>
-<footer style="position:fixed;bottom:0;left:0;width:100%;box-sizing:border-box;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);padding:5px 14px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:center;font-size:12px;z-index:9999;font-family:system-ui,-apple-system,sans-serif;"><a href="https://hackatoa.com" target="_blank" rel="noopener" style="color:#c9c9c9;text-decoration:none;">Hackatoa</a><a href="https://games.hackatoa.com" target="_blank" rel="noopener" style="color:#c9c9c9;text-decoration:none;">All Games</a><a href="https://github.com/Hackatoan/cah" target="_blank" rel="noopener" style="color:#c9c9c9;text-decoration:none;">Source</a><a href="https://github.com/Hackatoan/cah/issues/new" target="_blank" rel="noopener" style="color:#c9c9c9;text-decoration:none;">Report an issue</a><a href="/privacy" style="color:#c9c9c9;text-decoration:none;">Privacy</a><a href="/terms" style="color:#c9c9c9;text-decoration:none;">Terms</a><a href="https://buymeacoffee.com/hackatoa" target="_blank" rel="noopener" style="color:#ffc95a;text-decoration:none;">☕ Buy me a coffee</a></footer>
+<footer style="position:fixed;bottom:0;left:0;width:100%;box-sizing:border-box;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);padding:5px 14px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:center;font-size:12px;z-index:9999;font-family:system-ui,-apple-system,sans-serif;"><a href="https://hackatoa.com" target="_blank" rel="noopener" style="color:#c9c9c9;text-decoration:none;">Hackatoa</a><a href="https://games.hackatoa.com" target="_blank" rel="noopener" style="color:#c9c9c9;text-decoration:none;">Alle Spiele</a><a href="https://github.com/Hackatoan/cah" target="_blank" rel="noopener" style="color:#c9c9c9;text-decoration:none;">Source</a><a href="https://github.com/Hackatoan/cah/issues/new" target="_blank" rel="noopener" style="color:#c9c9c9;text-decoration:none;">Report an issue</a><a href="/privacy" style="color:#c9c9c9;text-decoration:none;">Privacy</a><a href="/terms" style="color:#c9c9c9;text-decoration:none;">Terms</a><a href="https://buymeacoffee.com/hackatoa" target="_blank" rel="noopener" style="color:#ffc95a;text-decoration:none;">☕ Gib mir einen Kaffee aus</a></footer>
 <script src="https://hackatoa.com/cookie-notice.js" data-mode="essential" data-policy="https://hackatoa.com/cookies/" data-privacy="/privacy.html" defer></script>
 </body>
 </html>
