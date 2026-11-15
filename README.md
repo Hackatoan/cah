@@ -12,7 +12,7 @@ Create or join a room by code and play with friends in real time. No account, no
 
 - Real-time multiplayer rooms (join by code)
 - One-click "Copy invite link" in the lobby (opens straight to the join screen with the code filled in)
-- Configurable rounds and settings
+- Configurable rounds and settings (the host's last score goal, timer, Rando and pack picks are remembered for the next room)
 - Global leaderboard
 - 6-language localization
 

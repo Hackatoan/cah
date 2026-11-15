@@ -128,10 +128,43 @@ function getSelectedPacks() {
   return packs.length ? packs : ['all'];
 }
 
+// Remember the host's last-used lobby settings (score goal, timer, Rando, packs)
+// in localStorage so the next room starts with them. Per-browser only; storage
+// failures (private mode, blocked site data) silently fall back to defaults.
+const SETTINGS_KEY = 'cah:hostSettings';
+const TIMER_CHOICES = [0, 30, 60, 90, 120];
+
+function loadHostSettings() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || 'null');
+    return s && typeof s === 'object' ? s : null;
+  } catch { return null; }
+}
+
+function saveHostSettings() {
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(gatherOptions())); } catch { /* ignore */ }
+}
+
+function applySavedSettings() {
+  const s = loadHostSettings();
+  if (!s) return;
+  const score = Number(s.scoreGoal);
+  if (score >= 1 && score <= 20) $('opt-score').value = Math.round(score);
+  if (TIMER_CHOICES.includes(Number(s.timerSeconds))) $('opt-timer').value = String(Number(s.timerSeconds));
+  if (typeof s.rando === 'boolean') $('opt-rando').checked = s.rando;
+}
+applySavedSettings();
+
+function hostOptionsChanged() {
+  if (!isHost) return;
+  saveHostSettings();
+  socket.emit('update-options', gatherOptions());
+}
+
 ['opt-score', 'opt-timer', 'opt-rando'].forEach(id => {
   const el = $(id);
   if (!el) return;
-  el.addEventListener('change', () => { if (isHost) socket.emit('update-options', gatherOptions()); });
+  el.addEventListener('change', hostOptionsChanged);
 });
 
 function initPackGrid(packs) {
@@ -147,6 +180,21 @@ function initPackGrid(packs) {
     item.innerHTML = `<input type="checkbox" value="${pack.id}" checked> ${escHtml(pack.name).toUpperCase()}`;
     grid.appendChild(item);
   });
+  // Restore the host's last pack selection, ignoring packs that no longer exist.
+  const saved = loadHostSettings();
+  const savedPacks = saved && Array.isArray(saved.packs) ? saved.packs.map(String) : null;
+  if (savedPacks && !savedPacks.includes('all')) {
+    const inputs = [...grid.querySelectorAll('input:not([value="all"])')];
+    if (inputs.some(el => savedPacks.includes(el.value))) {
+      inputs.forEach(el => { el.checked = savedPacks.includes(el.value); });
+    }
+  } else if (savedPacks) {
+    grid.querySelectorAll('input').forEach(el => { el.checked = el.value === 'all'; });
+  }
+  if (savedPacks) {
+    grid.querySelectorAll('input').forEach(el => el.closest('.pack-item').classList.toggle('selected', el.checked));
+    if (isHost) socket.emit('update-options', gatherOptions());
+  }
   grid.querySelectorAll('input').forEach(el => {
     el.addEventListener('change', () => {
       if (el.value === 'all') {
@@ -157,7 +205,7 @@ function initPackGrid(packs) {
         allEl.closest('.pack-item').classList.remove('selected');
       }
       el.closest('.pack-item').classList.toggle('selected', el.checked);
-      if (isHost) socket.emit('update-options', gatherOptions());
+      hostOptionsChanged();
     });
   });
 }
