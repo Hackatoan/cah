@@ -86,6 +86,56 @@
     "errUpload": "Upload fehlgeschlagen — versuche es erneut"
   },
   "htmlLang": "de",
+  "seo": {
+    "h1": "Cards Against Hackatoa — kostenloses Party-Kartenspiel online",
+    "intro": "Cards Against Hackatoa ist ein kostenloses Party-Kartenspiel im Browser, inspiriert von Cards Against Humanity. Eine schwarze Karte zeigt einen Lückentext, und alle spielen weiße Karten, um ihn zu vervollständigen — statt eines einzelnen Rundenleiters stimmen dann alle anonym über die lustigste Antwort ab. Die meisten Stimmen gewinnen die Runde, und wer zuerst das Punktziel erreicht, gewinnt das Spiel.",
+    "howToTitle": "So wird's gespielt",
+    "howTo": "Erstelle einen Raum oder tritt einem bei und teile den Code mit Freunden. Lies in jeder Runde die schwarze Karte, wähle die weiße(n) Karte(n) aus deiner Hand, die die beste Antwort ergeben, und lege sie fest. Sobald alle gespielt haben, stimmst du für deine Lieblingsantwort (für deine eigene kannst du nicht stimmen). Die Punkte werden automatisch gezählt und eine neue Runde beginnt.",
+    "featuresTitle": "Funktionen",
+    "features": "Kein Rundenleiter — anonyme Abstimmung in jeder Runde, eigene Karten und Joker zum Selbsteingeben, Bildkarten-Uploads, eine Community-Pack-Bibliothek sowie einstellbare Punktziele und Kartenpacks. Es ist ein Mehrspielerspiel und läuft komplett im Browser — ohne Download und ohne Konto.",
+    "faqTitle": "Häufig gestellte Fragen",
+    "faq": [
+      {
+        "q": "Ist Cards Against Hackatoa kostenlos?",
+        "a": "Ja — du spielst kostenlos im Browser, ohne Download und ohne Konto."
+      },
+      {
+        "q": "Wie viele Spieler braucht man?",
+        "a": "Es ist ein Mehrspielerspiel: Spiel online mit Freunden in einem gemeinsamen Raum, jeder auf seinem eigenen Gerät."
+      },
+      {
+        "q": "Kann ich meine eigenen Karten verwenden?",
+        "a": "Ja — füge eigene Karten hinzu, tippe Joker spontan ein, lade Bildkarten hoch und nutze Community-Packs."
+      },
+      {
+        "q": "Brauche ich das physische Spiel?",
+        "a": "Nein. Alles läuft online — nichts zu kaufen."
+      }
+    ],
+    "more": "Entdecke weitere kostenlose Browserspiele bei {link}."
+  },
+  "faqLd": [
+    {
+      "q": "Ist Cards Against Hackatoa kostenlos spielbar?",
+      "a": "Ja. Es ist ein kostenloses Online-Party-Kartenspiel — kein Download, keine Installation und kein Konto erforderlich."
+    },
+    {
+      "q": "Wie spielt man Cards Against Hackatoa?",
+      "a": "Eine schwarze Karte zeigt einen Lückentext. Alle spielen weiße Karte(n) aus ihrer Hand, um ihn zu vervollständigen, und stimmen dann anonym über die lustigste Antwort ab — es gibt keinen Rundenleiter. Die meisten Stimmen gewinnen die Runde, und wer zuerst das Punktziel erreicht, gewinnt das Spiel."
+    },
+    {
+      "q": "Wie viele Spieler braucht man?",
+      "a": "Es ist ein Mehrspielerspiel — spiel online mit Freunden in einem gemeinsamen Raum, jeder auf seinem eigenen Gerät."
+    },
+    {
+      "q": "Kann ich eigene Karten verwenden?",
+      "a": "Ja. Du kannst eigene Karten hinzufügen, Joker spontan eintippen, Bildkarten hochladen und auf eine Community-Pack-Bibliothek zugreifen."
+    },
+    {
+      "q": "Brauche ich das physische Cards-Against-Humanity-Spiel?",
+      "a": "Nein. Cards Against Hackatoa ist ein kostenloses Partyspiel im Browser, inspiriert von dieser Art Spiel — alles läuft online, nichts zu kaufen."
+    }
+  ],
   "_meta": {
     "site": "cah",
     "origin": "https://cah.hackatoa.com",
