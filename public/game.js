@@ -492,6 +492,31 @@ function buildSubmissionCard(sub, { voteable, isMine, tally } = {}) {
   return card;
 }
 
+// ── Invite link ───────────────────────────────────────────────────────────
+// Copies a direct join link (same page/locale + ?code=) that the existing URL
+// prefill below already understands. Falls back to a prompt where the
+// Clipboard API is unavailable (e.g. non-secure contexts).
+function inviteLink() {
+  return `${location.origin}${location.pathname}?code=${encodeURIComponent(roomCode)}`;
+}
+
+$('btn-copy-invite').addEventListener('click', async () => {
+  if (!roomCode) return;
+  const btn = $('btn-copy-invite');
+  const link = inviteLink();
+  try {
+    await navigator.clipboard.writeText(link);
+  } catch {
+    window.prompt(T('copyInvite'), link);
+    return;
+  }
+  if (!btn.dataset.label) btn.dataset.label = btn.textContent;
+  btn.textContent = T('inviteCopied');
+  announce(T('inviteCopied'));
+  clearTimeout(btn._resetTimer);
+  btn._resetTimer = setTimeout(() => { btn.textContent = btn.dataset.label; }, 2000);
+});
+
 // ── Socket events ─────────────────────────────────────────────────────────
 socket.on('connect', () => { myId = socket.id; });
 
@@ -730,5 +755,6 @@ function hideAllPhases() {
 const urlCode = new URLSearchParams(location.search).get('code');
 if (urlCode) {
   $('join-code').value = urlCode.toUpperCase();
+  $('join-name').value = window.PlayerName.get();
   showScreen('s-join');
 }
