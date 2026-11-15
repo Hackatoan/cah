@@ -151,5 +151,15 @@
     "note": "en is the source of truth. Locale files are Gemini-generated. Do not hand-edit generated public/<locale>/ files. User-created card text is never translated.",
     "generatedFrom": "i18n/en.json",
     "locale": "es"
+  },
+  "ogDescription": "Un juego de fiesta al estilo de Cards Against Humanity en tu navegador. Sin juez: todos votan. Cartas personalizadas, comodines, subida de imágenes. Gratis, sin necesidad de cuenta.",
+  "twitterDescription": "Juego de fiesta gratuito al estilo de Cards Against Humanity. Todos votan, sin juez. Cartas personalizadas, subida de imágenes. No requiere registro.",
+  "keywords": "cards against humanity online, juego de cartas de fiesta gratis, juego de cartas en el navegador, cah en línea, cards against hackatoa, juego de fiesta multijugador",
+  "videoGameLd": {
+    "description": "Un juego de fiesta al estilo de Cards Against Humanity en tu navegador. Sin juez: todos votan de forma anónima en cada ronda. Cartas personalizadas, comodines que puedes escribir, subida de cartas con imagen y una biblioteca de paquetes de la comunidad.",
+    "genre": [
+      "Fiesta",
+      "Juego de cartas"
+    ]
   }
 }

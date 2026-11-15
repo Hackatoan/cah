@@ -151,5 +151,15 @@
     "note": "en is the source of truth. Locale files are Gemini-generated. Do not hand-edit generated public/<locale>/ files. User-created card text is never translated.",
     "generatedFrom": "i18n/en.json",
     "locale": "fr"
+  },
+  "ogDescription": "Un jeu d'ambiance dans le style de Cards Against Humanity, directement dans votre navigateur. Pas de czar — tout le monde vote. Cartes personnalisées, cartes folles, envoi d'images. Gratuit, sans compte.",
+  "twitterDescription": "Jeu d'ambiance gratuit dans le style de Cards Against Humanity. Tout le monde vote, pas de czar. Cartes personnalisées, envoi d'images. Aucune inscription requise.",
+  "keywords": "cards against humanity en ligne, jeu de cartes d'ambiance gratuit, jeu de cartes dans le navigateur, cah en ligne, cards against hackatoa, jeu d'ambiance multijoueur",
+  "videoGameLd": {
+    "description": "Un jeu d'ambiance dans le style de Cards Against Humanity, directement dans votre navigateur. Pas de czar — tout le monde vote anonymement à chaque manche. Cartes personnalisées, cartes folles à écrire soi-même, envoi de cartes illustrées et une bibliothèque de paquets communautaires.",
+    "genre": [
+      "Jeu d'ambiance",
+      "Jeu de cartes"
+    ]
   }
 }

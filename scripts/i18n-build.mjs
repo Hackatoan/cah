@@ -84,6 +84,27 @@ function localizeSeo(h, t, loc) {
   return h;
 }
 
+// og:/twitter: descriptions, meta keywords, og:url, and the VideoGame JSON-LD
+// (description, genre, url). Brand names (name/author/isPartOf, twitter:title,
+// og:site_name) stay as-is. Attribute values are HTML-escaped incl. quotes;
+// JSON-LD values use ldStr.
+const escAttr = (s) => escHtml(s).replace(/"/g, '&quot;');
+const ldArr = (a) => `[${a.map(ldStr).join(', ')}]`;
+function localizeMeta(h, t, loc) {
+  const ctx = (k) => `${loc} ${k}`;
+  for (const [k, attr] of [['ogDescription', 'property="og:description"'], ['twitterDescription', 'name="twitter:description"'], ['keywords', 'name="keywords"']]) {
+    if (!t[k]) { console.warn(`  ⚠ [${ctx(k)}] missing key — left in English`); warnings++; continue; }
+    h = rep(h, `<meta ${attr} content="${escAttr(en[k])}" />`, `<meta ${attr} content="${escAttr(t[k])}" />`, ctx(k));
+  }
+  h = rep(h, `<meta property="og:url" content="${ORIGIN}/" />`, `<meta property="og:url" content="${url(loc)}" />`, ctx('og:url'));
+  const v = t.videoGameLd, e = en.videoGameLd;
+  if (!v) { console.warn(`  ⚠ [${ctx('videoGameLd')}] missing key — left in English`); warnings++; return h; }
+  h = rep(h, `"description": ${JSON.stringify(e.description)}`, `"description": ${ldStr(v.description)}`, ctx('videoGameLd.description'));
+  h = rep(h, `"genre": ${ldArr(e.genre)}`, `"genre": ${ldArr(v.genre)}`, ctx('videoGameLd.genre'));
+  h = rep(h, `"@type": "VideoGame",\n    "name": "Cards Against Hackatoa",\n    "url": "${ORIGIN}/"`, `"@type": "VideoGame",\n    "name": "Cards Against Hackatoa",\n    "url": "${url(loc)}"`, ctx('videoGameLd.url'));
+  return h;
+}
+
 function build(loc, t) {
   let h = base;
   if (loc !== 'en') {
@@ -109,6 +130,7 @@ function build(loc, t) {
     h = rep(h, `>${en.footer.allGames}<`, `>${t.footer.allGames}<`, 'footer.allGames');
     h = rep(h, `>${en.footer.coffee}<`, `>${t.footer.coffee}<`, 'footer.coffee');
     h = localizeSeo(h, t, loc);
+    h = localizeMeta(h, t, loc);
     // absolute paths for every local asset: locale pages live at /<loc>/, so a
     // relative "sfx.js" would resolve to /<loc>/sfx.js and 404.
     h = h.replace(/\b(src|href)="(?![a-z][a-z0-9+.-]*:|\/|#)([^"]+\.(?:js|css|svg|png|ico|json|webmanifest))"/gi, '$1="/$2"');

@@ -151,5 +151,15 @@
     "note": "en is the source of truth. Locale files are Gemini-generated. Do not hand-edit generated public/<locale>/ files. User-created card text is never translated.",
     "generatedFrom": "i18n/en.json",
     "locale": "de"
+  },
+  "ogDescription": "Ein Partyspiel im Stil von Cards Against Humanity direkt im Browser. Kein Rundenleiter — alle stimmen ab. Eigene Karten, Joker, Bilduploads. Kostenlos, kein Konto nötig.",
+  "twitterDescription": "Kostenloses Partyspiel im Stil von Cards Against Humanity. Alle stimmen ab, kein Rundenleiter. Eigene Karten, Bilduploads. Keine Registrierung nötig.",
+  "keywords": "cards against humanity online, kostenloses Party-Kartenspiel, Browser-Kartenspiel, cah online, cards against hackatoa, Multiplayer-Partyspiel",
+  "videoGameLd": {
+    "description": "Ein Partyspiel im Stil von Cards Against Humanity direkt im Browser. Kein Rundenleiter — alle stimmen in jeder Runde anonym ab. Eigene Karten, frei beschreibbare Joker, Bildkarten-Uploads und eine Bibliothek mit Community-Packs.",
+    "genre": [
+      "Partyspiel",
+      "Kartenspiel"
+    ]
   }
 }

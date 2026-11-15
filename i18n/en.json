@@ -136,5 +136,12 @@
       "q": "Do I need the physical Cards Against Humanity game?",
       "a": "No. Cards Against Hackatoa is a free, browser-based party game inspired by that style of game — everything runs online, nothing to buy."
     }
-  ]
+  ],
+  "ogDescription": "A Cards Against Humanity-style party game in your browser. No czar — everyone votes. Custom cards, wild cards, image uploads. Free, no account needed.",
+  "twitterDescription": "Free Cards Against Humanity-style party game. Everyone votes, no czar. Custom cards, image uploads. No sign-up needed.",
+  "keywords": "cards against humanity online, free party card game, browser card game, cah online, cards against hackatoa, multiplayer party game",
+  "videoGameLd": {
+    "description": "A Cards Against Humanity-style party game in your browser. No czar — everyone votes anonymously each round. Custom cards, wild typeable cards, image card uploads, and a community pack library.",
+    "genre": ["Party", "Card Game"]
+  }
 }

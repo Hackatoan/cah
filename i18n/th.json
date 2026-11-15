@@ -151,5 +151,15 @@
     "note": "en is the source of truth. Locale files are Gemini-generated. Do not hand-edit generated public/<locale>/ files. User-created card text is never translated.",
     "generatedFrom": "i18n/en.json",
     "locale": "th"
+  },
+  "ogDescription": "เกมปาร์ตี้สไตล์ Cards Against Humanity เล่นบนเบราว์เซอร์ ไม่มีหัวหน้าวง — ทุกคนโหวตกันเอง การ์ดคัสตอม การ์ดไวล์ด อัปโหลดรูปภาพ เล่นฟรี ไม่ต้องมีบัญชี",
+  "twitterDescription": "เกมปาร์ตี้สไตล์ Cards Against Humanity เล่นฟรี ทุกคนโหวต ไม่มีหัวหน้าวง การ์ดคัสตอม อัปโหลดรูปภาพ ไม่ต้องลงทะเบียน",
+  "keywords": "cards against humanity ออนไลน์, เกมการ์ดปาร์ตี้ฟรี, เกมการ์ดบนเบราว์เซอร์, cah ออนไลน์, cards against hackatoa, เกมปาร์ตี้หลายผู้เล่น",
+  "videoGameLd": {
+    "description": "เกมปาร์ตี้สไตล์ Cards Against Humanity เล่นบนเบราว์เซอร์ ไม่มีหัวหน้าวง — ทุกคนโหวตแบบไม่ระบุชื่อในทุกรอบ มีการ์ดคัสตอม การ์ดไวล์ดที่พิมพ์เองได้ อัปโหลดการ์ดรูปภาพ และคลังแพ็กการ์ดจากคอมมูนิตี้",
+    "genre": [
+      "ปาร์ตี้",
+      "เกมการ์ด"
+    ]
   }
 }
