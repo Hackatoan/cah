@@ -198,7 +198,7 @@ function initPackGrid(packs) {
   grid.querySelectorAll('input').forEach(el => {
     el.addEventListener('change', () => {
       if (el.value === 'all') {
-        grid.querySelectorAll('input[value!="all"]').forEach(x => { x.checked = false; x.closest('.pack-item').classList.remove('selected'); });
+        grid.querySelectorAll('input:not([value="all"])').forEach(x => { x.checked = false; x.closest('.pack-item').classList.remove('selected'); });
       } else {
         const allEl = grid.querySelector('input[value="all"]');
         allEl.checked = false;
