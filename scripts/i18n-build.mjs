@@ -59,6 +59,31 @@ const runtimeBlock = (t) => {
 const SIMPLE_UI = ['yourName','createRoom','joinRoom','leaderboard','colPlayer','loading','joinGame','roomCode','back','join','lobby','shareCode','copyInvite','settings','scoreGoal','timerSec','timerOff','typeYourOwn','perPlayer','cardPacks','communityPacks','startGame','waitingHost','leave','submit','voteBest','youVoted','playAgain','mainMenu','blackCardsLabel','blackCardsExample','whiteCardsLabel','whiteImageLabel','uploadHint','upload','savePackLabel','saveToCommunity','addCardsToGame','communityHint'];
 const PLACEHOLDERS = ['enterName','codePlaceholder','captionPlaceholder','packNamePlaceholder'];
 
+// Hidden SEO <section> + FAQPage JSON-LD. Anchored on the English strings from
+// en.seo / en.faqLd; translated values are HTML-escaped (section) or JSON-escaped
+// (JSON-LD, with "<" as < so nothing can close the <script>).
+const escHtml = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const ldStr = (s) => JSON.stringify(String(s)).replace(/</g, '\\u003c');
+const MORE_LINK = '<a href="https://games.hackatoa.com">Hackatoa Games</a>';
+function localizeSeo(h, t, loc) {
+  const s = t.seo, e = en.seo;
+  if (!s || !t.faqLd) { console.warn(`  ⚠ [${loc}] missing seo/faqLd keys — left in English`); warnings++; return h; }
+  const ctx = (k) => `${loc} seo.${k}`;
+  h = rep(h, `<h1>${escHtml(e.h1)}</h1>`, `<h1>${escHtml(s.h1)}</h1>`, ctx('h1'));
+  for (const k of ['intro', 'howTo', 'features']) h = rep(h, `<p>${escHtml(e[k])}</p>`, `<p>${escHtml(s[k])}</p>`, ctx(k));
+  for (const k of ['howToTitle', 'featuresTitle', 'faqTitle']) h = rep(h, `<h2>${escHtml(e[k])}</h2>`, `<h2>${escHtml(s[k])}</h2>`, ctx(k));
+  e.faq.forEach((x, i) => {
+    h = rep(h, `<dt>${escHtml(x.q)}</dt>`, `<dt>${escHtml(s.faq[i].q)}</dt>`, ctx(`faq.${i}.q`));
+    h = rep(h, `<dd>${escHtml(x.a)}</dd>`, `<dd>${escHtml(s.faq[i].a)}</dd>`, ctx(`faq.${i}.a`));
+  });
+  h = rep(h, `<p>${escHtml(e.more).replace('{link}', MORE_LINK)}</p>`, `<p>${escHtml(s.more).replace('{link}', MORE_LINK)}</p>`, ctx('more'));
+  en.faqLd.forEach((x, i) => {
+    h = rep(h, `"name": ${JSON.stringify(x.q)}`, `"name": ${ldStr(t.faqLd[i].q)}`, `${loc} faqLd.${i}.q`);
+    h = rep(h, `"text": ${JSON.stringify(x.a)}`, `"text": ${ldStr(t.faqLd[i].a)}`, `${loc} faqLd.${i}.a`);
+  });
+  return h;
+}
+
 function build(loc, t) {
   let h = base;
   if (loc !== 'en') {
@@ -83,6 +108,7 @@ function build(loc, t) {
     h = rep(h, `>${en.footer.builtBy} <`, `>${t.footer.builtBy} <`, 'footer.builtBy');
     h = rep(h, `>${en.footer.allGames}<`, `>${t.footer.allGames}<`, 'footer.allGames');
     h = rep(h, `>${en.footer.coffee}<`, `>${t.footer.coffee}<`, 'footer.coffee');
+    h = localizeSeo(h, t, loc);
     // absolute paths for every local asset: locale pages live at /<loc>/, so a
     // relative "sfx.js" would resolve to /<loc>/sfx.js and 404.
     h = h.replace(/\b(src|href)="(?![a-z][a-z0-9+.-]*:|\/|#)([^"]+\.(?:js|css|svg|png|ico|json|webmanifest))"/gi, '$1="/$2"');

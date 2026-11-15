@@ -86,6 +86,56 @@
     "errUpload": "Error al subir — inténtalo de nuevo"
   },
   "htmlLang": "es",
+  "seo": {
+    "h1": "Cards Against Hackatoa — juego de cartas de fiesta gratis en línea",
+    "intro": "Cards Against Hackatoa es un juego de cartas de fiesta gratuito que se juega en el navegador, inspirado en Cards Against Humanity. Una carta negra muestra una frase con espacios para rellenar y todos juegan cartas blancas para completarla; luego, en lugar de un único juez, todos votan de forma anónima por la respuesta más divertida. La que recibe más votos gana la ronda, y el primer jugador en alcanzar la puntuación objetivo gana la partida.",
+    "howToTitle": "Cómo jugar",
+    "howTo": "Crea una sala o únete a una y comparte el código con tus amigos. En cada ronda, lee la carta negra, elige de tu mano la(s) carta(s) blanca(s) que formen la mejor respuesta y confírmalas. Cuando todos hayan jugado, vota por tu respuesta favorita (no puedes votar por la tuya). Los puntos se cuentan automáticamente y empieza una nueva ronda.",
+    "featuresTitle": "Características",
+    "features": "Sin juez: votación anónima en cada ronda, cartas personalizadas y comodines para escribir, subida de cartas con imagen, una biblioteca de paquetes de la comunidad y puntuación objetivo y paquetes de cartas ajustables. Es multijugador y funciona por completo en tu navegador, sin descargas ni cuenta.",
+    "faqTitle": "Preguntas frecuentes",
+    "faq": [
+      {
+        "q": "¿Cards Against Hackatoa es gratis?",
+        "a": "Sí, es gratis y se juega en el navegador, sin descargas ni cuenta."
+      },
+      {
+        "q": "¿Cuántos jugadores se necesitan?",
+        "a": "Es multijugador: juega en línea con amigos en una sala compartida, cada uno desde su propio dispositivo."
+      },
+      {
+        "q": "¿Puedo usar mis propias cartas?",
+        "a": "Sí: añade cartas personalizadas, escribe comodines al momento, sube cartas con imagen y usa paquetes de la comunidad."
+      },
+      {
+        "q": "¿Necesito el juego físico?",
+        "a": "No. Todo funciona en línea; no hay nada que comprar."
+      }
+    ],
+    "more": "Descubre más juegos de navegador gratis en {link}."
+  },
+  "faqLd": [
+    {
+      "q": "¿Cards Against Hackatoa es gratis?",
+      "a": "Sí. Es un juego de cartas de fiesta en línea gratuito: no requiere descarga, instalación ni cuenta."
+    },
+    {
+      "q": "¿Cómo se juega a Cards Against Hackatoa?",
+      "a": "Una carta negra muestra una frase con espacios para rellenar. Todos juegan una o más cartas blancas de su mano para completarla y luego votan de forma anónima por la respuesta más divertida; no hay juez. La que recibe más votos gana la ronda, y el primer jugador en alcanzar la puntuación objetivo gana la partida."
+    },
+    {
+      "q": "¿Cuántos jugadores se necesitan?",
+      "a": "Es un juego multijugador: juega en línea con amigos en una sala compartida, cada uno desde su propio dispositivo."
+    },
+    {
+      "q": "¿Puedo usar cartas personalizadas o mis propias cartas?",
+      "a": "Sí. Puedes añadir cartas personalizadas, escribir comodines al momento, subir cartas con imagen y usar una biblioteca de paquetes de la comunidad."
+    },
+    {
+      "q": "¿Necesito el juego físico de Cards Against Humanity?",
+      "a": "No. Cards Against Hackatoa es un juego de fiesta gratuito en el navegador inspirado en ese estilo de juego: todo funciona en línea y no hay nada que comprar."
+    }
+  ],
   "_meta": {
     "site": "cah",
     "origin": "https://cah.hackatoa.com",

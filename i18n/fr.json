@@ -86,6 +86,56 @@
     "errUpload": "Échec du téléchargement — réessayez"
   },
   "htmlLang": "fr",
+  "seo": {
+    "h1": "Cards Against Hackatoa — jeu de cartes d'ambiance gratuit en ligne",
+    "intro": "Cards Against Hackatoa est un jeu de cartes d'ambiance gratuit, jouable dans le navigateur et inspiré de Cards Against Humanity. Une carte noire affiche une phrase à trous et chacun joue des cartes blanches pour la compléter — puis, au lieu d'un czar unique, tout le monde vote anonymement pour la réponse la plus drôle. La réponse qui obtient le plus de votes remporte la manche, et le premier joueur à atteindre l'objectif de score gagne la partie.",
+    "howToTitle": "Comment jouer",
+    "howTo": "Créez une salle ou rejoignez-en une, puis partagez le code avec vos amis. À chaque manche, lisez la carte noire, choisissez dans votre main la ou les cartes blanches qui forment la meilleure réponse et validez-les. Une fois que tout le monde a joué, votez pour votre réponse préférée (vous ne pouvez pas voter pour la vôtre). Les points sont comptés automatiquement et une nouvelle manche commence.",
+    "featuresTitle": "Fonctionnalités",
+    "features": "Pas de czar — vote anonyme à chaque manche, cartes personnalisées et cartes folles à écrire soi-même, envoi de cartes images, bibliothèque de paquets communautaires, objectif de score et paquets de cartes réglables. C'est un jeu multijoueur qui fonctionne entièrement dans votre navigateur, sans téléchargement ni compte.",
+    "faqTitle": "Questions fréquentes",
+    "faq": [
+      {
+        "q": "Cards Against Hackatoa est-il gratuit ?",
+        "a": "Oui — il se joue gratuitement dans votre navigateur, sans téléchargement ni compte."
+      },
+      {
+        "q": "Combien de joueurs faut-il ?",
+        "a": "C'est un jeu multijoueur : jouez en ligne avec vos amis dans une salle partagée, chacun sur son propre appareil."
+      },
+      {
+        "q": "Puis-je utiliser mes propres cartes ?",
+        "a": "Oui — ajoutez des cartes personnalisées, écrivez des cartes folles à la volée, envoyez des cartes images et utilisez les paquets communautaires."
+      },
+      {
+        "q": "Ai-je besoin du jeu physique ?",
+        "a": "Non. Tout se passe en ligne — rien à acheter."
+      }
+    ],
+    "more": "Découvrez d'autres jeux gratuits dans le navigateur sur {link}."
+  },
+  "faqLd": [
+    {
+      "q": "Cards Against Hackatoa est-il gratuit ?",
+      "a": "Oui. C'est un jeu de cartes d'ambiance gratuit en ligne — aucun téléchargement, aucune installation ni aucun compte requis."
+    },
+    {
+      "q": "Comment joue-t-on à Cards Against Hackatoa ?",
+      "a": "Une carte noire affiche une phrase à trous. Chacun joue une ou plusieurs cartes blanches de sa main pour la compléter, puis tout le monde vote anonymement pour la réponse la plus drôle — il n'y a pas de czar. La réponse qui obtient le plus de votes remporte la manche, et le premier joueur à atteindre l'objectif de score gagne la partie."
+    },
+    {
+      "q": "Combien de joueurs faut-il ?",
+      "a": "C'est un jeu multijoueur — jouez en ligne avec vos amis dans une salle partagée, chacun sur son propre appareil."
+    },
+    {
+      "q": "Puis-je utiliser des cartes personnalisées ou mes propres cartes ?",
+      "a": "Oui. Vous pouvez ajouter des cartes personnalisées, écrire des cartes folles à la volée, envoyer des cartes images et puiser dans une bibliothèque de paquets communautaires."
+    },
+    {
+      "q": "Ai-je besoin du jeu physique Cards Against Humanity ?",
+      "a": "Non. Cards Against Hackatoa est un jeu d'ambiance gratuit dans le navigateur, inspiré de ce style de jeu — tout se passe en ligne, rien à acheter."
+    }
+  ],
   "_meta": {
     "site": "cah",
     "origin": "https://cah.hackatoa.com",

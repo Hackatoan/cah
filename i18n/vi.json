@@ -86,6 +86,56 @@
     "errUpload": "Tải lên thất bại — hãy thử lại"
   },
   "htmlLang": "vi",
+  "seo": {
+    "h1": "Cards Against Hackatoa — trò chơi bài tiệc tùng trực tuyến miễn phí",
+    "intro": "Cards Against Hackatoa là trò chơi bài tiệc tùng miễn phí chơi ngay trên trình duyệt, lấy cảm hứng từ Cards Against Humanity. Một thẻ bài đen hiển thị câu điền vào chỗ trống và mọi người đánh thẻ bài trắng để hoàn thành câu — sau đó, thay vì có một quản trò duy nhất, mọi người bỏ phiếu ẩn danh cho câu trả lời vui nhộn nhất. Câu trả lời được nhiều phiếu nhất sẽ thắng vòng đó, và người chơi đầu tiên đạt điểm mục tiêu sẽ thắng cả ván.",
+    "howToTitle": "Cách chơi",
+    "howTo": "Tạo hoặc tham gia một phòng và chia sẻ mã với bạn bè. Mỗi vòng, hãy đọc thẻ bài đen, chọn (các) thẻ bài trắng trên tay tạo thành câu trả lời hay nhất rồi chốt lại. Khi mọi người đã đánh xong, hãy bầu chọn câu trả lời bạn thích nhất (bạn không thể tự bầu cho mình). Điểm được tính tự động và một vòng mới bắt đầu.",
+    "featuresTitle": "Tính năng",
+    "features": "Không có quản trò — bỏ phiếu ẩn danh mỗi vòng, thẻ bài tùy chỉnh và thẻ bài hoang dã tự nhập, tải lên thẻ bài hình ảnh, thư viện gói cộng đồng, cùng điểm mục tiêu và gói thẻ bài có thể điều chỉnh. Trò chơi nhiều người chơi, chạy hoàn toàn trên trình duyệt, không cần tải về hay tạo tài khoản.",
+    "faqTitle": "Câu hỏi thường gặp",
+    "faq": [
+      {
+        "q": "Cards Against Hackatoa có miễn phí không?",
+        "a": "Có — chơi miễn phí ngay trên trình duyệt, không cần tải về hay tài khoản."
+      },
+      {
+        "q": "Cần bao nhiêu người chơi?",
+        "a": "Đây là trò chơi nhiều người chơi; chơi trực tuyến cùng bạn bè trong một phòng chung, mỗi người trên thiết bị của mình."
+      },
+      {
+        "q": "Tôi có thể dùng thẻ bài của riêng mình không?",
+        "a": "Có — thêm thẻ bài tùy chỉnh, nhập thẻ bài hoang dã ngay khi chơi, tải lên thẻ bài hình ảnh và dùng các gói cộng đồng."
+      },
+      {
+        "q": "Tôi có cần bộ bài thật không?",
+        "a": "Không. Mọi thứ đều chạy trực tuyến — không cần mua gì cả."
+      }
+    ],
+    "more": "Khám phá thêm các trò chơi trình duyệt miễn phí tại {link}."
+  },
+  "faqLd": [
+    {
+      "q": "Cards Against Hackatoa có miễn phí không?",
+      "a": "Có. Đây là trò chơi bài tiệc tùng trực tuyến miễn phí — không cần tải về, cài đặt hay tạo tài khoản."
+    },
+    {
+      "q": "Chơi Cards Against Hackatoa như thế nào?",
+      "a": "Một thẻ bài đen hiển thị câu điền vào chỗ trống. Mọi người đánh (các) thẻ bài trắng từ tay mình để hoàn thành câu, sau đó cùng bỏ phiếu ẩn danh cho câu trả lời vui nhộn nhất — không có quản trò. Câu trả lời được nhiều phiếu nhất sẽ thắng vòng đó, và người chơi đầu tiên đạt điểm mục tiêu sẽ thắng cả ván."
+    },
+    {
+      "q": "Cần bao nhiêu người chơi?",
+      "a": "Đây là trò chơi nhiều người chơi — chơi trực tuyến cùng bạn bè trong một phòng chung, mỗi người trên thiết bị của mình."
+    },
+    {
+      "q": "Tôi có thể dùng thẻ bài tùy chỉnh hoặc của riêng mình không?",
+      "a": "Có. Bạn có thể thêm thẻ bài tùy chỉnh, nhập thẻ bài hoang dã ngay khi chơi, tải lên thẻ bài hình ảnh và lấy bài từ thư viện gói cộng đồng."
+    },
+    {
+      "q": "Tôi có cần bộ bài Cards Against Humanity thật không?",
+      "a": "Không. Cards Against Hackatoa là trò chơi tiệc tùng miễn phí trên trình duyệt, lấy cảm hứng từ thể loại trò chơi đó — mọi thứ đều chạy trực tuyến, không cần mua gì cả."
+    }
+  ],
   "_meta": {
     "site": "cah",
     "origin": "https://cah.hackatoa.com",
