@@ -151,5 +151,15 @@
     "note": "en is the source of truth. Locale files are Gemini-generated. Do not hand-edit generated public/<locale>/ files. User-created card text is never translated.",
     "generatedFrom": "i18n/en.json",
     "locale": "vi"
+  },
+  "ogDescription": "Trò chơi bài tiệc tùng kiểu Cards Against Humanity ngay trên trình duyệt. Không có quản trò — mọi người cùng bỏ phiếu. Thẻ bài tùy chỉnh, thẻ bài hoang dã, tải lên hình ảnh. Miễn phí, không cần tài khoản.",
+  "twitterDescription": "Trò chơi bài tiệc tùng kiểu Cards Against Humanity miễn phí. Mọi người cùng bỏ phiếu, không có quản trò. Thẻ bài tùy chỉnh, tải lên hình ảnh. Không cần đăng ký.",
+  "keywords": "cards against humanity online, trò chơi bài tiệc tùng miễn phí, trò chơi bài trên trình duyệt, cah trực tuyến, cards against hackatoa, trò chơi tiệc tùng nhiều người chơi",
+  "videoGameLd": {
+    "description": "Trò chơi bài tiệc tùng kiểu Cards Against Humanity ngay trên trình duyệt. Không có quản trò — mọi người bỏ phiếu ẩn danh mỗi vòng. Thẻ bài tùy chỉnh, thẻ bài hoang dã tự gõ nội dung, tải lên thẻ bài hình ảnh và thư viện gói thẻ bài cộng đồng.",
+    "genre": [
+      "Tiệc tùng",
+      "Trò chơi bài"
+    ]
   }
 }
