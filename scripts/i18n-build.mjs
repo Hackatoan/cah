@@ -46,7 +46,7 @@ const runtimeBlock = (t) => {
 };
 
 // ui keys that render as simple element text >VALUE<
-const SIMPLE_UI = ['yourName','createRoom','joinRoom','leaderboard','colPlayer','loading','joinGame','roomCode','back','join','lobby','shareCode','settings','scoreGoal','timerSec','timerOff','typeYourOwn','perPlayer','cardPacks','communityPacks','startGame','waitingHost','leave','submit','voteBest','youVoted','playAgain','mainMenu','blackCardsLabel','blackCardsExample','whiteCardsLabel','whiteImageLabel','uploadHint','upload','savePackLabel','saveToCommunity','addCardsToGame','communityHint'];
+const SIMPLE_UI = ['yourName','createRoom','joinRoom','leaderboard','colPlayer','loading','joinGame','roomCode','back','join','lobby','shareCode','copyInvite','settings','scoreGoal','timerSec','timerOff','typeYourOwn','perPlayer','cardPacks','communityPacks','startGame','waitingHost','leave','submit','voteBest','youVoted','playAgain','mainMenu','blackCardsLabel','blackCardsExample','whiteCardsLabel','whiteImageLabel','uploadHint','upload','savePackLabel','saveToCommunity','addCardsToGame','communityHint'];
 const PLACEHOLDERS = ['enterName','codePlaceholder','captionPlaceholder','packNamePlaceholder'];
 
 function build(loc, t) {

@@ -11,6 +11,7 @@ Create or join a room by code and play with friends in real time. No account, no
 ## Features
 
 - Real-time multiplayer rooms (join by code)
+- One-click "Copy invite link" in the lobby (opens straight to the join screen with the code filled in)
 - Configurable rounds and settings
 - Global leaderboard
 - 6-language localization
