@@ -86,6 +86,7 @@
     }
     .site-footer a { color: var(--muted); text-decoration: none; transition: color .15s; }
     .site-footer a:hover { color: var(--green); }
+    .site-footer a:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
     .site-footer .footer-links { display: flex; gap: 1.2rem; flex-wrap: wrap; }
     .site-footer .footer-coffee {
       border: 1px solid var(--border);
@@ -94,6 +95,7 @@
       transition: border-color .15s, color .15s;
     }
     .site-footer .footer-coffee:hover { border-color: var(--green); color: var(--green); }
+    .site-footer .footer-coffee:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
     /* push game content above footer */
     #s-game .game-body { padding-bottom: 3.5rem; }
     .screen { padding-bottom: 3rem; }
