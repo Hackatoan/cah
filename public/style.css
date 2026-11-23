@@ -399,7 +399,9 @@ label { display: block; font-size: .78rem; color: var(--muted); margin-bottom: .
   overflow-y: auto;
 }
 .modal-title { color: var(--green); font-size: 1rem; letter-spacing: .15em; margin-bottom: 1.5rem; }
-.modal-close { float: right; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.1rem; }
+.modal-close { float: right; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.1rem; transition: color .15s; }
+.modal-close:hover { color: var(--text); }
+.modal-close:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 .modal-hint { color: var(--muted); font-size: .78rem; margin-bottom: .5rem; }
 
 /* ── Spinner ── */
